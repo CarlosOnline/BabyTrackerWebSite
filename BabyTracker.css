@@ -1,0 +1,549 @@
+﻿html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,table,caption,tbody,tfoot,thead,tr,th,td,form,fieldset,embed,object,applet
+{
+    margin:0;
+    padding:0;
+    border:0;
+}
+body 
+{
+    background-color:#fed;
+    border: 0px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    font: 12pt Helvetica, sans-serif;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 1px;
+    width:26em;
+}
+body a 
+{
+    font-size: small;
+}
+.divPage {
+    width: 100%;
+    font-size: large;
+}
+label {
+    width: 1em;
+}
+.Header {
+        color:#850;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        vertical-align: middle;
+        text-align: center;
+        font-size: x-large;
+}
+.divEntry 
+{
+}
+.divEntryActive 
+{
+    background-color:#FFC800;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    margin: 0 0 0 2px;
+}
+.divRadioEntryActive
+{
+    border-style: inset;
+    border-width: 2px;
+    background-color: #fed;
+    border-color: #696 #363 #363 #696;
+    margin: 0 0 0 2px;
+}
+.divEntryHidden
+{
+    display: none;
+}
+.divInput
+{
+
+}
+.PageTitle {
+    color:#850;
+    font: bold 80% 'trebuchet ms',helvetica,sans-serif;
+    font-size: xx-large;
+    text-align: center;
+}
+.divResponseFrame
+{
+    font: bold 80% 'trebuchet ms',helvetica,sans-serif;
+    display:none;
+    height: 100px;
+    width: 520px;
+}
+.btn {
+    color: #050;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    background-color:#fed;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 3em;
+    height: 2em;
+    font-size: x-large;
+}
+.btn:hover {
+    background-color:#FFC800;
+    color: #050;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 3em;
+    height: 2em;
+    font-size: x-large;
+}
+.btnText {
+        color:#050;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 2em;
+        font-size: large;
+}
+.btnTextDepressed {
+        color:#050;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 2em;
+        font-size: large;
+}
+.btnText:hover {
+    color:#050;
+    font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+    background-color:#FFC800;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 5em;
+    height: 2em;
+    font-size: large;
+}
+.btnSubmit {
+        color:#050;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 2em;
+        font-size: large;
+}
+.ibtnSubmit {
+        color:#050;
+        font: bold 100% 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 2em;
+        font-size: large;
+}
+.btnSubmit:hover, .btnSubmit:active {
+    color:#050;
+    font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+    background-color:#FFC800;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 5em;
+    height: 2em;
+    font-size: large;
+}
+.btnType {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 100%;
+        font-size: x-large;
+        text-align: center;
+}
+.btnTypeDepressed {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FAB45A;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 4em;
+        height: 100%;
+        font-size: x-large;
+        text-align: center;
+}
+.lblEntry {
+        color:#850;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        height: 2em;
+        vertical-align: middle;
+        font-size: x-large;
+        width: 1em;
+}
+.Textbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 1.5em;
+        font-size: large;
+        text-align: top;
+        vertical-align: top;
+}
+.IPhoneTextbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 1.5em;
+        font-size: large;
+        text-align: top;
+        vertical-align: top;
+}
+.lblCheckbox {
+        color:#850;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        width: 5em;
+        height: 2em;
+        vertical-align: middle;
+        font-size: medium;
+}
+.radioLabel {
+        color:#850;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        width: 3em;
+        height: 2em;
+        vertical-align: top;
+        font-size: large;
+}
+.radioLabelFocus
+{
+    border-style: solid;
+    border-width: thin;
+    color: #050;
+    font: 'trebuchet ms' ,helvetica,sans-serif;
+    width: 3em;
+    height: 2em;
+    vertical-align: top;
+    font-size: large;
+    font-style: oblique;
+    font-weight: bold;
+    border-color: #696 #363 #363 #696;
+    filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+}
+.radioType {
+        color:#850;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        height: 2em;
+        vertical-align: top;
+        font-size: medium;
+}
+.radioTypeFocus
+{
+    color: #850;
+    font: 'trebuchet ms' ,helvetica,sans-serif;
+    height: 2em;
+    vertical-align: top;
+    font-size: medium;
+    background-color:ThreeDFace;
+}
+.NoteTextbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 8em;
+        height: 1em;
+        font-size: x-large;
+        text-align: left;
+}
+.IPhoneNoteTextbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 8em;
+        height: 1em;
+        font-size: x-large;
+        text-align: left;
+}
+.TimeTextbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 3em;
+        height: 1em;
+        font-size: x-large;
+        text-align: center;
+}
+.TimeButton {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 1.5em;
+        height: 1em;
+        font-size: large;
+        text-align: center;
+}
+.TimeButtonDepressed {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 1.5em;
+        height: 1em;
+        font-size: large;
+        text-align: center;
+}
+.TypeImage
+{
+    width: 50px;
+    height: 50px;
+    background-color:#FFC800;
+}
+.TypeImageActive
+{
+    width: 50px;
+    height: 50px;
+    border: 3px inset;
+    border-color: #696 #363 #363 #696;
+    background-color:#FFC800;
+}
+.divOptionsPage {
+    width: 100%;
+    font-size: large;
+}
+.divOptions {
+}
+.OptionsButton {
+    color:#050;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    background-color:#fed;
+    border: 1px;
+    border-style: groove;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    font-size: medium;
+    text-align: center;
+    float: right;
+}
+.lblCheckbox {
+    color:#850;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    vertical-align: middle;
+    font-size: medium;
+}
+.linkOptions {
+    color:#850;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    vertical-align: middle;
+    font-size: small;
+    float: right;
+}
+.Footer 
+{
+    font-size: small;
+}
+.tdLabel
+{
+    width: 5em;
+}
+.lblSubmit {
+    color:#850;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    vertical-align: middle;
+    font-size: small;
+}
+.googleForm 
+{
+    border: 1px solid;
+}
+.StatsPage
+{
+    color:#850;
+    font-size: small;
+}
+.statsTable
+{
+    padding-top: 0px;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+}
+.statsHeader
+{
+    font-weight: bold;
+    border-style: none none solid dotted;
+    padding-left: 3px;
+}
+.statsSection
+{
+    font-weight: bold;
+    border-style: none none solid dotted;
+    border-width: 1px;
+    border-color: inherit;
+}
+.statsItem
+{
+}
+.statsData
+{
+    border-style: none none dotted dotted;
+    padding-left: 2px;
+    padding-right: 1px;
+    text-align: right;
+}
+.linksTable
+{
+    border-style: none none none none;
+    border-width: 0px;
+    text-align: justify;
+}
+
+
+.dataPage
+{
+    font-size: small;
+}
+.dataTable
+{
+    padding-top: 0px;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    text-align: justify;
+    width: 100%;
+}
+.dataHeader
+{
+    font-weight: bold;
+}
+.dataSection
+{
+    font-weight: bold;
+    border-style: none none solid dotted;
+    border-width: 1px;
+    border-color: inherit;
+}
+.dataRow
+{
+}
+.dataRow:hover
+{
+    background-color:#FFC800;
+}
+.dataCellState
+{
+    border-style: none none dotted dotted;
+    padding-left: 2px;
+    padding-right: 1px;
+    font-weight: bold;
+}
+.dataCellIcons
+{
+    border-style: none none dotted dotted;
+    padding-left: 2px;
+    padding-right: 1px;
+    display: none;
+}
+.dataCellIcons:hover
+{
+    background-color:#FFC800;
+    border-style: none none dotted dotted;
+    padding-left: 2px;
+    padding-right: 1px;
+    display:;
+}
+.dataCell
+{
+    border-style: none none dotted dotted;
+    padding-left: 2px;
+    padding-right: 1px;
+}
+
+.dataCellStateFailed
+{
+    border-style: none none dotted dotted;
+    padding-left: 2px;
+    padding-right: 1px;
+    font-weight: bold;
+    color: #FF0000; 
+}
+
+.dataCellFailed
+{ 
+    border-style: none none dotted dotted;
+    padding-left: 2px;
+    padding-right: 1px;
+    font-weight: bold; 
+    color: #FF0000; 
+}
+.toggleONleft {
+    font-family: ‘DroidSans-Bold’;
+    text-transform:uppercase;
+    padding: 0px 8px 0px 12px;
+    -moz-border-radius-topleft: 0.5em;
+    -moz-border-radius-bottomleft: 0.5em;
+    -webkit-border-top-left-radius: 0.5em;
+    -webkit-border-bottom-left-radius: 0.5em;
+    border-top: 4px solid #aaa;
+    border-left: 4px solid #ccc;
+    border-right: 4px solid #ccc;
+    border-bottom: 4px solid #ccc;
+    -moz-border-top-colors:#aaa #bbb #ccc #ddd;
+    -moz-border-left-colors:#aaa #bbb #ccc #ddd;
+    -moz-border-bottom-colors:#aaa #bbb #ccc #ddd;
+    -moz-border-right-colors:#aaa #bbb #ccc #ddd;
+    background-color: #ddd;
+    display: inline;
+}
+
+.toggleOFFright {
+    font-family: ‘DroidSans-Bold’;
+    text-transform:uppercase;
+    color:#414141;
+    padding: 0px 12px 0px 8px;
+    -moz-border-radius-topright: 0.5em;
+    -moz-border-radius-bottomright: 0.5em;
+    -webkit-border-top-right-radius: 0.5em;
+    -webkit-border-bottom-right-radius: 0.5em;
+    border-top: 4px solid #ccc;
+    border-left: 4px solid #ccc;
+    border-right: 4px solid #ccc;
+    border-bottom: 4px solid #aaa;
+    -moz-border-top-colors:#aaa #fff #fff #fff;
+    -moz-border-right-colors:#aaa #dedede #efefef #fafafa;
+    -moz-border-left-colors:#aaa #dedede #efefef #fafafa;
+    -moz-border-bottom-colors:#aaa #dedede #efefef #fafafa;
+    background-color: #fff;
+    display: inline;
+}

@@ -1,0 +1,231 @@
+﻿html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,table,caption,tbody,tfoot,thead,tr,th,td,form,fieldset,embed,object,applet
+{
+    margin:0;
+    padding:0;
+    border:0;
+}
+body 
+{
+    background-color:#fed;
+    border: 0px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 337px;
+    font: 12pt Helvetica, sans-serif;
+    padding-left: 2px;
+    padding-top: 1px;
+    padding-right: 1px;
+}
+.divPage {
+    width: 100%;
+    font-size: large;
+    margin-left: 0;
+    margin-right: 0;
+}
+label {
+    width: 1em;
+}
+.Header {
+        color:#850;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        vertical-align: middle;
+        text-align: center;
+        font-size: x-large;
+}
+.divEntry 
+{
+    background-color:#fed;
+    display: none;
+}
+.divEntryActive 
+{
+}
+.divEntryHidden
+{
+    background-color:#fed;
+    display: none;
+}
+.PageTitle {
+    color:#850;
+    font: bold 80% 'trebuchet ms',helvetica,sans-serif;
+    font-size: xx-large;
+    text-align: center;
+}
+.divResponseFrame
+{
+    font: 'trebuchet ms',helvetica,sans-serif;
+    font-size: x-small;
+}
+.btn {
+        color: #050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 3em;
+        height: 2em;
+        font-size: x-large;
+}
+.btnText {
+        color:#050;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 2em;
+        font-size: large;
+}
+.btnType {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 5em;
+        height: 100%;
+        font-size: x-large;
+        text-align: center;
+}
+.btnTypeDepressed {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 4em;
+        height: 100%;
+        font-size: x-large;
+        text-align: center;
+    }
+.Title {
+        color:#850;
+        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+        width: 4em;
+        height: 2em;
+        vertical-align: middle;
+        font-size: x-large;
+}
+.lblCheckbox {
+        color:#850;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        width: 4em;
+        height: 2em;
+        vertical-align: middle;
+        font-size: medium;
+}
+.Textbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 7em;
+        height: 1em;
+        font-size: x-large;
+        text-align: center;
+}
+.NoteTextbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 8em;
+        height: 1em;
+        font-size: x-large;
+        text-align: center;
+}
+.TimeTextbox {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 3em;
+        height: 1em;
+        font-size: x-large;
+        text-align: center;
+}
+.TimeButton {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#fed;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        width: 1.5em;
+        height: 1em;
+        font-size: large;
+        text-align: center;
+}
+.TimeButtonDepressed {
+        color:#050;
+        font: 'trebuchet ms',helvetica,sans-serif;
+        background-color:#FFC800;
+        border: 1px solid;
+        border-color: #696 #363 #363 #696;
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+        width: 1.5em;
+        height: 1em;
+        font-size: large;
+        text-align: center;
+}
+.TypeImage
+{
+    width: 50px;
+    height: 50px;
+    background-color:#FFC800;
+}
+.TypeImageActive
+{
+    width: 50px;
+    height: 50px;
+    border: 3px inset;
+    border-color: #696 #363 #363 #696;
+    background-color:#FFC800;
+}
+.divOptionsPage {
+    width: 100%;
+    font-size: large;
+    margin-left: 0;
+    margin-right: 0;
+}
+.divOptions {
+}
+.OptionsButton {
+    color:#050;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    background-color:#fed;
+    border: 1px;
+    border-style: groove;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    font-size: medium;
+    text-align: center;
+    float: right;
+}
+.lblCheckbox {
+    color:#850;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    vertical-align: middle;
+    font-size: medium;
+}
+.linkOptions {
+    color:#850;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    vertical-align: middle;
+    font-size: small;
+    float: right;
+}
+.Footer 
+{
+    font-size: xx-small;
+}

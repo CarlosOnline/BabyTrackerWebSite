@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Baby Tracker Test</title>
+    <link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
+    <style type="text/css">
+        body
+        {
+            width: 95%;
+            font-size: small;
+        }
+        iframe
+        {
+            font-size: small;
+        }
+    </style>
+</head>
+<body onload="LoadBody();">
+<span style="float:right; padding-right:0px">
+<div><input type="checkbox" id="chk1" value="verbose" checked/><label for="chkVerbose">verbose</label></div>
+<div><input type="checkbox" id="chk2" name="xml_view" value="xml_view"/><label for="chkXml">xml_view</label></div>
+<div><input type="checkbox" id="chk3" value="no_xml"/><label for="chkNoXml">no_xml</label></div>
+<div><input type="checkbox" id="chk4" value="no_sql"/><label for="chkNoSql">no_sql</label></div>
+<a target="_blank" href="http://www.joyofplaying.com/BabyTracker/output/">output directory</a><br />
+<a target="_blank" href="http://www.joyofplaying.com/BabyTracker/output/BabyTracker.history.htm">history file</a><br />
+</span>
+<span style="float:right;">
+<label for="txtExtraValue">extra value</label><input type="text" value="" id="txtExtraValue"/><br />
+<label for="txtOutputFile">Output File</label><input type="text" value="" id="txtOutputFile"/><br />
+</span>
+<span width="80%" >
+    <span style='float:none'>
+        <input type="button" onclick="OnTestClick(this);" value="setup_user_table" />
+        <input type="button" onclick="OnTestClick(this);" value="sqldump" />
+        <input type="button" onclick="OnTestExClick(this);" value="run" />
+        <input type="button" onclick="OnTestExClick(this);" value="runall" />
+        <input type="button" onclick="OnTestExClick(this);" value="reset_and_run" />
+        <input type="button" onclick="OnTestExClick(this);" value="run.background" />
+        <input type="button" onclick="OnTestClick(this);" value="stop_all" />
+        <input type="button" onclick="OnTestClick(this);" value="dump_user_table" />
+        <input type="button" onclick="OnTestClick(this);" value="dump_reg_table" />
+        <input type="button" onclick="OnTestClick(this);" value="stats_sql" />
+        <input type="button" onclick="OnTestClick(this);" value="stats_counts" />
+        <input type="button" onclick="OnTestClick(this);" value="stats_sql_col&stats_item=total" />
+        <input type="button" onclick="OnTestClick(this);" value="get_sheet_row" />
+    </span>
+    <span style='float:none'>
+        <input type="button" onclick="OnTestClick(this);" value="get_errors" />
+        <input type="button" onclick="OnTestClick(this);" value="reset_errors" />
+        <input type="button" onclick="OnTestClick(this);" value="touch_all" />
+    </span>
+    <span style='float:right'>
+        <input type="button" onclick="OnDangerousClick(this);" value="delete_all_output_files" /><br />
+        <input type="button" onclick="OnDangerousClick(this);" value="delete_log_table" /><br />
+        <input type="button" onclick="OnDangerousClick(this);" value="delete_log_table_all" /><br />
+    </span>
+    <span style='float:left'>
+        <input type="button" onclick="TestAddClick(this, 1);" value="TestAdd" />
+        <input type="button" onclick="TestUpdateClick(this, 1);" value="TestUpdate" />
+        <input type="button" onclick="TestDeleteClick(this, 1);" value="TestDelete" />
+        <input type="button" onclick="OnTestClick(this);" value="sqladd" />
+        <input type="button" onclick="OnTestClick(this);" value="sqladdex" />
+    </span>
+</span>
+<br style='clear:both'/>
+<span>
+    <label id="lblUrl">Url</label>
+    <span style='float:right'>
+        <input type="button" onclick="OnRunSql(this);" value="run_sql_file" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="setup_system_tables" /><br />
+        <input type="button" onclick="OnDangerousClick(this);" value="delete_system_tables" /><br />
+        <input type="button" onclick="OnDangerousClick(this);" value="delete_reg_table" /><br />
+        <input type="button" onclick="OnTestExClick(this);" value="runex" /><br />
+        <input type="button" onclick="OnTestExClick(this);" value="run.id" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="reset_key_errors" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="stats" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="stats_col&col=F" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="stats_col&col=B&col_end=F" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="sqlsetup" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="sqlsetup" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="spreadsheetsetup" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="spreadsheetadd" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="lock_setup" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="lock_aquire" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="lock_release" /><br />
+        <input type="button" onclick="OnTestClick(this);" value="force_lock_release" /><br />
+        <input type="button" onclick="OnTestExClick(this);" value="zend_request_token" /><br />
+    </span>
+    <div id="divFrame"><iframe src="" id="frm" width="80%" height='500px'>Click a button</iframe></div>
+</span>
+
+<script type="text/javascript" language="javascript" src="BabyTracker.Utility.js""></script>
+<script type="text/javascript" language="javascript">
+
+    function LoadBody(){
+        document.getElementById("frm").innerHTML = "";
+        document.getElementById("frm").src = "";
+        document.getElementById("lblUrl").innerHTML = "";
+    }
+
+    function randomNumber(max) {
+        var randomnumber = Math.floor(Math.random() * (max + 1))
+        return randomnumber;
+    }
+
+    function GetCheckboxOptions() {
+        var options = "";
+        var idx = 0;
+        for (idx = 1; idx <= 4; idx++) {
+            var Obj = document.getElementById("chk" + idx);
+            if (Obj.checked)
+                options += "&" + Obj.value + "=1";
+        }
+
+        return options;
+    }
+
+    function OutputFileOption(Obj) {
+
+    /*
+        if (Obj && Obj.value) {
+            var name = Obj.value;
+            var amp = name.indexOf("&");
+            if (amp != -1)
+                name = name.substr(0, amp);
+
+            var ext = ".htm";
+            if (document.getElementsByName("xml_view").checked)
+                ext = ".xml";
+
+            return "&output_file=" + name + ext;
+        }
+    */
+
+        var ofile = document.getElementById("txtOutputFile").value;
+        if (ofile) {
+            url = "http://www.joyofplaying.com/BabyTracker/output/" + ofile;
+        }
+
+        return "";
+    }
+
+    function OnDeleteclick(Obj) {
+        var value = Obj.value;
+        Obj.value = "delete_file&filename=output.run.htm";
+        OnTestClick(Obj);
+        Obj.value = value;
+    }
+
+    function OnDangerousClick(Obj) {
+
+        var r = confirm("Are you sure you want to: " + Obj.value + "?");
+        if (r != true) {
+            return;
+        }
+
+        alert("about to " + Obj.value);
+
+        r = confirm("Final Warning: Are you sure you want to: " + Obj.value + "?");
+        if (r != true) {
+            return;
+        }
+
+        var url = "http://www.joyofplaying.com/BabyTracker/BabyTracker.php?testaction=" + Obj.value;
+        url += GetCheckboxOptions();
+        url += OutputFileOption(Obj);
+        url += "&ignore=" + randomNumber(200000);
+
+        document.title = Obj.value;
+        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("frm").src = url;
+    }
+
+    function OnTestClick(Obj) {
+
+        var url = "http://www.joyofplaying.com/BabyTracker/BabyTracker.php?testaction=" + Obj.value;
+        url += GetCheckboxOptions();
+        url += OutputFileOption(Obj);
+        url += "&ignore=" + randomNumber(200000);
+
+        document.title = Obj.value;
+        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("frm").src = url;
+    }
+
+    function OnTestExClick(Obj) {
+
+        var url = "http://www.joyofplaying.com/BabyTracker/BabyTracker.php?testaction=" + Obj.value;
+        url += GetCheckboxOptions();
+        url += "&ignore=" + randomNumber(200000);
+        url += OutputFileOption(Obj);
+
+        document.title = Obj.value;
+        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
+    }
+
+    function Type(idx) {
+        var rgTypes = ["Breast", "Bottle", "Pump", "Wet Diaper", "Poopy Diaper"];
+        return(rgTypes[idx]);
+    }
+
+    function TestAddClick(Obj, Max) {
+
+        var idx=0;
+        for (idx = 0; idx < Max; idx++)
+        {
+            var url = "http://www.joyofplaying.com/BabyTracker/BabyTracker.php?testaction=post&postaction=addrow";
+            url += GetCheckboxOptions();
+            url += OutputFileOption(Obj);
+            url += "&ignore=" + randomNumber(200000);
+
+            url += "&date=" + DateString();
+            url += "&time=" + TimeString();
+            url += "&type=" + Type(randomNumber(4));
+            url += "&amount=" + randomNumber(200);
+
+            document.title = Obj.value;
+            document.getElementById("lblUrl").innerHTML = url;
+            document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
+        }
+    }
+
+    function TestUpdateClick(Obj, Max) {
+
+        var idx=0;
+        for (idx = 0; idx < Max; idx++)
+        {
+            var url = "http://www.joyofplaying.com/BabyTracker/BabyTracker.php?testaction=post&postaction=updaterow";
+            url += GetCheckboxOptions();
+            url += OutputFileOption(Obj);
+            url += "&ignore=" + randomNumber(200000);
+
+            url += "&date=" + DateString();
+            url += "&time=" + TimeString();
+            url += "&type=" + Type(randomNumber(4));
+            url += "&amount=" + randomNumber(200);
+            url += "&sqlrowid=" + document.getElementById("txtExtraValue").value;
+
+            document.title = Obj.value;
+            document.getElementById("lblUrl").innerHTML = url;
+            document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
+        }
+    }
+
+    function TestDeleteClick(Obj, Max) {
+
+        var idx=0;
+        for (idx = 0; idx < Max; idx++)
+        {
+            var url = "http://www.joyofplaying.com/BabyTracker/BabyTracker.php?testaction=post&postaction=deleterow";
+            url += GetCheckboxOptions();
+            url += OutputFileOption(Obj);
+            url += "&ignore=" + randomNumber(200000);
+
+            url += "&sqlrowid=" + document.getElementById("txtExtraValue").value;
+
+            document.title = Obj.value;
+            document.getElementById("lblUrl").innerHTML = url;
+            document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
+        }
+    }
+
+    function OnRunSql(Obj) {
+
+        var url = "http://www.joyofplaying.com/BabyTracker/BabyTracker.php?testaction=" + Obj.value;
+        url += GetCheckboxOptions();
+        var file = document.getElementById("txtExtraValue").value;
+        if (file) {
+            url += "&filename=" + file;
+        }
+        url += "&ignore=" + randomNumber(200000);
+
+        document.title = Obj.value;
+        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("frm").src = url;
+    }
+
+</script>
+</body>
+</html>

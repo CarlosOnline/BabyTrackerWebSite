@@ -1,0 +1,450 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
+<html>
+<head>
+<link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
+<link href='table.css' type='text/css' rel='stylesheet'/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+<meta name = "viewport" content = "width = device-width"/>
+<title>Baby Tracker</title>
+<style>
+	body {
+		width: 100%;
+	}
+</style>
+</head>
+<body onload="LoadBody()" dir="ltr">
+
+<div id="divWholePage" class="divPage">
+<h2 class="Header" id="NameHeader">Baby Tracker</h2>
+
+<div id="divOptionsPage" class="divOptionsPage" style="display:none;">
+    <div class="divOptions" id="divOptions">
+        <span style="float:right; border:2px outset;">
+        <input type="button" class="OptionsButton" id="RunSetup" onclick="RunSetup()" value="Run Setup" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        <input type="button" class="OptionsButton" id="Show Cookies" onclick="alert(document.cookie);" value="Show Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        <input type="button" class="OptionsButton" id="EraseData" onclick="EraseData_Click()" value="Clear Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        </span>
+        <label class="lblCheckbox" for="checkResetSavedData" ><input type="checkbox" id="checkResetSavedData" value="Reset Saved Data"/>Clear Saved Data</label>
+        <br />
+        <label class="lblCheckbox" for="checkSavePreviousData" ><input type="checkbox" id="checkSavePreviousData" checked="checked" value="SavePreviousData" onclick="SavePreviousData_Click(this)"/>Save Previous Data</label>
+        <br />
+        <label class="lblCheckbox" for="checkTestMode" ><input type="checkbox" id="checkTestMode" value="testmode"/>Test Mode</label>
+        <br />
+        <label class="lblCheckbox" for="checkDebugMode" ><input type="checkbox" id="checkDebugMode" value="debugmode"/>Debug</label>
+        <br />
+        <br />
+        <br />
+        <br style="clear:both;"/>
+        <input type="button" class="OptionsButton" onclick="OptionsDone_Click();" value="Done"/>
+        <br style="clear:both;"/>
+        <br />
+        <br />
+    </div>
+</div>
+<div id="divPage">
+    <span id="spanLinks" class="linkOptions">
+    </span>
+
+    <div id="divTypes">
+        <img title="Breast"  class="TypeImage" id="imgNursing" src="images/Nursing.old.png" alt="Breast" onclick="BtnClick(this);" />
+        <img title="Bottle" class="TypeImage" id="imgBottle" src="images/Bottle2.free.png" alt="Bottle" onclick="BtnClick(this);" />
+        <img title="Pump"   class="TypeImage" id="imgPump" src="images/Pump.free.png" alt="Pump" onclick="BtnClick(this);" />
+        <img title="Wet Diaper" class="TypeImage" id="imgWetDiaper" src="images/Wet2.Diaper.free.png" alt="Wet" onclick="BtnClick(this);" />
+        <img title="Poopy Diaper" class="TypeImage" id="imgPoopDiaper" src="images/Poop2.Diaper.free.png" alt="Poop" onclick="BtnClick(this);" />
+        <img title="Wait" id="imgBusy" src="images/wait30trans.gif" alt="Wait" style="display:none;"/>
+        <label class="radioLabel" style="font-size: small;" id="lblTypeName"></label>
+    </div>
+    <div id="divEntryForm" class="divEntryForm">
+        <form action="javascript:void(0);" id="ss-form">
+            <table>
+                <tr id="divDateEntry" valign="bottom">
+                    <div class="divEntry" id="divDateEntry2">
+                        <td class="tdLabel" valign="bottom">
+                            <label class="lblEntry" for="DateEntry">Date</label>
+                        </td>
+                        <td valign="bottom">
+                            <input class="Textbox" type="text" name="DateEntry" value="" id="DateEntry" onclick="BtnClick(this);" onfocus="OnFocus(this);"  onchange="DateEntryChange(this);"/>
+                            <label id="DayOfWeek" class="radioLabel"></label>
+                        </td>
+                    </div>
+                </tr>
+                <tr id="divTimeEntry" valign="top">
+                        <td class="tdLabel" valign="top">
+                        <label class="lblEntry" for="TimeEntry">Time</label>
+                        </td>
+                        <td valign="top">
+                        <input class="Textbox" type="text" name="TimeEntry" value="" id="TimeEntry" onclick="BtnClick(this);" onfocus="OnFocus(this);"  />
+                        <div class="divEntry" style="float:right; width: 7em; vertical-align: top;" id="divAMPM">
+                            <input title="AM" type="radio" name="AMPMGroup" value="AM" class="radioType" id="btnAM" onclick="BtnClick(this);" onfocus="OnFocus(this);" style="vertical-align: top"/>
+                            <label id="lblAM" class="radioLabel" for="btnAM" style="vertical-align: top">AM</label>
+                            <input title="PM" type="radio" name="AMPMGroup" value="PM" class="radioType" id="btnPM" onclick="BtnClick(this);" onfocus="OnFocus(this);" style="vertical-align: top"/>
+                            <label id="lblPM" class="radioLabel" for="btnPM" style="vertical-align: top">PM</label>
+                        </div>
+                        </td>
+                </tr>
+                <tr id="divTypeEntry" valign="bottom">
+                    <td colspan="2">
+                    <div class="divEntry" id="divTypeEntry2">
+                    <ul class="ss-choices">
+                        <label id="lblBreast" class="radioLabel"><input title="Breast" type="radio" name="TypeGroup" value="Breast"       class="radioType" id="typeBreast" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Breast</label>
+                        <label id="lblBottle" class="radioLabel"><input title="Bottle" type="radio" name="TypeGroup" value="Bottle"       class="radioType" id="typeBottle" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Bottle</label>
+                        <label id="lblPump" class="radioLabel"><input title="Pump" type="radio" name="TypeGroup" value="Pump"         class="radioType" id="typePump" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Pump</label>
+                        <label id="lblWet" class="radioLabel"><input title="Wet Diaper" type="radio" name="TypeGroup" value="Wet Diaper"   class="radioType" id="typeWetDiaper" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Wet</label>
+                        <label id="lblPoopy" class="radioLabel"><input title="Poopy Diaper" type="radio" name="TypeGroup" value="Poopy Diaper" class="radioType" id="typePoopyDiaper" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Poopy</label>
+                    </ul>
+                    </div>
+                    </td>
+                </tr>
+                <tr id="divAmountEntry" valign="bottom">
+                    <div class="divEntry" >
+                        <td class="tdLabel">
+                        <label class="lblEntry" for="AmountEntry">Amount</label>
+                        </td>
+                        <td>
+                        <input class="Textbox" type="text" name="AmountEntry" value="" id="AmountEntry" onclick="BtnClick(this);" onfocus="OnFocus(this);" />
+                        </td>
+                    </div>
+                </tr>
+                <tr id="divDescriptionEntry" valign="bottom">
+                <div class="divEntry" >
+                    <td class="tdLabel">
+                    <label class="lblEntry" for="DescriptionEntry">Note</label>
+                    </td>
+                    <td>
+                    <input class="NoteTextbox" type="text" name="DescriptionEntry" value="" id="DescriptionEntry" onclick="BtnClick(this);" onfocus="OnFocus(this);"/>
+                    </td>
+                </div>
+                </tr>
+            </table>
+            <input type="submit" name="submit" id="btnSubmit" value="Submit" class="btnSubmit" onclick="BtnClick(this);" onfocus="OnFocus(this);"/>
+            <input type="button" name="cancel" id="btnCancel" value="Cancel" class="btnSubmit" onclick="BtnClick(this);" onfocus="OnFocus(this);" style="display:none;"/>
+        </form>
+    </div>
+
+    <label class="lblSubmit" id="lblSubmitOutput"></label>
+</div>
+<div id="StatsPageContainer" class="StatsPage" style="display:none;">
+    <span id="StatsPage">
+        <br /><br /><br /><br /><br /><br /><br />
+        Please Wait ...<br />
+        <br /><br /><br /><br /><br /><br /><br />
+    </span>
+</div>
+<div>
+    <table class="linksTable" width="100%">
+        <tr>
+            <td id="tblSheet1" style="display:none;">
+                <a target="Baby Tracker Stats" id="aShowStatsPageTop" href="BabyTrackerStats.htm" title="Show/Hide Stats View">Stats</a>
+            </td>
+            <td id="tblSheet2" style="display:none;">
+                <a id="aRefreshStatsPageTop" class="StatsPage" style="display:none;" href="javascript:RefreshStatsPage();" title="Refresh Stats">Refresh Stats</a>
+            </td>
+            <td id="tblSheet3" style="display:none;">
+                <a id="aSpreadsheet" href="BabyTrackerSetup.htm" title="Stats" target="_blank">Spreadsheet</a><br />
+            </td>
+            <td align=right>
+                <a style="float:right;" id="aOptions" href="javascript:ShowOptions();" title="Options">Options</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="divDataTable" class="dataPage" style="display:none">
+    <table id="dataTable" class="dataTable">
+        <tr>
+            <th class="dataHeader"> </th>
+            <th class="dataHeader">Date</th>
+            <th class="dataHeader">Time</th>
+            <th class="dataHeader">Type</th>
+            <th class="dataHeader">Amount</th>
+            <th class="dataHeader">Description</th>
+            <th class="dataHeader"> </th>
+        </tr>
+        <!--NewRow-->
+    </table>
+</div>
+<input id="btnTestSubmit" type="button" class="OptionsButton" onclick="TestSubmit_Click();" value="Test Submit" style="display:none"/>
+<div id="divFooter" class="Footer">
+<small>
+    <a href="www.JoyOfPlaying.com" style="float:right">Joy of Playing Productions</a>
+</small>
+</div>
+<br style="clear:both;" />
+<span id="frameDebug" style="font-size:small; display:none;"><textarea id="txtDebug" rows="40" cols="500" style="width:100%;" ></textarea></span>
+<script type="text/javascript" language="javascript" src="BabyTracker.Utility.js""></script>
+<script type="text/javascript" language="javascript" src="BabyTracker.Common.js""></script>
+<script type="text/javascript">
+    var g_IPhoneVersion = false;
+    var g_UpdateRowID = null;
+    var g_selected = null;
+    var g_selectedIndex = 0;
+    var g_EntryArray = new Array();
+    var g_DivEntryArray = new Array();
+    var g_EntryForm = null;
+
+    var g_RadioTypeArray = new Array();
+    var g_BtnTypeArray = new Array();
+    var g_selectedType = null;
+    var g_Submitted = 0;
+    var g_Entered = 0;
+
+    var g_verbose = false;
+
+    function Enum() { }
+    Enum.EntryType = { Date: 0, Time: 1, Amount: 2, DaiperType: 3, Note: 4 };
+
+    function LoadBody() {
+
+        g_EntryForm = document.getElementById('ss-form');
+
+        // Init Entry array for navigation
+        g_EntryArray[0] = g_EntryForm.DateEntry;
+        g_EntryArray[1] = g_EntryForm.TimeEntry;
+        g_EntryArray[2] = g_EntryForm.AmountEntry;
+        g_EntryArray[3] = g_EntryForm.DescriptionEntry;
+
+        g_DivEntryArray[0] = document.getElementById('divDateEntry');
+        g_DivEntryArray[1] = document.getElementById('divTimeEntry');
+        g_DivEntryArray[2] = document.getElementById('divAmountEntry');
+        g_DivEntryArray[3] = document.getElementById('divDescriptionEntry');
+
+        g_RadioTypeArray[0] = document.getElementById('typeBreast');
+        g_RadioTypeArray[1] = document.getElementById('typeBottle');
+        g_RadioTypeArray[2] = document.getElementById('typePump');
+        g_RadioTypeArray[3] = document.getElementById('typeWetDiaper');
+        g_RadioTypeArray[4] = document.getElementById('typePoopyDiaper');
+
+        g_BtnTypeArray[0] = document.getElementById('imgNursing');
+        g_BtnTypeArray[1] = document.getElementById('imgBottle');
+        g_BtnTypeArray[2] = document.getElementById('imgPump');
+        g_BtnTypeArray[3] = document.getElementById('imgWetDiaper');
+        g_BtnTypeArray[4] = document.getElementById('imgPoopDiaper');
+
+        g_selectedType = g_BtnTypeArray[0];
+        g_selected = g_EntryArray[0];
+
+        var name = readCookie("BabyTracker_name");
+        if (name != "") {
+            document.title = name + " Tracker";
+            document.getElementById("NameHeader").innerHTML = name + " Tracker";
+        }
+        LoadFromCookies();
+
+        var key = readCookie("BabyTracker_key");
+        if (key) {
+            var anchor = document.getElementById("aSpreadsheet");
+            anchor.href = "https://spreadsheets.google.com/ccc?key=" + key;
+
+            document.getElementById("tblSheet1").style.display = "";
+            document.getElementById("tblSheet2").style.display = "";
+            document.getElementById("tblSheet3").style.display = "";
+
+            if (name)
+                anchor.target = "Online " + document.title;
+        }
+
+        SelectImageType(g_selectedType);
+        g_selected.focus();
+        g_selected.select();
+        SelectEntry("");
+
+        //RefreshStatsPage();
+        PostAction("runall", 1);
+
+        if (document.getElementById("checkTestMode").checked == true)
+            document.getElementById("btnTestSubmit").style.display = "none";
+    }
+
+    function SetAMPM(ampm)
+    {
+        if (ampm == "")
+            ampm = CurrentAMPM();
+        if (g_EntryForm.btnAM.value == ampm) g_EntryForm.btnAM.checked = true;
+        if (g_EntryForm.btnPM.value == ampm) g_EntryForm.btnPM.checked = true;
+    }
+
+function BtnClick(Button) {
+
+    var handled = BtnClick_Common(Button);
+
+    if (!g_selected) {
+        alert("No selected object");
+        return;
+    }
+
+    if (!handled) {
+        switch (Button.value) {
+
+            default:
+                alert("Unknown button " + Button.value + " " + Button.id);
+                break;
+        }
+    }
+}
+
+    var g_PreviousFocus = null;
+    function OnFocusLabel(Obj) {
+        if (g_PreviousFocus != null && g_PreviousFocus != Obj)
+            g_PreviousFocus.className = "radioLabel";
+
+        var name = Obj.value;
+        var idxSpace = name.indexOf(" ");
+        if (idxSpace != -1)
+            name = name.substr(0, idxSpace);
+
+        g_PreviousFocus = document.getElementById("lbl" + name);
+        g_PreviousFocus.className = "radioLabelFocus";
+    }
+
+    function OnFocus(Obj) {
+    /*
+        if (g_PreviousFocus != null && g_PreviousFocus != Obj)
+            g_PreviousFocus.className = "radioType";
+
+        g_PreviousFocus = Obj;
+        g_PreviousFocus.className = "radioTypeFocus";
+    */
+
+        switch (Obj.id) {
+            case "btnAM":
+            case "btnPM":
+                document.getElementById("divAMPM").className = "divRadioEntryActive";
+                document.getElementById("divTypeEntry").className = "divEntry";
+                break;
+
+            case "typeBreast":
+            case "typeBottle":
+            case "typePump":
+            case "typeWetDiaper":
+            case "typePoopyDiaper":
+                document.getElementById("divAMPM").className = "divEntry";
+                document.getElementById("divTypeEntry").className = "divRadioEntryActive";
+                break;
+
+            default:
+                document.getElementById("divAMPM").className = "divEntry";
+                document.getElementById("divTypeEntry").className = "divEntry";
+                break;
+        }
+    }
+
+    function SetTypeButtonStyle(Selected, TypeButton) {
+        TypeButton.className = (TypeButton.value == Selected) ? "btnTypeDepressed" : "btnType";
+    }
+
+    function SetButtonStates() {
+
+        document.getElementById("btnBack").disabled = (g_selected.value.length > 0) ? false : true;
+        document.getElementById("btnPrev").disabled = (g_selectedIndex == 0) ? true : false;
+        document.getElementById("btnNext").disabled = (g_selectedIndex >= g_EntryArray.length - 1) ? true : false;
+
+        if (GetAmPm() == "")
+            g_EntryForm.btnAM.checked = true;
+
+        switch (TypeName(g_selectedType)) {
+            case "Wet Diaper":
+            case "Poopy Diaper":
+                document.getElementById("divAmountEntry").className = "divEntryHidden";
+                break;
+            default:
+                document.getElementById("divAmountEntry").className = "divEntry";
+                break;
+        }
+
+        switch (EntryType(g_selected)) {
+
+            case "Date":
+                document.getElementById("btnSlash").disabled = false;
+                document.getElementById("btnColon").disabled = true;
+                g_EntryForm.btnAM.disabled = true;
+                g_EntryForm.btnPM.disabled = true;
+                break;
+
+            case "Time":
+                document.getElementById("btnSlash").disabled = true;
+                document.getElementById("btnColon").disabled = false;
+                g_EntryForm.btnAM.disabled = false;
+                g_EntryForm.btnPM.disabled = false;
+                break;
+
+            case "Amount":
+                document.getElementById("btnSlash").disabled = true;
+                document.getElementById("btnColon").disabled = true;
+                g_EntryForm.btnAM.disabled = true;
+                g_EntryForm.btnPM.disabled = true;
+                break;
+
+            default:
+                document.getElementById("btnSlash").disabled = true;
+                document.getElementById("btnColon").disabled = true;
+                g_EntryForm.btnAM.disabled = true;
+                g_EntryForm.btnPM.disabled = true;
+                break;
+        }
+
+        SelectEntry("");
+    }
+
+    function SelectEntry(Direction) {
+
+        if (g_selected == null) {
+            alert("missing selected object");
+            return;
+        }
+
+        var previous = g_selected;
+        switch (Direction) {
+            case "prev":
+                if (g_selectedIndex > 0) {
+                    g_selectedIndex--;
+                    if (EntryTypeFromIdx(g_selectedIndex) == "Amount" && !AmountValidForType())
+                        g_selectedIndex--;
+                }
+                break;
+
+            case "next":
+                if (g_selectedIndex < g_EntryArray.length - 1) {
+
+                    g_selectedIndex++;
+                    if (EntryTypeFromIdx(g_selectedIndex) == "Amount" && !AmountValidForType())
+                        g_selectedIndex++;
+                }
+                break;
+
+            default:
+                previous = g_EntryArray[g_selectedIndex];
+                var desired = document.getElementById(Direction);
+                if (desired)
+                    g_selectedIndex = EntryIdx(desired);
+                else
+                    g_selectedIndex = EntryIdx(g_selected);
+                if (EntryTypeFromIdx(g_selectedIndex) == "Amount" && !AmountValidForType())
+                    g_selectedIndex++;
+                break;
+        }
+
+        g_selected = g_EntryArray[g_selectedIndex];
+
+        if (g_selected != previous) {
+            g_DivEntryArray[EntryIdx(previous)].className = "divEntry";
+            g_DivEntryArray[EntryIdx(previous)].style.display = "none";
+        }
+
+        g_DivEntryArray[g_selectedIndex].className = "divEntryActive";
+        g_DivEntryArray[g_selectedIndex].style.display = "";
+        g_selected.focus();
+        g_selected.select();
+
+        /*
+        var msg = "SelectEntry() Direction = " + Direction + " <br/>";
+        msg += "Selected = " + EntryTypeFromIdx(g_selectedIndex) + "<br/>";
+        msg += "g_selectedIndex = " + g_selectedIndex + "<br/>";
+        msg += "g_Selected = " + g_selected.id + "<br/>";
+        DebugMsg("SelectEntry", msg);
+        */
+    }
+
+</script>
+
+</div> <!--divWholePage-->
+</body>
+</html>

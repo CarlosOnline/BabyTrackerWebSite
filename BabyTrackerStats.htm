@@ -1,0 +1,218 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
+<html>
+<head>
+<link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
+<link href='table.css' type='text/css' rel='stylesheet'/>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+<meta name = "viewport" content = "width = device-width"/>
+<style type='text/css'>
+        body
+        {
+            width: 95%;
+            font-size: small;
+        }
+        iframe
+        {
+            width: 95%;
+            height: 500px;
+            font-size: small;
+        }
+</style>
+<title>Baby Tracker Stats</title>
+</head>
+<body onload="LoadBody()" dir="ltr">
+
+<div id="divWholePage" class="divPage">
+<h2 class="Header" id="NameHeader">Baby Tracker Stats</h2>
+
+<div id="divOptionsPage" class="divOptionsPage" style="display:none;">
+    <div class="divOptions" id="divOptions">
+        <span style="float:right">
+        <input type="button" class="OptionsButton" id="Show Cookies" onclick="alert(document.cookie);" value="Show Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        </span>
+        <label class="lblCheckbox" for="checkTestMode" ><input type="checkbox" id="checkTestMode" value="testmode"/>Test Mode</label>
+        <br />
+        <label class="lblCheckbox" for="checkDebugMode" ><input type="checkbox" id="checkDebugMode" value="debugmode"/>Debug</label>
+        <br />
+        <input type="button" class="OptionsButton" onclick="OptionsDone_Click();" value="Done"/>
+        <br style="clear:both"/>
+    </div>
+</div>
+<div id="divPage">
+<div id="StatsPageContainer" class="StatsPage" >
+    <iframe src="" id="StatsPage">
+        <br /><br /><br /><br /><br /><br /><br />
+        Please Wait ...<br />
+        <br /><br /><br /><br /><br /><br /><br />
+    </iframe>
+</div>
+<div>
+    <table class="linksTable" width="100%">
+        <tr>
+            <td id="tblSheet2">
+                <a id="aRefreshStatsPageTop" class="StatsPage" href="javascript:RefreshStatsPage();" title="Refresh Stats">Refresh Stats</a>
+            </td>
+            <td align=right>
+                <a style="float:right;" id="aOptions" href="javascript:ShowOptions();" title="Options">Options</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="divFooter" class="Footer">
+<small>
+    <a href="www.JoyOfPlaying.com" style="float:right">Joy of Playing Productions</a>
+</small>
+</div>
+<br style="clear:both;" />
+<span id="frameDebug" style="font-size:small; display:none;"><textarea id="txtDebug" rows="20" cols="100" style="width:100%;" ></textarea></span>
+<script type="text/javascript" language="javascript" src="BabyTracker.Utility.js""></script>
+<script type="text/javascript">
+    var g_verbose = false;
+
+    function LoadBody() {
+        RefreshStatsPage();
+    }
+
+    function PersistCheckboxCookie(checkbox) {
+        if (document.getElementById(checkbox).checked)
+            createCookie(checkbox, "checked");
+        else
+            createCookie(checkbox, "unchecked");
+    }
+
+    function ResetSavedData() {
+        eraseCookie("checkDebugMode");
+        eraseCookie("checkTestMode");
+    }
+
+    function PersistCookieData() {
+        PersistCheckboxCookie("checkDebugMode");
+        PersistCheckboxCookie("checkTestMode");
+    }
+
+    function LoadFromCookies() {
+
+        LoadCheckboxFromCookie("checkDebugMode", false);
+        LoadCheckboxFromCookie("checkTestMode", false);
+
+    }
+
+    var g_StatsPageRefreshIntervalId = 0;
+    var g_StatsPageRefreshTimer = 0;
+    var g_UseTimer = false;
+
+    g_RefreshStatusPending = false;
+
+    function RefreshStatsPage() {
+
+        if (g_StatsPageRefreshTimer != 0) {
+            clearTimeout(g_StatsPageRefreshTimer);
+            g_StatsPageRefreshTimer = 0;
+        }
+
+        var data = ReadCachedPostData();
+        document.getElementById("StatsPage").src = "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php?testaction=stats_sql" + data;
+
+        SetRefreshStatsPageTimer(10 * 1000);
+    }
+
+    function SetRefreshStatsPageTimer(delay) {
+        if (g_UseTimer) {
+            if (g_StatsPageRefreshTimer == 0)
+                g_StatsPageRefreshTimer = setTimeout(RefreshStatsPage, delay);
+            //DebugMsg("SetRefreshStatsPageTimer", "delay = " + delay + " timer=" + g_StatsPageRefreshTimer);
+        }
+    }
+
+    function ShowOptions() {
+        var divOptionsPage = document.getElementById('divOptionsPage');
+        var divPage = document.getElementById('divPage');
+
+        if (divOptionsPage.style.display == "none") {
+            divOptionsPage.style.display = "";
+            divPage.style.display = "none";
+        }
+        else {
+            divOptionsPage.style.display = "none";
+            divPage.style.display = "";
+        }
+    }
+
+    function OptionsDone_Click() {
+        document.getElementById('divOptionsPage').style.display = "none";
+        document.getElementById('divPage').style.display = "";
+    }
+
+    function PostRefreshStats() {
+        var key = readCookie("BabyTracker_key");
+        if (key == "")
+            return;
+
+        var data = "col=B&col_end=F";
+        data += ReadCachedPostData();
+
+        var post = new HtmlPost();
+        //DebugMsg("Post", "stats_sql?" + data);
+        post.PostSingleton("stats_sql", data, RefreshStatusCallback);
+    }
+
+    function RefreshStatusCallback(status, response, action, cookie) {
+
+        g_RefreshStatusPending = false;
+
+        var retVal = -1;
+        var oPage = document.getElementById("StatsPage");
+        if (status == 200) {
+            oPage.innerHTML = response;
+            retVal = 1;
+            SetRefreshStatsPageTimer(10 * 1000);
+        }
+        else {
+            oPage.innerHTML = "ERROR: status = " + status + " response = " + response;
+            retVal = -1;
+        }
+        return retVal;
+    }
+
+    function ReadCachedPostData() {
+        var data = "";
+        data += "&name=" + readCookie("BabyTracker_name");
+        data += "&key=" + readCookie("BabyTracker_key");
+        data += "&spreadsheetid=" + readCookie("BabyTracker_spreadsheetid");
+        data += "&worksheetid=" + readCookie("BabyTracker_worksheetid");
+        //data += "&uid=" + uniqid();
+        if (readCookie("BabyTracker_sqlid")) data += "&sqlid=" + readCookie("BabyTracker_sqlid");
+        if (readCookie("BabyTracker_token")) data += "&token=" + readCookie("BabyTracker_token");
+        if (readCookie("BabyTracker_tablename")) data += "&tablename=" + readCookie("BabyTracker_tablename");
+        if (readCookie("BabyTracker_userid")) data += "&userid=" + readCookie("BabyTracker_userid");
+
+        return data;
+    }
+
+    function EntryFromString(key, source) {
+        var idx = source.indexOf(key);
+        if (idx == -1)
+            return "";
+
+        idx += key.length + 1;
+
+        var idxEnd = source.indexOf("&", idx);
+        if (idxEnd == -1)
+            idxEnd = source.length;
+
+        var value = source.substr(idx, idxEnd - idx);
+
+        return value;
+    }
+
+    function DebugMsg(func, msg) {
+        var txt = document.getElementById("txtDebug");
+        txt.value = txt.value + "\n" + func + "() " + msg;
+        txt.parentNode.style.display = "";
+    }
+
+</script>
+
+</div> <!--divWholePage-->
+</body>
+</html>
