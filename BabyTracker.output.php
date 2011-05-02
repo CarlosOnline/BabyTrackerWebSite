@@ -437,7 +437,7 @@ function sql_error($string)
 	if ($submission_data)
 		__print("Data: $submission_data");
 	__print("********************************************");
-	//array_print(debug_backtrace());
+	array_print(debug_backtrace());
 	__print("********************************************");
 
 	flush_to_file("output/errors.htm");
@@ -643,7 +643,7 @@ function SetHtmlCookie($key, $value)
 	define("OneDayInSeconds", 60*60*24);
 
     vprint("setcookie() [$key] to [$value]");
-	@setcookie($key, $value, time() * OneDayInSeconds * 724);
+	setcookie($key, $value, time() * OneDayInSeconds * 724);
 }
 
 function hex_chars($data) {

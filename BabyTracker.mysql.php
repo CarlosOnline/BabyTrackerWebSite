@@ -1,15 +1,10 @@
-﻿<?php
+<?php
 
 require_once("BabyTracker.output.php");
 
-// Attributes
-define("attrFormula"    , "b'00000000'");
-define("attrBreastMilk" , "b'00000001'");
-
-define("attrLeft"       , "b'00000010'");
-define("attrRight"      , "b'00000100'");
 
 $g_mysql = 0;
+$g_mysql_babytracker_version = 2.1;
 
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */
@@ -246,123 +241,14 @@ function CloseMysql()
 	}
 }
 
-function SetupLockTable()
-{
-	vprint("Starting");
-    $mysql = GetMysql();
-    $table = get_config_value("lock_table_name");
-	$engine = "MyISAM";
-	$lock_name = get_config_value("log_table_lock_name");
-
-	$sqlCreateTable =
-		"CREATE TABLE IF NOT EXISTS `$table` (" .
-		"`id` INT NOT NULL AUTO_INCREMENT, " .
-		"`name` varchar(256) NOT NULL, " .
-		"`value` varchar(256) NULL, " .
-		"PRIMARY KEY (`id`)) ENGINE = $engine";
-	$mysql->query($sqlCreateTable);
-
-	$sql = "insert into `$table` set `name`='$lock_name';";
-	$mysql->query($sql);
-	$new_id = $mysql->insert_id();
-	return $new_id;
-}
-
-function AcquireLock($lock_type)
-{
-	//vprint("Starting $lock_type");
-
-    $mysql = GetMysql();
-    $table = get_config_value("lock_table_name");
-	$lock_name = "";
-
-	switch ($lock_type)
-	{
-		case "log_table":
-			$lock_name = get_config_value("log_table_lock_name");
-			break;
-
-		default:
-			error("unknown lock type $lock_type");
-			break;
-	}
-
-    //DumpQueryResults($mysql->query("select * from $table"));
-
-	$lock_value = uniqid($lock_name . "_", 1);
-	vprint("lock_value = $lock_value lock_name=$lock_name");
-
-	$result = $mysql->query("START TRANSACTION;\n");
-	$result = $mysql->query("BEGIN;\n");
-    $result = $mysql->query("update `$table` set `value`='$lock_value' where `name`='$lock_name' AND (`value`='0' OR `value` IS NULL);\n");
-	$result = $mysql->query("COMMIT");
-
-	$sql = "select `value` from `$table` where `name`='$lock_name'";
-	$result = $mysql->query($sql);
-	$row = $mysql->query_results_num($result);
-	//vprint("current lock value for $lock_name=" . $row[0] . " passed in $lock_value");
-
-    //DumpQueryResults($mysql->query("select * from $table"));
-
-    if ($row[0] == $lock_value)
-    {
-        //vprint("lock acquired $lock_value");
-        return $lock_value;
-    }
-
-    vprint("Lock not acquired");
-    return 0;
-}
-
-function ReleaseLock($lock_type, $lock_value, $force = false)
-{
-	vprint("Starting $lock_type $lock_value $force");
-
-    $mysql = GetMysql();
-    $table = get_config_value("lock_table_name");
-	$lock_name = "";
-
-	switch ($lock_type)
-	{
-		case "log_table":
-			$lock_name = get_config_value("log_table_lock_name");
-			break;
-
-		default:
-			error("unknown lock type $lock_type");
-			break;
-	}
-
-    $value_clause = "";
-	if (!$force)
-		$value_clause = "AND `value`='$lock_value'";
-
-	$result = $mysql->query("START TRANSACTION;\n");
-	$result = $mysql->query("BEGIN;\n");
-    $result = $mysql->query("update `$table` set `value`=NULL where `name`='$lock_name' $value_clause;\n");
-	$result = $mysql->query("COMMIT");
-
-	$sql = "select `value` from `$table` where `name`='$lock_name'";
-	$result = $mysql->query($sql);
-	$row = $mysql->query_results_num($result);
-	vprint("current lock value for $lock_name=[" . $row[0] . "] passed in value=$lock_value");
-
-    if ($row[0] == NULL)
-    {
-        vprint("lock release for $lock_value");
-        return 1;
-    }
-
-    vprint("Lock not released");
-    return 0;
-}
-
 function GetEngineName()
 {
+/*
 	$lock = get_config_value("lock_tables");
     if ($lock)
         $engine = "InnoDB";
     else
+*/
         $engine = "MyISAM";
 	return $engine;
 }
@@ -383,7 +269,7 @@ function SetupUploadTable()
 	$results = $mysql->exec_file("sql/create_upload_table.sql", $search, $replace);
 }
 
-function SetupUserTable($table)
+function CreateChildTable($table)
 {
 	$mysql = GetMysql();
     $engine = GetEngineName();
@@ -401,15 +287,17 @@ function SetupUserTable($table)
 function SetupRegistrationTable()
 {
 	$mysql = GetMysql();
-	$table = get_config_value("registered_users_table_name");
-    $engine = GetEngineName();
 	$search = array(
-		"\$table",
+		"\$reg_table",
+		"\$children_table",
+		"\$sessions_table",
 		"\$engine",
 	);
 	$replace = array(
-		"$table",
-		"$engine",
+		get_config_value("registered_users_table_name"),
+		get_config_value("registered_children_table_name"),
+		get_config_value("registered_sessions_table_name"),
+		GetEngineName(),
 	);
 	$results = $mysql->exec_file("sql/create_registration_table.sql", $search, $replace);
 }
@@ -417,87 +305,177 @@ function SetupRegistrationTable()
 function DeleteSystemTables()
 {
     $mysql = GetMysql();
-    $table = get_config_value("lock_table_name");
-
-	$sqlDropTable = "DROP TABLE IF EXISTS `" . get_config_value("lock_table_name") . "`";
-	$mysql->query($sqlDropTable);
 
 	$sqlDropTable = "DROP TABLE IF EXISTS `" . get_config_value("uploads_table_name") . "`";
 	$mysql->query($sqlDropTable);
 
 	$sqlDropTable = "DROP TABLE IF EXISTS `" . get_config_value("registered_users_table_name") . "`";
 	$mysql->query($sqlDropTable);
+
+	$sqlDropTable = "DROP TABLE IF EXISTS `" . get_config_value("registered_users_table_name");
+	$mysql->query($sqlDropTable);
+
+	$sqlDropTable = "DROP TABLE IF EXISTS `" . get_config_value("registered_children_table_name");
+	$mysql->query($sqlDropTable);
+
+	$sqlDropTable = "DROP TABLE IF EXISTS `" . get_config_value("registered_sessions_table_name");
+	$mysql->query($sqlDropTable);
 }
 
 function SetupSystemTables()
 {
-	SetupLockTable();
-	SetupUploadTable();
 	SetupRegistrationTable();
 }
 
-function SetupNewUser(&$client)
+function RegisterUser($name, $userid, $pwd)
 {
-	$userid = $client["userid"];
-	$pwd = $client["pwd"];
-	$title = $client["title"];
-	@$key = $client["key"];
-	@$spreadsheetid = $client["spreadsheetid"];
-	@$worksheetid = $client["worksheetid"];
-	$dob = $client["dob"];
-	$name = $client["name"];
-	@$token = $client["token"];
-	$tablename = $client["tablename"];
-
-	SetupUserTable($tablename);
-
+	global $g_mysql_babytracker_version;
     $mysql = GetMysql();
-	$cached_client = GetClient($userid, $name, 0, $token);
 
-	if (!$token)
-		$token = $cached_client["token"];
+	$sql = "select * from `" . get_config_value("registered_users_table_name") . "` \n" .
+			"where `userid`='$userid';\n";
+	$results = $mysql->query($sql);
+    $user = $mysql->query_results($results);
+	if ($user)
+	{
+		return LoginUser($userid, $pwd);
+	}
 
-	$cached_key = $cached_client["key"];
-    if ($cached_key)
-    {
-	    $sql = "update `" . get_config_value("registered_users_table_name") . "` set\n" .
-			    "`dob`=STR_TO_DATE('$dob', '%m/%d/%Y'),\n" .
+	$token = uniqid();
+
+	$sql = "insert into `" . get_config_value("registered_users_table_name") . "` set\n" .
+			"`name`='$name',\n" .
+			"`userid`='$userid',\n" .
+			"`password`='$pwd',\n" .
+			"`token`='$token',\n" .
+			"`version`=$g_mysql_babytracker_version\n" .
+			";\n";
+	$mysql->query($sql);
+
+	$sql = "select * from `" . get_config_value("registered_users_table_name") . "` \n" .
+			"where `userid`='$userid';\n";
+	$results = $mysql->query($sql);
+    $user = $mysql->query_results($results);
+	return $user;
+}
+
+function DeleteRegisteredUser($name, $userid)
+{
+    $mysql = GetMysql();
+
+	$sql = "delete from `" . get_config_value("registered_users_table_name") . "` \n" .
+			"where `userid`='$userid';\n";
+    $mysql->query($sql);
+}
+
+function LoginUser($userid, $pwd)
+{
+    $mysql = GetMysql();
+
+	$sql = "select * from `" . get_config_value("registered_users_table_name") . "` \n" .
+			"where `userid`='$userid';\n";
+	$results = $mysql->query($sql);
+    $user = $mysql->query_results($results);
+	if (!$user || ($user["password"] != $pwd))
+	{
+		error("ERROR: LoginUser failed for $userid.  Invalid userid or password.");
+	}
+
+	return $user;
+}
+
+function RegisterChild($childname, $dob, $user)
+{
+	global $g_mysql_babytracker_version;
+    $mysql = GetMysql();
+	$user_token = $user["token"];
+	$token = uniqid();
+	$tablename = MakeNewUserTableName($user["userid"], $childname);
+	$title = "Baby $childname Tracker";
+
+	$sql = "select * from `" . get_config_value("registered_children_table_name") . "` \n" .
+			"where `user_token`='$user_token' AND `name`='$childname';\n";
+	$results = $mysql->query($sql);
+    $child = $mysql->query_results($results);
+
+	if ($child)
+	{
+		$sql = "update `" . get_config_value("registered_children_table_name") . "` set\n" .
+				"`dob`='$dob',\n" .
+				"`title`='$title' \n" .
+				";\n";
+		$mysql->query($sql);
+	}
+	else
+	{
+		$sql = "insert into `" . get_config_value("registered_children_table_name") . "` set\n" .
+				"`user_token`='$user_token',\n" .
+				"`name`='$childname',\n" .
+				"`dob`='$dob',\n" .
 				"`token`='$token',\n" .
-			    "`title`='$title',\n" .
-			    "`key`='$key',\n" .
-			    "`spreadsheetid`='$spreadsheetid',\n" .
-			    "`worksheetid`='$worksheetid' " .
-				"where `key`='$cached_key';\n";
+				"`tablename`='$tablename',\n" .
+				"`title`='$title', \n" .
+				"`version`=$g_mysql_babytracker_version\n" .
+				";\n";
+		$mysql->query($sql);
+	}
 
-	    $mysql->query($sql);
+	CreateChildTable($tablename);
 
-        $client["token"] = GetUserRegValue("token", $client);
-        $client["tablename"] = GetUserRegValue("tablename", $client);
-        $new_id = GetUserRegValue("id", $client);
-    }
-    else
-    {
-	    $sql = "insert into `" . get_config_value("registered_users_table_name") . "` set\n" .
-			    "`name`='$name',\n" .
-			    "`dob`=STR_TO_DATE('$dob', '%m/%d/%Y'),\n" .
-			    "`userid`='$userid',\n" .
-			    "`token`='$token',\n" .
-			    "`tablename`='$tablename',\n" .
-			    "`title`='$title',\n" .
-			    "`key`='$key',\n" .
-			    "`spreadsheetid`='$spreadsheetid',\n" .
-			    "`worksheetid`='$worksheetid'\n" .
-                "ON DUPLICATE KEY UPDATE\n" .
-			    "`dob`=STR_TO_DATE('$dob', '%m/%d/%Y'),\n" .
-			    "`key`='$key',\n" .
-			    "`spreadsheetid`='$spreadsheetid',\n" .
-			    "`worksheetid`='$worksheetid';\n";
+	$sql = "select * from `" . get_config_value("registered_children_table_name") . "` \n" .
+			"where `user_token`='$user_token' AND `name`='$childname';\n";
+	$results = $mysql->query($sql);
+    $child = $mysql->query_results($results);
+	if ($child)
+	{
+		return $child;
+	}
 
-	    $mysql->query($sql);
-    	$new_id = $mysql->insert_id();
-    }
+	error("ERROR: RegisterChild failed");
+}
 
-	return $new_id;
+function RegisterSession($user, $child)
+{
+	global $g_mysql_babytracker_version;
+    $mysql = GetMysql();
+	$user_token = $user["token"];
+	$child_token = $child["token"];
+	$token = uniqid();
+	$address = $_SERVER["REMOTE_ADDR"];
+
+	$sql = "select * from `" . get_config_value("registered_sessions_table_name") . "` \n" .
+			"where `user_token`='$user_token' AND `child_token`='$child_token' AND `registered_address`='$address';\n";
+	$results = $mysql->query($sql);
+    $session = $mysql->query_results($results);
+	if ($session)
+	{
+		$sql = "update `" . get_config_value("registered_sessions_table_name") . "` set\n" .
+				"`token`='$token'\n" .
+				";\n";
+		$mysql->query($sql);
+	}
+	else
+	{
+		$sql = "insert into `" . get_config_value("registered_sessions_table_name") . "` set\n" .
+				"`user_token`='$user_token',\n" .
+				"`child_token`='$child_token',\n" .
+				"`token`='$token',\n" .
+				"`registered_address`='$address',\n" .
+				"`version`=$g_mysql_babytracker_version\n" .
+				";\n";
+		$mysql->query($sql);
+	}
+
+	$sql = "select * from `" . get_config_value("registered_sessions_table_name") . "` \n" .
+			"where `user_token`='$user_token' AND `child_token`='$child_token' AND `registered_address`='$address';\n";
+	$results = $mysql->query($sql);
+    $session = $mysql->query_results($results);
+	if ($session)
+	{
+		return $session;
+	}
+
+	error("ERROR: RegisterSession failed");
 }
 
 function DropTable($table)
@@ -556,118 +534,29 @@ function GetQueryValue($results, $row_idx = 0, $col_idx = 0)
 		return $row[$col_idx];
 }
 
-function SetUserTableSheetRowId($sqlrowid, $sheetrowid, &$client)
+function GetChildData($token)
 {
-    vprint("<hr>Starting");
-	if (!$sheetrowid || !$sqlrowid)
-		return;
+    $mysql = GetMysql();
 
-	$mysql = GetMysql();
-	$key = $client["key"];
-	$table = $client["tablename"];
-    $uploads_table = get_config_value("uploads_table_name");
-    $reg_table = get_config_value("registered_users_table_name");
+	$sessionTable = get_config_value("registered_sessions_table_name");
+	$childrenTable = get_config_value("registered_children_table_name");
+	$address = $_SERVER["REMOTE_ADDR"];
 
-	// update user table row
-	$sql = "update `$table` set `sheetrowid`='$sheetrowid' where `id`='$sqlrowid';";
-	$mysql->query($sql);
-
-	// set last row in client
-	$client["last_row"] = GetQueryValue($mysql->query("select MAX(`sheetrowid`) from `$table`"));
-	$results = $mysql->query("update `$reg_table` set `last_row`='" . $client["last_row"] . "' where `key`='$key'");
-
-	// set sheetrowid in uploads table for any pending records on this row
-	$data = array();
-	$data["sheetrowid"] = $sheetrowid;
-	UpdateUploadSheetRowId($data, $client);
+	$sql = "select * from `$sessionTable`, `$childrenTable` \n" .
+			"where `$sessionTable`.token='$token' AND `registered_address`='$address' AND " .
+			"`$childrenTable`.token=`$sessionTable`.child_token;\n";
+	$results = $mysql->query($sql);
+    $child = $mysql->query_results($results);
+	return $child;
 }
 
-function UpdateUploadSheetRowId(&$data, $client)
+function GetChildTableName($token)
 {
-	$sqlrowid = $data["sqlrowid"];
-
-	$mysql = GetMysql();
-
-	$key = $client["key"];
-	$table = $client["tablename"];
-    $uploads_table = get_config_value("uploads_table_name");
-
-	$sql = "UPDATE `$uploads_table` as B ";
-	$sql .= "INNER JOIN `$table` as U ";
-	$sql .= "ON U.id=B.`sqlrowid` ";
-	$sql .= "SET B.`sheetrowid`=U.`sheetrowid` ";
-	$sql .= "WHERE B.`key`='$key' AND U.`sheetrowid` IS NOT NULL AND B.`sqlrowid`=U.`id`";
-	$mysql->query($sql);
-
-	$sheetrowid = @$data["sheetrowid"];
-	if (!$sheetrowid) {
-		//$sheetrowid = GetQueryValue($mysql->query("select `sheetrowid` from `$table` where `id`='$sqlrowid'"));
-		if (!$sheetrowid)
-		{
-			//array_print($client);
-			//error("missing sheetrowid");
-			return;
-		}
-
-		$data["sheetrowid"] = $sheetrowid;
-	}
-
-// UNDONE: delete from user_table where `type`='deleted' and `id` not in (select `sqlrowid` from `uploads_table`)
-	return @$client["sheetrowid"];
+	$child = GetChildData($token);
+	return $child['tablename'];
 }
 
-function UpdateAllUploadSheetRowId()
-{
-    $table = get_config_value("uploads_table_name");
-	$mysql = GetMysql();
-	$results = $mysql->query("select DISTINCT `key` from `$table`");
-	while ($row = $mysql->query_results($results))
-	{
-		$client = GetClient(0, 0, $row["key"]);
-		UpdateUploadSheetRowId($row, $client);
-	}
-}
-
-function AddRowToUploadTable($mysql, $data, $client)
-{
-    $date = $data["date"];
-    $time = $data["time"];
-    $type = $data["type"];
-    $amount = @$data["amount"];
-    $description = @$data["description"];
-
-	// Client Data
-	$title = $client["title"];
-    $key = $client["key"];
-    $spreadsheetid = $client["spreadsheetid"];
-    $worksheetid = $client["worksheetid"];
-	$token = $client["token"];
-
-    vprint("Starting");
-
-    $row_data = "";
-	if ($amount)        $row_data .= "amount='$amount', ";
-	if ($description)   $row_data .= "description='$description', ";
-	if ($title)         $row_data .= "title='$title', ";
-	if ($spreadsheetid) $row_data .= "spreadsheetid='$spreadsheetid', ";
-	if ($worksheetid)   $row_data .= "worksheetid='$worksheetid', ";
-	$row_data .= "date=STR_TO_DATE('$date', '%m/%d/%Y'), ";
-	$row_data .= "`time`=TIME(STR_TO_DATE('$time', '%l:%i %p')), ";
-	$row_data .= "`type`='$type', ";
-	$row_data .= "`key`='$key', ";
-	$row_data .= "`sqlrowid`=" . $data["sqlrowid"] . ', ';
-	$row_data .= "`action`='insert'";
-
-	$sql = "insert into `" . get_config_value("uploads_table_name") . "` set $row_data;";
-	$mysql->query($sql);
-	$new_id = $mysql->insert_id();
-
-    DumpQueryResults($mysql->query("select * from " . get_config_value("uploads_table_name") . " where `sqlrowid`=" . $data["sqlrowid"]));
-
-	return $new_id;
-}
-
-function AddRowToUserTable($mysql, $data, $client)
+function AddRowToChildTable($mysql, $data, $token)
 {
     $date = $data["date"];
     $time = $data["time"];
@@ -678,7 +567,7 @@ function AddRowToUserTable($mysql, $data, $client)
 	$breastmilk = @$data["breastmilk"];
 	$left = @$data["left"];
 	$right = @$data["right"];
-	$table = $client["tablename"];
+	$table = GetChildTableName($token);
 
     vprint("Starting");
 
@@ -686,7 +575,7 @@ function AddRowToUserTable($mysql, $data, $client)
 	if ($amount)        $row_data .= "`amount`='$amount', \n";
 	if ($description)   $row_data .= "`description`='$description', \n";
 	if ($formula)		$row_data .= "`attr`=`attr` | " . attrFormula . ", \n";
-	if ($breastmilk)		$row_data .= "`attr`=`attr` | " . attrBreastMilk . ", \n";
+	if ($breastmilk)	$row_data .= "`attr`=`attr` | " . attrBreastMilk . ", \n";
 	if ($left)		$row_data .= "`attr`=`attr` | " . attrLeft . ", \n";
 	if ($right)		$row_data .= "`attr`=`attr` | " . attrRight . ", \n";
 	$row_data .= "`datetime`=STR_TO_DATE('$date $time', '%m/%d/%Y %l:%i %p'), ";
@@ -700,55 +589,7 @@ function AddRowToUserTable($mysql, $data, $client)
 
 	$results = $mysql->query("select * from `$table` where `id`='$new_id'");
     $row = $mysql->query_results($results);
-
 	return $row;
-}
-
-function AddUpdateToUploadTable($mysql, $data, $client)
-{
-	array_print($data);
-
-	$sqlrowid = $data["sqlrowid"];
-	$sheetrowid = @$data["sheetrowid"];
-    $date = $data["date"];
-    $time = $data["time"];
-    $type = $data["type"];
-    $amount = @$data["amount"];
-    $description = @$data["description"];
-
-	// Client Data
-	$title = $client["title"];
-    $key = $client["key"];
-    $spreadsheetid = $client["spreadsheetid"];
-    $worksheetid = $client["worksheetid"];
-	$token = $client["token"];
-
-    vprint("Starting");
-
-	UpdateUploadSheetRowId($data, $client);
-	$sheetrowid = $data["sheetrowid"];
-
-    $row_data = "";
-	if ($amount)        $row_data .= "amount='$amount', ";
-	if ($description)   $row_data .= "description='$description', ";
-	if ($title)         $row_data .= "title='$title', ";
-	if ($spreadsheetid) $row_data .= "spreadsheetid='$spreadsheetid', ";
-	if ($worksheetid)   $row_data .= "worksheetid='$worksheetid', ";
-	if ($date) 			$row_data .= "date=STR_TO_DATE('$date', '%m/%d/%Y'), ";
-	if ($time) 			$row_data .= "`time`=TIME(STR_TO_DATE('$time', '%l:%i %p')), ";
-	if ($type)			$row_data .= "`type`='$type', ";
-	if ($sheetrowid)	$row_data .= "`sheetrowid`='$sheetrowid', ";
-	$row_data .= "`sqlrowid`='$sqlrowid', ";
-	$row_data .= "`key`='$key', ";
-	$row_data .= "`action`='update'";
-
-	$sql = "insert into `" . get_config_value("uploads_table_name") . "` set $row_data;";
-	$mysql->query($sql);
-	$new_id = $mysql->insert_id();
-
-    DumpQueryResults($mysql->query("select * from " . get_config_value("uploads_table_name") . " where id=$new_id"));
-
-	return $new_id;
 }
 
 function UpdateUserTableRow($mysql, $data, $client)
@@ -780,48 +621,6 @@ function UpdateUserTableRow($mysql, $data, $client)
 	return $row;
 }
 
-function AddDeleteToUploadTable($mysql, $data, $client)
-{
-	// Client Data
-	$title = $client["title"];
-    $key = $client["key"];
-    $spreadsheetid = $client["spreadsheetid"];
-    $worksheetid = $client["worksheetid"];
-	$token = $client["token"];
-	$sheetrowid = $data["sheetrowid"];
-	$sqlrowid = $data["sqlrowid"];
-	$table = $client["tablename"];
-    vprint("Starting");
-
-	UpdateUploadSheetRowId($data, $client);
-	$sheetrowid = $data["sheetrowid"];
-
-	vprint("sheetrowid = $sheetrowid");
-	if ($sheetrowid) {
-		// sheetrowid is valid so row can be deleted from user table
-		$mysql->query("delete from `$table` where `id`='$sqlrowid'");
-		//$sqlrowid = 0;
-	}
-
-    $row_data = "";
-	if ($title)         $row_data .= "title='$title', ";
-	if ($spreadsheetid) $row_data .= "spreadsheetid='$spreadsheetid', ";
-	if ($worksheetid)   $row_data .= "worksheetid='$worksheetid', ";
-	if ($sheetrowid)    $row_data .= "`sheetrowid`='$sheetrowid', ";
-	if ($sqlrowid)    $row_data .= "`sqlrowid`='$sqlrowid', ";
-	$row_data .= "`type`='Deleted', ";
-	$row_data .= "`key`='$key', ";
-	$row_data .= "`action`='delete'";
-
-	$sql = "insert into `" . get_config_value("uploads_table_name") . "` set $row_data;";
-	$mysql->query($sql);
-	$new_id = $mysql->insert_id();
-
-    DumpQueryResults($mysql->query("select * from " . get_config_value("uploads_table_name") . " where id=$new_id"));
-
-	return $new_id;
-}
-
 function DeleteUserTableRow($mysql, $sqlrowid, $client)
 {
 	// Client Data
@@ -840,97 +639,6 @@ function DeleteUserTableRow($mysql, $sqlrowid, $client)
     $row = $mysql->query_results($results);
 
 	return $row;
-}
-
-function DumpLogTableResults()
-{
-    vprint(__FUNCTION__);
-    $mysql = GetMysql();
-	$results = $mysql->query("select count(*) from " . get_config_value("uploads_table_name"));
-	if ($row = $mysql->query_results_num($results))
-	{
-		vprint($row[0] . " rows in table");
-	}
-
-	$results = $mysql->query("select * from " . get_config_value("uploads_table_name") . " order by `timestamp` desc");
-    vprint(ResultsToTable($mysql, $results));
-    /*
-	while ($row = $mysql->query_results($results))
-	{
-		array_print($row);
-	}
-    */
-}
-
-function GetProcessingErrors($key = "")
-{
-    vprint("Starting key=$key");
-
-    $mysql = GetMysql();
-	set_output_flag("no_sql", 0);
-
-    $table = get_config_value("uploads_table_name");
-	$key_clause = "";
-	if ($key) $key_clause = "and `key`='$key'";
-
-	//$timestamp = "TIMESTAMPDIFF(HOUR, `timestamp`, NOW()) > 2" ;
-	$results = $mysql->query("select count(*) from $table where (`state`='failed') $key_clause");
-    $count = $mysql->query_results_num($results);
-	if ($count[0] > 0)
-	{
-    	$results = $mysql->query("select * from $table where (`state`='failed') $key_clause");
-
-        // Clear previous output, so new output can be sent into an email
-		flush_buffers(true);
-
-		print("Found " . $count[0] . " errors");
-        $tableHtml = ResultsToTable($mysql, $results);
-        print($tableHtml);
-
-		$headers = 'From: Baby Tracker <babytracker@pacifier.com>' . "\r\n" .
-				   'Reply-To: Baby Tracker <babytracker@pacifier.com>' . "\r\n" .
-				   'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-
-		mail(BabyTracker_UserId(), "Baby Tracker Error List " . date('Y-m-d'), ob_get_contents(), $headers);
-
-	    flush_to_file("output/errorlist.htm");
-		flush_buffers(true);
-	}
-
-	set_output_flag("no_sql", 0);
-}
-
-function ResetErrors($key = "")
-{
-    vprint("Starting key=$key");
-
-    $mysql = GetMysql();
-    $table = get_config_value("uploads_table_name");
-	$where_clause = "";
-	if ($key) $where_clause = "where `key`='$key'";
-	$results = $mysql->query("update $table set `failure_message`=NULL, `errno`=NULL, `state`='new', `attempt`=0, `changedby`=NULL, `timestamp`=NOW() $where_clause");
-}
-
-function TouchAllRecords($key = "")
-{
-    vprint("Starting key=$key");
-
-    $mysql = GetMysql();
-    $table = get_config_value("uploads_table_name");
-	$where_clause = "";
-	if ($key) $where_clause = "where `key`='$key'";
-	$results = $mysql->query("update $table set `timestamp`=NOW() $where_clause");
-}
-
-function StopAllRuns($key = "")
-{
-    vprint("Starting key=$key");
-
-    $mysql = GetMysql();
-    $table = get_config_value("uploads_table_name");
-	$where_clause = "";
-	if ($key) $where_clause = "where `key`='$key'";
-	$results = $mysql->query("update $table set `timestamp`=NOW(), `attempt`='300', `changedby`='StopAllRuns' $where_clause");
 }
 
 function ResultsToTable($mysql, $results)
@@ -1046,18 +754,23 @@ function GetUserRegValueEx($item, $key)
         return $ret[0];
 }
 
-function GetClient($userid=0, $name=0, $key=0, $token=0)
+function GetClientEx($token, $address)
 {
     $mysql = GetMysql();
     $table = get_config_value("registered_users_table_name");
-
-	$where_clause = "";
-	if ($key) $where_clause .= "`key`='$key' OR ";
-	if ($token) $where_clause .= "`token`='$token' OR ";
-	if ($userid && $name) $where_clause .= "(`userid`='$userid' AND `name`='$name') OR ";
-
-	$results = $mysql->query("select * from $table where $where_clause 0=1");
+	$results = $mysql->query("select * from $table where `token`='$token' AND `registered_address`='$address'");
     return $mysql->query_results($results);
+}
+
+function GetClient($token)
+{
+	$address = $_SERVER['REMOTE_ADDR'];
+	$client = GetClientEx($token, $address);
+	if ($client)
+	{
+		$client["address"] = $address;
+	}
+	return $client;
 }
 
 function SetActionState($state, $id)

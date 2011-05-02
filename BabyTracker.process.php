@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once("BabyTracker.output.php");
 require_once("BabyTracker.spreadsheet.php");
@@ -26,66 +26,6 @@ function DeleteLogTable($key = "", $sqlrowid = "")
 	$mysql->query("BEGIN");
 	$mysql->query("delete from $table where 1=1 $key_clause $rowid_clause");
 	$mysql->query("COMMIT");
-}
-
-function ProcessLogTable_Row($row)
-{
-	if (!$row["key"] || !$row["date"] || !$row["time"] || !$row["type"])
-    {
-		vprint("processing row: " . DataToString($row));
-        vprint("not a valid row");
-        return "not a valid row";
-    }
-	$client = GetClient(@$row['userid'], @$row['name'], @$row['key'], @$row['token']);
-	if (!$client)
-		error('Missing client for row' . DataToString($row));
-
-    $result = 0; // success
-	set_throw_on_error(1);
-	//set_output_flag("no_xml", 1);
-
-	$data = array();
-	$data["date"] = $row["date"];
-	$data["time"] = $row["time"];
-	$data["type"] = $row["type"];
-	$data["amount"] = $row["amount"];
-	$data["description"] = $row["description"];
-	$data["sqlrowid"] = $row["sqlrowid"];
-	$data["sheetrowid"] = $row["sheetrowid"];
-	array_print($row);
-	array_print($data);
-
-    try
-    {
-        vprint("sending to spreadsheet: " . DataToString($row));
-		switch($row["action"])
-		{
-			case "insert":
-				SpreadsheetAdd($data, $row, $client);
-				break;
-
-			case "update":
-				SpreadsheetUpdate($data, $client);
-				break;
-
-			case "delete":
-				SpreadsheetDelete($data, $client);
-				break;
-
-			default:
-				error("Unknown action type: " . $row["action"]);
-		}
-    }
-    catch (Exception $e)
-    {
-        //vprint("<h1>Caught exception</h1>: " . $e->getMessage());
-        $result = get_last_response();
-    }
-	set_throw_on_error(0);
-	//set_output_flag("no_xml", 0);
-
-    //vprint("done sending to spreadsheet");
-    return $result;
 }
 
 function GetExcludedKeyList($mysql)
@@ -234,7 +174,7 @@ function TestAddRowToLogTable()
         "worksheetid" => $worksheetid);
 
     $mysql = GetMysql();
-	$sqlrowid = AddRowToUserTable($mysql, $title, $data);
+	$sqlrowid = AddRowToChildTable($mysql, $title, $data);
 	vprint("added sqlrowid=$sqlrowid");
 }
 

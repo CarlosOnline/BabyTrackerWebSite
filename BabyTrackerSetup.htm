@@ -52,23 +52,17 @@
                     <input id="txtDOB" name="txtDOB" type="text" value=""/>
                 </td>
             </tr>
-        </table>
-        <br />
-        <table class="googleForm">
             <tr>
-                <td colspan=2>
-                    <label for="txtEmail">Enter Google Account</label>
-                    <img style="vertical-align:top; float:right;" width="70px" title="Google" id="imgGoogle" src="images/google-logo.gif" alt="Google"/>
+                <td>
+                    <label for="txtUserName">Your Name</label>
                 </td>
-            </tr>
-            <tr>
-                <td colspan=2 style="padding:3px;">
-                    <small style="font-size: 75%;">This information is used to install a spreadsheet into your account for tracking your Baby's data.  It is not stored nor ever used again.  Thank You.</small>
+                <td>
+                    <input id="txtUserName" type="text" value=""/>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for="txtEmail">email:</label>
+                    <label for="txtEmail">Your Email:</label>
                 </td>
                 <td>
                     <input id="txtEmail" name="txtEmail" type="text" value=""  size="18"/>
@@ -85,20 +79,6 @@
         </table>
         <br />
         <table>
-            <tr>
-                <td colspan="2">
-                    <input id="chkReuse" name="chkReuse" type="checkbox" checked value="" />
-                    <label for="chkReuse">reuse Existing Spreadsheet</label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="txtKey">key: (optional)</label>
-                </td>
-                <td>
-                    <input id="txtKey" name="txtKey" type="text" value=""  size="30"/>
-                </td>
-            </tr>
             <tr>
                 <td colspan="2">
                     <input id="chkSetupDebugMode" name="chkSetupDebugMode" type="checkbox" value="" />
@@ -132,17 +112,13 @@
         if (key != "")
             document.getElementById("txtDOB").value = key;
 
-        var key = readCookie("BabyTracker_key");
-        if (key != "")
-            document.getElementById("txtKey").value = key;
+        var name = readCookie("BabyTracker_username");
+        if (name != "")
+            document.getElementById("txtUserName").value = name;
 
         var key = readCookie("BabyTracker_userid");
         if (key != "")
             document.getElementById("txtEmail").value = key;
-
-        var key = readCookie("BabyTracker_password");
-        if (key != "")
-            document.getElementById("txtPassword").value = key;
 
         document.getElementById("txtBabyName").focus();
     }
@@ -150,13 +126,20 @@
     function Cancel_Click() {
         createCookie("BabyTracker_name", document.getElementById("txtBabyName").value, 999);
         createCookie("BabyTracker_dob", document.getElementById("txtDOB").value, 999);
-        createCookie("BabyTracker_key", document.getElementById("txtKey").value, 999);
+        createCookie("BabyTracker_username", document.getElementById("txtUserName").value, 999);
         createCookie("BabyTracker_userid", document.getElementById("txtEmail").value, 999);
-        createCookie("BabyTracker_password", document.getElementById("txtPassword").value, 999);
+        //createCookie("BabyTracker_password", document.getElementById("txtPassword").value, 999);
         history.go(-1);
     }
 
     function Done_Click() {
+
+        var txtUserName = document.getElementById("txtUserName");
+        if (txtUserName.value == "") {
+            alert("Missing User Name");
+            txtUserName.focus();
+            return;
+        }
 
         var txtEmail = document.getElementById("txtEmail");
         if (txtEmail.value == "") {
@@ -167,7 +150,7 @@
 
         var txtPassword = document.getElementById("txtPassword");
         if (txtPassword.value == "") {
-            alert("Missing password alias");
+            alert("Missing password");
             txtPassword.focus();
             return;
         }
@@ -191,25 +174,22 @@
             return;
         }
 
-        var txtKey = document.getElementById("txtKey");
-        var chkResuse = document.getElementById("chkReuse");
         var chkSetupDebugMode = document.getElementById("chkSetupDebugMode");
 
         createCookie("BabyTracker_name", txtName.value, 999);
         createCookie("BabyTracker_dob", txtDOB.value, 999);
-        createCookie("BabyTracker_key", txtKey.value, 999);
+        createCookie("BabyTracker_username", txtUserName.value, 999);
         createCookie("BabyTracker_userid", txtEmail.value, 999);
-        createCookie("BabyTracker_password", txtPassword.value, 999);
+        //createCookie("BabyTracker_password", txtPassword.value, 999);
 
         var postData = "";
         postData += "name=" + encodeURI(txtName.value) + "&";
         postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
+        postData += "username=" + encodeURI(txtUserName.value) + "&";
         postData += "userid=" + encodeURI(txtEmail.value) + "&";
         postData += "pwd=" + encodeURI(txtPassword.value) + "&";
-        if (txtKey.value != "") postData += "key=" + txtKey.value + "&";
-        if (chkResuse.checked == true) postData += "reuse=true&";
         if (chkSetupDebugMode.checked == true) postData += "debugmode=true&";
-        postData += "postaction=" + "installspreadsheet";
+        postData += "postaction=" + "setup_new_user";
 
         var btnDone = document.getElementById("btnDone");
         btnDone.style.display = "none";
@@ -230,7 +210,7 @@
         var idxStart = data.indexOf(pattern);
         if (idxStart == -1) {
             document.writeln(data);
-            alert("Program Error: Did not find spreadsheet " + field);
+            alert("Program Error: Did not find key " + field);
             return;
         }
 
@@ -238,7 +218,6 @@
         var idxEnd = data.indexOf(";", idxStart);
         var value = data.substr(idxStart, idxEnd - idxStart);
         createCookie("BabyTracker_" + field, value);
-
         return value;
     }
 
@@ -248,31 +227,26 @@
             var status = xmlhttp.status;
             if (status == 200) {
 
-                var end = response.indexOf("Successfully Installed the ");
+                var end = response.indexOf("Successfully setup user");
                 if (end == -1) {
                     document.writeln(response);
-                    alert("did not find text Successfully Installed in response");
+                    alert("did not find text Successfully setup user in response");
                     return;
                 }
                 var endOfResponse = response.substr(end);
-                ReadSetting(endOfResponse, "key");
-                ReadSetting(endOfResponse, "spreadsheetid");
-                ReadSetting(endOfResponse, "worksheetid");
-                ReadSetting(endOfResponse, "sqlid");
                 ReadSetting(endOfResponse, "token");
-                ReadSetting(endOfResponse, "tablename");
 
                 if (document.getElementById("chkSetupDebugMode").checked == true) {
                     document.writeln(response);
                     return;
                 }
 
-                alert("Successfully created your spreadsheet - [Baby " + readCookie("BabyTracker_name") + " Tracker] key=" + readCookie("BabyTracker_key"));
+                alert("Successfully setup account for - [Baby " + readCookie("BabyTracker_name") + " Tracker]");
                 history.go(-1);
                 return;
             }
             else {
-                document.writeln("Failed to Install Spreasheet " + status);
+                document.writeln("Failed to Setup User " + status);
                 //document.writeln("HTTP Status Code = " + status);
                 document.writeln(response);
                 alert("Failed to submit entry status code = " + status + " response = " + response);
@@ -290,8 +264,8 @@
         eraseCookie("BabyTracker_dob");
         document.getElementById("txtDOB").value = "";
 
-        eraseCookie("BabyTracker_key");
-        document.getElementById("txtKey").value = "";
+        eraseCookie("BabyTracker_username");
+        document.getElementById("txtUserName").value = "";
 
         eraseCookie("BabyTracker_userid");
         document.getElementById("txtEmail").value = "";
@@ -300,8 +274,6 @@
         document.getElementById("txtPassword").value = "";
 
         eraseCookie("checkDebugMode");
-        eraseCookie("BabyTracker_spreadsheetid");
-        eraseCookie("BabyTracker_worksheetid");
 
         alert("Done");
     }

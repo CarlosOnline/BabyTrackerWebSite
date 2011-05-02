@@ -135,6 +135,9 @@ function readCookie(name) {
 
 function deleteAllCookies() {
     var cookienames = document.cookie.match(/\w+(?==)/g);
+    if (cookienames == null)
+       return;
+
     for (var idx = 0; idx < cookienames.length; idx++) {
         eraseCookie(cookienames[idx]);
         //_DebugMsg("deleteAllCookies", "deleting " + cookienames[idx]);
@@ -210,7 +213,8 @@ function DoXmlHttpPost(data, OnReadyStateChangeFunction) {
     g_request = getXmlHttp();
     g_request.onreadystatechange = OnReadyStateChangeFunction;
     //g_request.open("POST", "http://www.JoyOfPlaying.com/BabyTracker/BabyTracker.php", true);
-    g_request.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
+    //g_request.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
+    g_request.open("POST", "http://localhost:8888/BabyTracker/BabyTracker.php", true);
     g_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     g_request.send(data + "&" + ProductVersionEx());
     return g_request;
@@ -220,7 +224,8 @@ function DoXmlHttpPostEx(xmlhttp, data, OnReadyStateChangeFunction) {
 
     xmlhttp.onreadystatechange = OnReadyStateChangeFunction;
     //xmlhttp.open("POST", "http://www.JoyOfPlaying.com/BabyTracker/BabyTracker.php", true);
-    xmlhttp.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
+    //xmlhttp.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
+    xmlhttp.open("POST", "http://localhost:8888/BabyTracker/BabyTracker.php", true);
     xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xmlhttp.send(data + "&" + ProductVersionEx());
     return xmlhttp;
