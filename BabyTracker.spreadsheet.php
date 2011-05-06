@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once("BabyTracker.output.php");
 
@@ -16,7 +16,7 @@ function BabyTracker_Pwd() {
 	return get_config_value("babytracker_pwd");
 }
 
-function BabyTracker_Data_Worksheet() {
+function Data_Worksheet() {
 	return "Data";
 }
 
@@ -88,7 +88,7 @@ class spreadsheet {
 			$url .=	"&scope=" . urlencode("https://spreadsheets.google.com/feeds/");
 			$url .= "&session=1";
 			//$url .= "&secure=1";
-			//$url .= "&hd=" . BabyTracker_UserId();
+			//$url .= "&hd=" . UserId();
 
 			vprint($url);
 
@@ -133,7 +133,7 @@ class spreadsheet {
 	private function authenticate_wise($username, $password)
 	{
         //vprint("$username ***");
-		if ($username == BabyTracker_UserId() && GetCachedSessionToken()) {
+		if ($username == UserId() && GetCachedSessionToken()) {
 			$this->token_wise = GetCachedSessionToken();
 			return $this->token_wise;
 		}
@@ -173,7 +173,7 @@ class spreadsheet {
 	private function authenticate_writely($username, $password)
 	{
 		//vprint("$username *****");
-		if ($username == BabyTracker_UserId() && GetCachedSessionToken()) {
+		if ($username == UserId() && GetCachedSessionToken()) {
 			$this->token_writely = GetCachedSessionToken();
 			return $this->token_writely;
 		}
@@ -891,7 +891,7 @@ class spreadsheet {
 
 		$rowCount = $client["last_row"];
 		if (!$rowCount)
-			$rowCount = $this->GetRowCount(BabyTracker_Data_Worksheet());
+			$rowCount = $this->GetRowCount(Data_Worksheet());
 		if ($rowCount)
 		{
 			$minRow = $rowCount > 10 ? $rowCount - 10 : 2;
@@ -945,10 +945,10 @@ function CloseSpreadsheets()
 function GetSpreadsheet($client, $userid = 0, $pwd = 0)
 {
 	if ($userid == 0)
-		$userid = BabyTracker_UserId();
+		$userid = UserId();
 
 	if ($pwd == 0)
-		$pwd = BabyTracker_Pwd();
+		$pwd = Pwd();
 
 	$title = $client['title'];
 	$key = $client['key'];
@@ -980,7 +980,7 @@ function SpreadsheetAdd($data, $row, $client)
 	$worksheetid = $client['worksheetid'];
 
 	$doc = GetSpreadsheet($client);
-	$doc->setWorksheet(BabyTracker_Data_Worksheet());
+	$doc->setWorksheet(Data_Worksheet());
 	$doc->setWorksheetId($worksheetid);
 
 	switch($data["action_state"])
@@ -1013,7 +1013,7 @@ function SpreadsheetUpdate($data, $client)
 	$worksheetid = $client['worksheetid'];
 
 	$doc = GetSpreadsheet($client);
-	$doc->setWorksheet(BabyTracker_Data_Worksheet());
+	$doc->setWorksheet(Data_Worksheet());
 	$doc->setWorksheetId($worksheetid);
 	UpdateUploadSheetRowId($data, $client);
 	if (!$data["sheetrowid"])
@@ -1032,7 +1032,7 @@ function SpreadsheetDelete($data, $client)
 	$worksheetid = $client['worksheetid'];
 
 	$doc = GetSpreadsheet($client);
-	$doc->setWorksheet(BabyTracker_Data_Worksheet());
+	$doc->setWorksheet(Data_Worksheet());
 	$doc->setWorksheetId($worksheetid);
 	UpdateUploadSheetRowId($data, $client);
 	if (!$data["sheetrowid"])

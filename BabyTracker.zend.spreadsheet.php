@@ -18,8 +18,8 @@ function Zend_InserRow($data, $client)
 
     vprint(GetCachedSessionToken());
 
-	$babytracker_userid = BabyTracker_UserId();
-	$babytracker_pwd = BabyTracker_Pwd();
+	$babytracker_userid = UserId();
+	$babytracker_pwd = Pwd();
 
 	$service = Zend_Gdata_Spreadsheets::AUTH_SERVICE_NAME;
 	$login = Zend_Gdata_ClientLogin::getHttpClient($babytracker_userid, $babytracker_pwd, $service);

@@ -33,24 +33,12 @@
 </span>
 <span width="80%" >
     <span style='float:none'>
-        <input type="button" onclick="OnTestClick(this);" value="setup_new_user" />
-        <input type="button" onclick="OnTestClick(this);" value="sqldump" />
-        <input type="button" onclick="OnTestExClick(this);" value="run" />
-        <input type="button" onclick="OnTestExClick(this);" value="runall" />
-        <input type="button" onclick="OnTestExClick(this);" value="reset_and_run" />
-        <input type="button" onclick="OnTestExClick(this);" value="run.background" />
-        <input type="button" onclick="OnTestClick(this);" value="stop_all" />
+        <input type="button" onclick="SetupUser(this);" value="setup_new_user" />
         <input type="button" onclick="OnTestClick(this);" value="dump_user_table" />
         <input type="button" onclick="OnTestClick(this);" value="dump_reg_table" />
         <input type="button" onclick="OnTestClick(this);" value="stats_sql" />
         <input type="button" onclick="OnTestClick(this);" value="stats_counts" />
         <input type="button" onclick="OnTestClick(this);" value="stats_sql_col&stats_item=total" />
-        <input type="button" onclick="OnTestClick(this);" value="get_sheet_row" />
-    </span>
-    <span style='float:none'>
-        <input type="button" onclick="OnTestClick(this);" value="get_errors" />
-        <input type="button" onclick="OnTestClick(this);" value="reset_errors" />
-        <input type="button" onclick="OnTestClick(this);" value="touch_all" />
     </span>
     <span style='float:right'>
         <input type="button" onclick="OnDangerousClick(this);" value="delete_all_output_files" /><br />
@@ -61,36 +49,56 @@
         <input type="button" onclick="TestAddClick(this, 1);" value="TestAdd" />
         <input type="button" onclick="TestUpdateClick(this, 1);" value="TestUpdate" />
         <input type="button" onclick="TestDeleteClick(this, 1);" value="TestDelete" />
-        <input type="button" onclick="OnTestClick(this);" value="sqladd" />
-        <input type="button" onclick="OnTestClick(this);" value="sqladdex" />
     </span>
 </span>
 <br style='clear:both'/>
 <span>
-    <label id="lblUrl">Url</label>
     <span style='float:right'>
         <input type="button" onclick="OnRunSql(this);" value="run_sql_file" /><br />
         <input type="button" onclick="OnTestClick(this);" value="setup_system_tables" /><br />
         <input type="button" onclick="OnDangerousClick(this);" value="delete_system_tables" /><br />
         <input type="button" onclick="OnDangerousClick(this);" value="delete_reg_table" /><br />
-        <input type="button" onclick="OnTestExClick(this);" value="runex" /><br />
-        <input type="button" onclick="OnTestExClick(this);" value="run.id" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="reset_key_errors" /><br />
         <input type="button" onclick="OnTestClick(this);" value="stats" /><br />
         <input type="button" onclick="OnTestClick(this);" value="stats_col&col=F" /><br />
         <input type="button" onclick="OnTestClick(this);" value="stats_col&col=B&col_end=F" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="sqlsetup" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="sqlsetup" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="spreadsheetsetup" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="spreadsheetadd" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="lock_setup" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="lock_aquire" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="lock_release" /><br />
-        <input type="button" onclick="OnTestClick(this);" value="force_lock_release" /><br />
-        <input type="button" onclick="OnTestExClick(this);" value="zend_request_token" /><br />
-        <input type="button" onclick="alert(document.cookie);" value="Show Cookies" /><br />
+        <input type="button" onclick="ShowCookies_Click()" value="Show Cookies" /><br />
         <input type="button" onclick="EraseCookies_Click();" value="Erase Cookies" /><br />
     </span>
+        <table>
+            <tr>
+                <td>
+                    <label for="txtBabyName">Baby&#39;s First Name</label>
+                </td>
+                <td>
+                    <input id="txtBabyName" type="text" value=""/>
+                </td>
+                <td>
+                    <label for="txtDOB">DOB</label>
+                </td>
+                <td>
+                    <input id="txtDOB" name="txtDOB" type="text" value=""/>
+                </td>
+                <td>
+                    <label for="txtUserName">UserName</label>
+                </td>
+                <td>
+                    <input id="txtUserName" type="text" value=""/>
+                </td>
+                <td>
+                    <label for="txtEmail">Your Email:</label>
+                </td>
+                <td>
+                    <input id="txtEmail" name="txtEmail" type="text" value=""  size="18"/>
+                </td>
+                <td>
+                    <label for="txtPassword">password</label>
+                </td>
+                <td>
+                    <input id="txtPassword" name="txtPassword" type="password" value="" size="19"/>
+                </td>
+            </tr>
+        </table>
+    <label id="lblUrl">Url</label>
     <div id="divFrame"><iframe src="" id="frm" width="80%" height='500px'>Click a button</iframe></div>
 </span>
 
@@ -98,9 +106,98 @@
 <script type="text/javascript" language="javascript">
 
     function LoadBody(){
+
         document.getElementById("frm").innerHTML = "";
         document.getElementById("frm").src = "";
         document.getElementById("lblUrl").innerHTML = "";
+
+        var name = readCookie("name");
+        if (name != "")
+            document.getElementById("txtBabyName").value = name;
+
+        var key = readCookie("dob");
+        if (key != "")
+            document.getElementById("txtDOB").value = key;
+
+        var name = readCookie("username");
+        if (name != "")
+            document.getElementById("txtUserName").value = name;
+
+        var name = readCookie("password");
+        if (name != "")
+            document.getElementById("txtPassword").value = name;
+
+        var key = readCookie("userid");
+        if (key != "")
+            document.getElementById("txtEmail").value = key;
+
+        document.getElementById("txtBabyName").focus();
+    }
+
+    function SetupUser(Obj) {
+
+        var txtUserName = document.getElementById("txtUserName");
+        if (txtUserName.value == "") {
+            alert("Missing User Name");
+            txtUserName.focus();
+            return;
+        }
+
+        var txtEmail = document.getElementById("txtEmail");
+        if (txtEmail.value == "") {
+            alert("Missing email alias");
+            txtEmail.focus();
+            return;
+        }
+
+        var txtPassword = document.getElementById("txtPassword");
+        if (txtPassword.value == "") {
+            alert("Missing password");
+            txtPassword.focus();
+            return;
+        }
+
+        var txtName = document.getElementById("txtBabyName");
+        if (txtName.value == "") {
+            alert("Missing Baby Name");
+            txtName.focus();
+            return;
+        }
+
+        var txtDOB = document.getElementById("txtDOB");
+        if (txtDOB.value == "") {
+            alert("Missing date of birth, or incorrect date");
+            txtDOB.focus();
+            return;
+        }
+        else if (!isDate(txtDOB.value)) {
+            txtDOB.focus();
+            txtDOB.select();
+            return;
+        }
+
+        createCookie("name", txtName.value, 999);
+        createCookie("dob", txtDOB.value, 999);
+        createCookie("username", txtUserName.value, 999);
+        createCookie("userid", txtEmail.value, 999);
+        createCookie("password", txtPassword.value, 999);
+
+        var postData = "";
+        postData += "name=" + encodeURI(txtName.value) + "&";
+        postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
+        postData += "username=" + encodeURI(txtUserName.value) + "&";
+        postData += "userid=" + encodeURI(txtEmail.value) + "&";
+        postData += "pwd=" + encodeURI(txtPassword.value) + "&";
+        postData += "postaction=setup_new_user";
+
+        var url = "BabyTracker.php?testaction=setup_new_user&" + postData;
+        url += GetCheckboxOptions();
+        url += OutputFileOption(Obj);
+        url += "&ignore=" + randomNumber(200000);
+
+        document.title = Obj.value;
+        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("frm").src = url;
     }
 
     function randomNumber(max) {
@@ -121,22 +218,6 @@
     }
 
     function OutputFileOption(Obj) {
-
-    /*
-        if (Obj && Obj.value) {
-            var name = Obj.value;
-            var amp = name.indexOf("&");
-            if (amp != -1)
-                name = name.substr(0, amp);
-
-            var ext = ".htm";
-            if (document.getElementsByName("xml_view").checked)
-                ext = ".xml";
-
-            return "&output_file=" + name + ext;
-        }
-    */
-
         var ofile = document.getElementById("txtOutputFile").value;
         if (ofile) {
             url = "output/" + ofile;
@@ -198,6 +279,18 @@
         document.title = Obj.value;
         document.getElementById("lblUrl").innerHTML = url;
         document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
+    }
+
+    function OnTestOutputClick(Obj) {
+
+        var url = "BabyTracker.output.php?testaction=" + Obj.value;
+        url += GetCheckboxOptions();
+        url += OutputFileOption(Obj);
+        url += "&ignore=" + randomNumber(200000);
+
+        document.title = Obj.value;
+        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("frm").src = url;
     }
 
     function Type(idx) {
@@ -281,15 +374,21 @@
         document.getElementById("frm").src = url;
     }
 
+    function ShowCookies_Click() {
+        cookie = document.cookie;
+        cookie = cookie.replace(/;/g, ";\n");
+        alert(cookie);
+    }
+
     function EraseCookies_Click() {
 
         deleteAllCookies();
 
-        eraseCookie("BabyTracker_name");
-        eraseCookie("BabyTracker_dob");
-        eraseCookie("BabyTracker_username");
-        eraseCookie("BabyTracker_userid");
-        eraseCookie("BabyTracker_password");
+        eraseCookie("name");
+        eraseCookie("dob");
+        eraseCookie("username");
+        eraseCookie("userid");
+        eraseCookie("password");
         alert("Done");
     }
 

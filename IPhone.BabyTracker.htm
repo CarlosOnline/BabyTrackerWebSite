@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
 <html>
 <head>
 <link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
@@ -248,25 +248,12 @@
         g_selectedType = g_BtnTypeArray[0];
         g_selected = g_EntryArray[0];
 
-        var name = readCookie("BabyTracker_name");
+        var name = readCookie("name");
         if (name != "") {
             document.title = name + " Tracker";
             document.getElementById("NameHeader").innerHTML = name + " Tracker";
         }
         LoadFromCookies();
-
-        var key = readCookie("BabyTracker_key");
-        if (key) {
-            var anchor = document.getElementById("aSpreadsheet");
-            anchor.href = "https://spreadsheets.google.com/ccc?key=" + key;
-
-            //document.getElementById("tblSheet1").style.display = "";
-            //document.getElementById("tblSheet2").style.display = "";
-            //document.getElementById("tblSheet3").style.display = "";
-
-            if (name)
-                anchor.target = "Online " + document.title;
-        }
 
         SelectImageType(g_selectedType);
         g_selected.focus();

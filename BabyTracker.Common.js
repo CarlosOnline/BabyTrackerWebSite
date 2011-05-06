@@ -83,24 +83,24 @@ function BtnClick_Common(Button) {
 
 function LoadFromCookies() {
 
-    SetAMPM(readCookie("BabyTracker_AMPM"));
+    SetAMPM(readCookie("AMPM"));
 
-    g_EntryForm.DateEntry.value = readCookie("BabyTracker_Date");
+    g_EntryForm.DateEntry.value = readCookie("Date");
     if (g_EntryForm.DateEntry.value == "") g_EntryForm.DateEntry.value = DateStringShort();
     DateEntryChange(g_EntryForm.DateEntry);
 
-    g_EntryForm.TimeEntry.value = readCookie("BabyTracker_Time");
+    g_EntryForm.TimeEntry.value = readCookie("Time");
     if (g_EntryForm.TimeEntry.value == "") g_EntryForm.TimeEntry.value = TimeStringShort();
 
-    g_EntryForm.AmountEntry.value = readCookie("BabyTracker_Amount");
-    g_EntryForm.DescriptionEntry.value = readCookie("BabyTracker_Note");
+    g_EntryForm.AmountEntry.value = readCookie("Amount");
+    g_EntryForm.DescriptionEntry.value = readCookie("Note");
 
     LoadCheckboxFromCookie("checkSavePreviousData", true);
     LoadCheckboxFromCookie("checkDebugMode", false);
     LoadCheckboxFromCookie("checkTestMode", false);
 
-    if (readCookie("BabyTracker_Type") != "")
-        g_selectedType = g_BtnTypeArray[TypeIdxFromName(readCookie("BabyTracker_Type"))];
+    if (readCookie("Type") != "")
+        g_selectedType = g_BtnTypeArray[TypeIdxFromName(readCookie("Type"))];
 
     if (document.getElementById("checkTestMode").checked == false) {
         if (g_IPhoneVersion) g_EntryForm.TimeEntry.value = "";
@@ -117,24 +117,24 @@ function PersistCheckboxCookie(checkbox) {
 }
 
 function ResetSavedData() {
-    eraseCookie("BabyTracker_Date");
-    eraseCookie("BabyTracker_date");
-    eraseCookie("BabyTracker_Time");
-    eraseCookie("BabyTracker_time");
-    eraseCookie("BabyTracker_Type");
-    eraseCookie("BabyTracker_type");
-    eraseCookie("BabyTracker_Amount");
-    eraseCookie("BabyTracker_amount");
-    eraseCookie("BabyTracker_Note");
-    eraseCookie("BabyTracker_note");
-    eraseCookie("BabyTracker_description");
-    eraseCookie("BabyTracker_Description");
-    eraseCookie("BabyTracker_AMPM");
+    eraseCookie("Date");
+    eraseCookie("date");
+    eraseCookie("Time");
+    eraseCookie("time");
+    eraseCookie("Type");
+    eraseCookie("type");
+    eraseCookie("Amount");
+    eraseCookie("amount");
+    eraseCookie("Note");
+    eraseCookie("note");
+    eraseCookie("description");
+    eraseCookie("Description");
+    eraseCookie("AMPM");
 
-    eraseCookie("BabyTracker_email");
-    eraseCookie("BabyTracker_Email");
-    eraseCookie("BabyTracker_Password");
-    eraseCookie("BabyTracker_Name");
+    eraseCookie("email");
+    eraseCookie("Email");
+    eraseCookie("Password");
+    eraseCookie("Name");
 
     eraseCookie("checkSavePreviousData");
     eraseCookie("checkDebugMode");
@@ -146,12 +146,12 @@ function ResetSavedData() {
 }
 
 function PersistCookieData() {
-    createCookie("BabyTracker_Date", g_EntryForm.DateEntry.value, 7);
-    createCookie("BabyTracker_Time", g_EntryForm.TimeEntry.value, 7);
-    createCookie("BabyTracker_Type", TypeName(g_selectedType), 7);
-    createCookie("BabyTracker_Amount", g_EntryForm.AmountEntry.value, 7);
-    createCookie("BabyTracker_Note", g_EntryForm.DescriptionEntry.value, 7);
-    createCookie("BabyTracker_AMPM", GetAmPm(), 7);
+    createCookie("Date", g_EntryForm.DateEntry.value, 7);
+    createCookie("Time", g_EntryForm.TimeEntry.value, 7);
+    createCookie("Type", TypeName(g_selectedType), 7);
+    createCookie("Amount", g_EntryForm.AmountEntry.value, 7);
+    createCookie("Note", g_EntryForm.DescriptionEntry.value, 7);
+    createCookie("AMPM", GetAmPm(), 7);
 
     PersistCheckboxCookie("checkSavePreviousData");
     PersistCheckboxCookie("checkDebugMode");
@@ -412,7 +412,7 @@ function OnSubmit_Click() {
 
     PersistCookieData();
 
-    if (readCookie("BabyTracker_key") == "") {
+    if (readCookie("key") == "") {
         alert("Baby Tracker has not been setup yet.  Click OK to be directed to setup, and then please resubmit your entry");
         window.location = "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTrackerSetup.htm";
     }
@@ -451,12 +451,12 @@ function RefreshCookieHelper(key) {
 }
 
 function RefreshCookies() {
-    RefreshCookieHelper("BabyTracker_key");
-    RefreshCookieHelper("BabyTracker_spreadsheetid");
-    RefreshCookieHelper("BabyTracker_worksheetid");
-    RefreshCookieHelper("BabyTracker_sqlid");
-    RefreshCookieHelper("BabyTracker_token");
-    RefreshCookieHelper("BabyTracker_tablename");
+    RefreshCookieHelper("key");
+    RefreshCookieHelper("spreadsheetid");
+    RefreshCookieHelper("worksheetid");
+    RefreshCookieHelper("sqlid");
+    RefreshCookieHelper("token");
+    RefreshCookieHelper("tablename");
 }
 function GetSubmitData() {
 
@@ -655,7 +655,7 @@ function PostDeleteRow(rowid)
 }
 
 function PostRefreshStats() {
-    var key = readCookie("BabyTracker_key");
+    var key = readCookie("key");
     if (key == "")
         return;
 
@@ -693,15 +693,15 @@ function PostAction(action, max) {
 
 function ReadCachedPostData() {
     var data = "";
-    data += "&name=" + readCookie("BabyTracker_name");
-    data += "&key=" + readCookie("BabyTracker_key");
-    data += "&spreadsheetid=" + readCookie("BabyTracker_spreadsheetid");
-    data += "&worksheetid=" + readCookie("BabyTracker_worksheetid");
+    data += "&name=" + readCookie("name");
+    data += "&key=" + readCookie("key");
+    data += "&spreadsheetid=" + readCookie("spreadsheetid");
+    data += "&worksheetid=" + readCookie("worksheetid");
     //data += "&uid=" + uniqid();
-    if (readCookie("BabyTracker_sqlid")) data += "&sqlid=" + readCookie("BabyTracker_sqlid");
-    if (readCookie("BabyTracker_token")) data += "&token=" + readCookie("BabyTracker_token");
-    if (readCookie("BabyTracker_tablename")) data += "&tablename=" + readCookie("BabyTracker_tablename");
-    if (readCookie("BabyTracker_userid")) data += "&userid=" + readCookie("BabyTracker_userid");
+    if (readCookie("sqlid")) data += "&sqlid=" + readCookie("sqlid");
+    if (readCookie("token")) data += "&token=" + readCookie("token");
+    if (readCookie("tablename")) data += "&tablename=" + readCookie("tablename");
+    if (readCookie("userid")) data += "&userid=" + readCookie("userid");
 
     return data;
 }

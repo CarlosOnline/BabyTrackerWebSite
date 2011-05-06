@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 function get_input_option($item)
 {
@@ -88,13 +88,6 @@ function get_config_value_ex($key, $file)
 	//vprint("<b>warning</b> config $key not found");
 }
 
-/*
-echo 'display_errors = ' . ini_get('display_errors') . "<br\>\n";
-echo 'register_globals = ' . ini_get('register_globals') . "<br\>\n";
-echo 'post_max_size = ' . ini_get('post_max_size') . "<br\>\n";
-echo 'post_max_size+1 = ' . (ini_get('post_max_size')+1) . "<br\>\n";
-echo 'post_max_size in bytes = ' . return_bytes(ini_get('post_max_size'));
-*/
 
 $rand = rand(0,2000);
 if (!$xml_view)
@@ -241,9 +234,6 @@ function send_to_newfile($string, $filename)
 
 function flush_to_file($filename)
 {
-	//vprint("flush to file $filename");
-	//$path = dirname($_SERVER['SCRIPT_FILENAME']);
-	//$fname = "$path/$filename";
 	$fp = fopen("$filename", "a");
 	fwrite($fp, ob_get_contents());
 	fflush($fp);
@@ -252,8 +242,6 @@ function flush_to_file($filename)
 
 function delete_output_file($filename)
 {
-	//$path = dirname($_SERVER['SCRIPT_FILENAME']);
-	//$fname = "$path/$filename";
     @unlink($filename);
 }
 
@@ -642,8 +630,9 @@ function SetHtmlCookie($key, $value)
 	define("HoursPerDay", 24);
 	define("OneDayInSeconds", 60*60*24);
 
-    vprint("setcookie() [$key] to [$value]");
-	setcookie($key, $value, time() * OneDayInSeconds * 724);
+	$seconds = OneDayInSeconds * 724;
+    vprint("setcookie($key)=$value time=$seconds");
+	setcookie($key, $value, time() + $seconds);
 }
 
 function hex_chars($data) {
@@ -765,4 +754,10 @@ function flipDiagonally($arr) {
     }
     return $out;
 }
+
+//echo 'display_errors = ' . ini_get('display_errors') . "<br\>\n";
+//echo 'register_globals = ' . ini_get('register_globals') . "<br\>\n";
+//echo 'post_max_size = ' . ini_get('post_max_size') . "<br\>\n";
+//echo 'post_max_size+1 = ' . (ini_get('post_max_size')+1) . "<br\>\n";
+//echo 'post_max_size in bytes = ' . return_bytes(ini_get('post_max_size'));
 ?>

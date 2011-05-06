@@ -1,10 +1,9 @@
 <?php
 
-require_once("BabyTracker.output.php");
-require_once("BabyTracker.spreadsheet.php");
+//require_once("BabyTracker.output.php");
 //require_once("BabyTracker.zend.spreadsheet.php");
-require_once("BabyTracker.mysql.php");
-require_once("BabyTracker.stats.php");
+//require_once("BabyTracker.mysql.php");
+//require_once("BabyTracker.stats.php");
 
 define("MLPerOunce", 29.5735296);
 $html_space = "&nbsp;";

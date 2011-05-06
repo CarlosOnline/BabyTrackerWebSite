@@ -2481,4 +2481,317 @@ where `user_token`='4dbe6c306c346' AND `child_token`='4dbe6e1a2376f' AND `addres
         )
 
 )
-</pre>********************************************<br/>
+</pre>********************************************<br/><h3>BabyTracker Server Error</h3><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/><b>CommonActions()</b> <span style='color: #FF0000; font-size: medium;'>Missing token, Not signed in</span><br/><h3>BabyTracker Server Error</h3><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/><b>CommonActions()</b> <span style='color: #FF0000; font-size: medium;'>Missing sqlrowid</span><br/>sql_error query() mysql_query failed for query=select `tablename` from BT_Registered_Users where `token`='4dc3961b84d1a' OR  0=1 Unknown column 'tablename' in 'field list'<br/><h1>BabyTracker Sql Server sql_error</h1><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/>query() mysql_query failed for query=select `tablename` from BT_Registered_Users where `token`='4dc3961b84d1a' OR  0=1, sql sql_error=Unknown column 'tablename' in 'field list'<br/>********************************************<br/>sql_error array_print(): <pre style="font-size: 11px; line-height: 11px;">Array
+(
+    [0] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 59
+            [function] => sql_error
+            [args] => Array
+                (
+                    [0] => query() mysql_query failed for query=select `tablename` from BT_Registered_Users where `token`='4dc3961b84d1a' OR  0=1
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 691
+            [function] => query
+            [class] => mysql
+            [object] => <span style="color: #079700;">mysql</span> Object
+                (
+                    [database:mysql:private] => cgomes
+                    [server:mysql:private] => 
+                    [con:mysql:private] => Resource id #8
+                )
+
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => select `tablename` from BT_Registered_Users where `token`='4dc3961b84d1a' OR  0=1
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 666
+            [function] => GetRegisteredTableName
+            [args] => Array
+                (
+                    [0] => 4dc3961b84d1a
+                    [1] => 
+                    [2] => 
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 110
+            [function] => UserTableName
+            [args] => Array
+                (
+                    [0] => 
+                    [1] => 
+                    [2] => 4dc3961b84d1a
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 330
+            [function] => CommonActions
+            [args] => Array
+                (
+                )
+
+        )
+
+    [5] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 352
+            [function] => TestMe
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+</pre>********************************************<br/>sql_error query() mysql_query failed for query=update `` set `timestamp`=NOW(), amount='20', `datetime`=STR_TO_DATE('5/6/2011 12:05 AM', '%m/%d/%Y %l:%i %p'), `type`='Wet Diaper' where `id`='19'; Incorrect table name ''<br/><h1>BabyTracker Sql Server sql_error</h1><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/>query() mysql_query failed for query=update `` set `timestamp`=NOW(), amount='20', `datetime`=STR_TO_DATE('5/6/2011 12:05 AM', '%m/%d/%Y %l:%i %p'), `type`='Wet Diaper' where `id`='19';, sql sql_error=Incorrect table name ''<br/>********************************************<br/>sql_error array_print(): <pre style="font-size: 11px; line-height: 11px;">Array
+(
+    [0] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 59
+            [function] => sql_error
+            [args] => Array
+                (
+                    [0] => query() mysql_query failed for query=update `` set `timestamp`=NOW(), amount='20', `datetime`=STR_TO_DATE('5/6/2011 12:05 AM', '%m/%d/%Y %l:%i %p'), `type`='Wet Diaper' where `id`='19';
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 615
+            [function] => query
+            [class] => mysql
+            [object] => <span style="color: #079700;">mysql</span> Object
+                (
+                    [database:mysql:private] => cgomes
+                    [server:mysql:private] => 
+                    [con:mysql:private] => Resource id #8
+                )
+
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => update `` set `timestamp`=NOW(), amount='20', `datetime`=STR_TO_DATE('5/6/2011 12:05 AM', '%m/%d/%Y %l:%i %p'), `type`='Wet Diaper' where `id`='19';
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 109
+            [function] => UpdateChildTableRow
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                            [sqlrowid] => 19
+                            [date] => 5/6/2011
+                            [time] => 12:05 AM
+                            [type] => Wet Diaper
+                            [amount] => 20
+                        )
+
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 312
+            [function] => CommonActions
+            [args] => Array
+                (
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 334
+            [function] => TestMe
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+</pre>********************************************<br/><h3>BabyTracker Server Error</h3><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/><b>CommonActions()</b> <span style='color: #FF0000; font-size: medium;'>Missing sqlrowid</span><br/>sql_error query() mysql_query failed for query=update `` set `timestamp`=NOW(), amount='164', `datetime`=STR_TO_DATE('5/6/2011 12:10 AM', '%m/%d/%Y %l:%i %p'), `type`='Poopy Diaper' where `id`='31'; Incorrect table name ''<br/><h1>BabyTracker Sql Server sql_error</h1><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/>query() mysql_query failed for query=update `` set `timestamp`=NOW(), amount='164', `datetime`=STR_TO_DATE('5/6/2011 12:10 AM', '%m/%d/%Y %l:%i %p'), `type`='Poopy Diaper' where `id`='31';, sql sql_error=Incorrect table name ''<br/>********************************************<br/>sql_error array_print(): <pre style="font-size: 11px; line-height: 11px;">Array
+(
+    [0] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 59
+            [function] => sql_error
+            [args] => Array
+                (
+                    [0] => query() mysql_query failed for query=update `` set `timestamp`=NOW(), amount='164', `datetime`=STR_TO_DATE('5/6/2011 12:10 AM', '%m/%d/%Y %l:%i %p'), `type`='Poopy Diaper' where `id`='31';
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 616
+            [function] => query
+            [class] => mysql
+            [object] => <span style="color: #079700;">mysql</span> Object
+                (
+                    [database:mysql:private] => cgomes
+                    [server:mysql:private] => 
+                    [con:mysql:private] => Resource id #8
+                )
+
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => update `` set `timestamp`=NOW(), amount='164', `datetime`=STR_TO_DATE('5/6/2011 12:10 AM', '%m/%d/%Y %l:%i %p'), `type`='Poopy Diaper' where `id`='31';
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 105
+            [function] => UpdateChildTableRow
+            [args] => Array
+                (
+                    [0] => Array
+                        (
+                            [sqlrowid] => 31
+                            [date] => 5/6/2011
+                            [time] => 12:10 AM
+                            [type] => Poopy Diaper
+                            [amount] => 164
+                        )
+
+                    [1] => 4dc3961b84d1a
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 308
+            [function] => CommonActions
+            [args] => Array
+                (
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 330
+            [function] => TestMe
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+</pre>********************************************<br/>sql_error query() mysql_query failed for query=select * from `` where `id`='31' Incorrect table name ''<br/><h1>BabyTracker Sql Server sql_error</h1><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/>query() mysql_query failed for query=select * from `` where `id`='31', sql sql_error=Incorrect table name ''<br/>********************************************<br/>sql_error array_print(): <pre style="font-size: 11px; line-height: 11px;">Array
+(
+    [0] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 59
+            [function] => sql_error
+            [args] => Array
+                (
+                    [0] => query() mysql_query failed for query=select * from `` where `id`='31'
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 630
+            [function] => query
+            [class] => mysql
+            [object] => <span style="color: #079700;">mysql</span> Object
+                (
+                    [database:mysql:private] => cgomes
+                    [server:mysql:private] => 
+                    [con:mysql:private] => Resource id #8
+                )
+
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => select * from `` where `id`='31'
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 115
+            [function] => DeleteChildTableRow
+            [args] => Array
+                (
+                    [0] => 31
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 308
+            [function] => CommonActions
+            [args] => Array
+                (
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 330
+            [function] => TestMe
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+</pre>********************************************<br/><h3>BabyTracker Server Error</h3><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/><b>TestMe()</b> <span style='color: #FF0000; font-size: medium;'>Missing testaction</span><br/><h3>BabyTracker Server Error</h3><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/><b>TestMe()</b> <span style='color: #FF0000; font-size: medium;'>Missing testaction</span><br/><h3>BabyTracker Server Error</h3><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/><b>DeleteChildTableRow()</b> <span style='color: #FF0000; font-size: medium;'>Delete failed rowid='33'</span><br/><h3>BabyTracker Server Error</h3><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/><b>DeleteChildTableRow()</b> <span style='color: #FF0000; font-size: medium;'>Delete failed rowid='34'</span><br/>

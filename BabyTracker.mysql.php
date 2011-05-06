@@ -1,7 +1,6 @@
 <?php
 
-require_once("BabyTracker.output.php");
-
+//require_once("BabyTracker.output.php");
 
 $g_mysql = 0;
 $g_mysql_babytracker_version = 2.1;
@@ -26,7 +25,7 @@ class mysql
 	}
 
 	function RegTableName() {
-	    return "BabyTracker_RegisteredUsers";
+	    return "RegisteredUsers";
 	}
 
 	public function Database() {
@@ -556,7 +555,7 @@ function GetChildTableName($token)
 	return $child['tablename'];
 }
 
-function AddRowToChildTable($mysql, $data, $token)
+function AddRowToChildTable($data, $token)
 {
     $date = $data["date"];
     $time = $data["time"];
@@ -567,6 +566,7 @@ function AddRowToChildTable($mysql, $data, $token)
 	$breastmilk = @$data["breastmilk"];
 	$left = @$data["left"];
 	$right = @$data["right"];
+	$mysql = GetMysql();
 	$table = GetChildTableName($token);
 
     vprint("Starting");
@@ -592,7 +592,7 @@ function AddRowToChildTable($mysql, $data, $token)
 	return $row;
 }
 
-function UpdateUserTableRow($mysql, $data, $client)
+function UpdateChildTableRow($data, $token)
 {
 	$sqlrowid = $data["sqlrowid"];
     $date = $data["date"];
@@ -601,8 +601,8 @@ function UpdateUserTableRow($mysql, $data, $client)
     $amount = @$data["amount"];
     $description = @$data["description"];
 
-	// Client Data
-	$table = $client["tablename"];
+	$mysql = GetMysql();
+	$table = GetChildTableName($token);
 
     vprint("Starting");
 
@@ -621,22 +621,19 @@ function UpdateUserTableRow($mysql, $data, $client)
 	return $row;
 }
 
-function DeleteUserTableRow($mysql, $sqlrowid, $client)
+function DeleteChildTableRow($sqlrowid, $token)
 {
-	// Client Data
-	$title = $client["title"];
-    $key = $client["key"];
-    $spreadsheetid = $client["spreadsheetid"];
-    $worksheetid = $client["worksheetid"];
-	$table = $client["tablename"];
-
     vprint("Starting");
-
-	$sql = "update `$table` set `amount`=NULL, `description`=NULL, `version`=0, `amount_oz`=NULL,`type`='deleted', `timestamp`=NOW() where `id`='$sqlrowid';";
-	$mysql->query($sql);
+	$mysql = GetMysql();
+	$table = GetChildTableName($token);
 
 	$results = $mysql->query("select * from `$table` where `id`='$sqlrowid'");
     $row = $mysql->query_results($results);
+	if ($row == null)
+		error("Delete failed rowid='$sqlrowid'");
+
+	$sql = "delete from `$table` where `id`='$sqlrowid';";
+	$mysql->query($sql);
 
 	return $row;
 }

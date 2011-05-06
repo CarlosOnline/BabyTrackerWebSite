@@ -1,4 +1,4 @@
-﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
 <html>
 <head>
 <link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
@@ -144,7 +144,7 @@
     }
 
     function PostRefreshStats() {
-        var key = readCookie("BabyTracker_key");
+        var key = readCookie("key");
         if (key == "")
             return;
 
@@ -176,15 +176,15 @@
 
     function ReadCachedPostData() {
         var data = "";
-        data += "&name=" + readCookie("BabyTracker_name");
-        data += "&key=" + readCookie("BabyTracker_key");
-        data += "&spreadsheetid=" + readCookie("BabyTracker_spreadsheetid");
-        data += "&worksheetid=" + readCookie("BabyTracker_worksheetid");
+        data += "&name=" + readCookie("name");
+        data += "&key=" + readCookie("key");
+        data += "&spreadsheetid=" + readCookie("spreadsheetid");
+        data += "&worksheetid=" + readCookie("worksheetid");
         //data += "&uid=" + uniqid();
-        if (readCookie("BabyTracker_sqlid")) data += "&sqlid=" + readCookie("BabyTracker_sqlid");
-        if (readCookie("BabyTracker_token")) data += "&token=" + readCookie("BabyTracker_token");
-        if (readCookie("BabyTracker_tablename")) data += "&tablename=" + readCookie("BabyTracker_tablename");
-        if (readCookie("BabyTracker_userid")) data += "&userid=" + readCookie("BabyTracker_userid");
+        if (readCookie("sqlid")) data += "&sqlid=" + readCookie("sqlid");
+        if (readCookie("token")) data += "&token=" + readCookie("token");
+        if (readCookie("tablename")) data += "&tablename=" + readCookie("tablename");
+        if (readCookie("userid")) data += "&userid=" + readCookie("userid");
 
         return data;
     }

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 echo $title_test;
 
@@ -90,7 +90,7 @@ function ProcessLogTable_Row($row)
             vprint("sending to spreadsheet");
 		    // UNDONE: optimize getting new spreadsheet - hash spreadsheet by key, spreadsheetid
             // UNDONE: get title from table
-		    $doc = GetSpreadsheet($row["title"], $row["key"], $row["spreadsheetid"], BabyTracker_UserId(), BabyTracker_Pwd());
+		    $doc = GetSpreadsheet($row["title"], $row["key"], $row["spreadsheetid"], UserId(), Pwd());
 		    $doc->setWorksheet("Tracking");
 		    $doc->setWorksheetId($row["worksheetid"]);
 		    $doc->add($data, 0);
@@ -210,7 +210,7 @@ function AddRowToGoogleSpreadsheet()
 	$spreadsheetid="tWt5OoS_q-xn-ltDogD7Yzg";
 	$worksheetid="od7";
 
-	$docApp = GetSpreadsheet($title, $key, $spreadsheetid, BabyTracker_UserId(), BabyTracker_Pwd());
+	$docApp = GetSpreadsheet($title, $key, $spreadsheetid, UserId(), Pwd());
 	$docApp->setWorksheet("Tracking");
 	$docApp->setWorksheetId($worksheetid);
 	$docApp->add($data, 0);
@@ -368,8 +368,8 @@ ExitTest:
 /* ******************************************************************************************* */
 /* ******************************************************************************************* */
 
-$babytracker_userid = BabyTracker_UserId();
-$babytracker_pwd = BabyTracker_Pwd();
+$babytracker_userid = UserId();
+$babytracker_pwd = Pwd();
 $babytracker_template_key = "0AuM4WbOw9IfddC1GZU1VblFEajRQNExQenU5MWc1aWc";
 $babytracker_public_spreadsheet_url = "https://spreadsheets.google.com/ccc?key=0AuM4WbOw9IfddC1GZU1VblFEajRQNExQenU5MWc1aWc&hl=en";
 

@@ -104,19 +104,19 @@
     var xmlhttp = null;
 
     function OnLoad() {
-        var name = readCookie("BabyTracker_name");
+        var name = readCookie("name");
         if (name != "")
             document.getElementById("txtBabyName").value = name;
 
-        var key = readCookie("BabyTracker_dob");
+        var key = readCookie("dob");
         if (key != "")
             document.getElementById("txtDOB").value = key;
 
-        var name = readCookie("BabyTracker_username");
+        var name = readCookie("username");
         if (name != "")
             document.getElementById("txtUserName").value = name;
 
-        var key = readCookie("BabyTracker_userid");
+        var key = readCookie("userid");
         if (key != "")
             document.getElementById("txtEmail").value = key;
 
@@ -124,11 +124,11 @@
     }
 
     function Cancel_Click() {
-        createCookie("BabyTracker_name", document.getElementById("txtBabyName").value, 999);
-        createCookie("BabyTracker_dob", document.getElementById("txtDOB").value, 999);
-        createCookie("BabyTracker_username", document.getElementById("txtUserName").value, 999);
-        createCookie("BabyTracker_userid", document.getElementById("txtEmail").value, 999);
-        //createCookie("BabyTracker_password", document.getElementById("txtPassword").value, 999);
+        createCookie("name", document.getElementById("txtBabyName").value, 999);
+        createCookie("dob", document.getElementById("txtDOB").value, 999);
+        createCookie("username", document.getElementById("txtUserName").value, 999);
+        createCookie("userid", document.getElementById("txtEmail").value, 999);
+        //createCookie("password", document.getElementById("txtPassword").value, 999);
         history.go(-1);
     }
 
@@ -176,11 +176,11 @@
 
         var chkSetupDebugMode = document.getElementById("chkSetupDebugMode");
 
-        createCookie("BabyTracker_name", txtName.value, 999);
-        createCookie("BabyTracker_dob", txtDOB.value, 999);
-        createCookie("BabyTracker_username", txtUserName.value, 999);
-        createCookie("BabyTracker_userid", txtEmail.value, 999);
-        //createCookie("BabyTracker_password", txtPassword.value, 999);
+        createCookie("name", txtName.value, 999);
+        createCookie("dob", txtDOB.value, 999);
+        createCookie("username", txtUserName.value, 999);
+        createCookie("userid", txtEmail.value, 999);
+        //createCookie("password", txtPassword.value, 999);
 
         var postData = "";
         postData += "name=" + encodeURI(txtName.value) + "&";
@@ -217,7 +217,7 @@
         idxStart += pattern.length;
         var idxEnd = data.indexOf(";", idxStart);
         var value = data.substr(idxStart, idxEnd - idxStart);
-        createCookie("BabyTracker_" + field, value);
+        createCookie(field, value);
         return value;
     }
 
@@ -241,7 +241,7 @@
                     return;
                 }
 
-                alert("Successfully setup account for - [Baby " + readCookie("BabyTracker_name") + " Tracker]");
+                alert("Successfully setup account for - [Baby " + readCookie("name") + " Tracker]");
                 history.go(-1);
                 return;
             }
@@ -258,19 +258,19 @@
 
         deleteAllCookies();
 
-        eraseCookie("BabyTracker_name");
+        eraseCookie("name");
         document.getElementById("txtBabyName").value = "";
 
-        eraseCookie("BabyTracker_dob");
+        eraseCookie("dob");
         document.getElementById("txtDOB").value = "";
 
-        eraseCookie("BabyTracker_username");
+        eraseCookie("username");
         document.getElementById("txtUserName").value = "";
 
-        eraseCookie("BabyTracker_userid");
+        eraseCookie("userid");
         document.getElementById("txtEmail").value = "";
 
-        eraseCookie("BabyTracker_password");
+        eraseCookie("password");
         document.getElementById("txtPassword").value = "";
 
         eraseCookie("checkDebugMode");

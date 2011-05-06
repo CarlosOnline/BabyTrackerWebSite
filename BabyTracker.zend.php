@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require_once("BabyTracker.output.php");
 
@@ -34,7 +34,7 @@ function RequestSingleUseToken()
 	$url .=	"&scope=" . urlencode("https://spreadsheets.google.com/feeds/");
 	$url .= "&session=1";
 	//$url .= "&secure=1";
-	//$url .= "&hd=" . BabyTracker_UserId();
+	//$url .= "&hd=" . UserId();
 
 	vprint($url);
 

@@ -3,13 +3,12 @@
 ignore_user_abort(1);
 //echo phpinfo();
 
-setcookie("babytracker_version", "1.1");
+setcookie("babytracker_version", "1.5");
 
 error_reporting(E_ALL);
 ini_set('error_reporting', E_ALL);
 
 require_once("BabyTracker.output.php");
-require_once("BabyTracker.spreadsheet.php");
 require_once("BabyTracker.mysql.php");
 require_once("BabyTracker.stats.php");
 require_once("BabyTracker.process.php");
@@ -43,19 +42,9 @@ function error_handler($level, $message, $file, $line, $context)
     return(false); //Otherwise, use PHP's error handler
 }
 
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-
 function CommonActions()
 {
 	$file = get_input_option("filename");
-	$babytracker_userid = BabyTracker_UserId();
-	$babytracker_pwd = BabyTracker_Pwd();
-	$babytracker_template_key = get_config_value("babytracker_template_key");
-	$babytracker_public_spreadsheet_url = get_config_value("babytracker_public_spreadsheet_url");
 	$action = get_input_option("postaction");
 	@$sqlrowid = get_input_option("sqlrowid");
 	@$token = get_input_option("token");
@@ -90,20 +79,15 @@ function CommonActions()
 	    read_input_option("left", $data);
 	    read_input_option("right", $data);
 
-	    $mysql = GetMysql();
-	    $row = AddRowToChildTable($mysql, $data, $token);
+	    $row = AddRowToChildTable($data, $token);
 		$sqlrowid = $row["id"];
 	    $data["sqlrowid"] = $sqlrowid;
-	    $upload_rowid = AddRowToUploadTable($mysql, $data, $client);
 
 	    print("Successfully added the data. Data: " . DataToTableRow("", $data, $row["timestamp"]));
-
-		DumpQueryResults($mysql->query("select * from `" . $client['tablename'] . "` where `id`='" . $data["sqlrowid"] . "'"));
 	    break;
 
 	case "updaterow":
 	    if (get_input_option("sqlrowid") == "") error("Missing sqlrowid");
-	    if (!$key) error ("Missing key");
 
 	    $data = array(
 	      "sqlrowid" => get_input_option("sqlrowid"));
@@ -118,91 +102,72 @@ function CommonActions()
 	    read_input_option("left", $data);
 	    read_input_option("right", $data);
 
-	    // Client Data
-	    if (!$client["tablename"]) $client["tablename"] = UserTableName($userid, $name, $token);
-
-	    $mysql = GetMysql();
-	    $upload_rowid = AddUpdateToUploadTable($mysql, $data, $client);
-	    $row = UpdateUserTableRow($mysql, $data, $client);
+	    $row = UpdateChildTableRow($data, $token);
 
 	    print("Successfully added the data. Data: " . DataToTableRow("", $data, $row["timestamp"]));
-
-		//DumpQueryResults($mysql->query("select * from `" . $client['tablename'] . "` where `id`='" . $data["sqlrowid"] . "'"));
-
 	    break;
 
 	case "deleterow":
 	    if (get_input_option("sqlrowid") == "") error("Missing sqlrowid");
-	    if (!$key) error ("Missing key");
-
 	    $data = array(
 	      "sqlrowid" => get_input_option("sqlrowid"));
 
-	    // Client Data
-	    if (!$client["tablename"]) $client["tablename"] = UserTableName($userid, $name, $token);
+	    $row = DeleteChildTableRow($data["sqlrowid"], $token);
 
-	    $mysql = GetMysql();
-	    $row = DeleteUserTableRow($mysql, $data["sqlrowid"], $client);
-	    $upload_rowid = AddDeleteToUploadTable($mysql, $data, $client);
-
-	    print("Successfully deleted the data. Data: " . DataToTableRow("", $data, $row["timestamp"]));
-
-		//DumpQueryResults($mysql->query("select * from `" . $client['tablename'] . "` where `id`='" . $data["sqlrowid"] . "'"));
-
+	    print("Successfully deleted the data. Data: " . DataToTableRow("", $row, $row["timestamp"]));
 	    break;
 
-        case "stats_sql":
-			DisplaySqlStats($client);
-            break;
-
-        case "stats_sql_col":
-            $item = get_input_option("stats_item");
-            $day_max_delta = get_input_option("day_max_delta");
-            $day_min_delta = get_input_option("day_min_delta");
-			DisplaySqlStats_Col($client, $item, $day_max_delta, $day_min_delta);
-            break;
-
-        case "stats_counts":
-			DisplaySqlStats_Counts($client, $item, $day_max_delta, $day_min_delta);
-            break;
-
-        case "setup_system_tables":
-			SetupSystemTables();
-            break;
-
-        case "delete_system_tables":
-            DeleteSystemTables();
-            break;
-
-        case "delete_reg_table":
-	        $mysql = GetMysql();
-            $sql = "delete from `" . get_config_value("registered_users_table_name") . "` where `userid`='$userid'";
-	        $mysql->query($sql);
-            break;
-
-		case "setup_user":
-		case "setup_new_user":
-		{
-			if (get_input_option("username")=="") error("Missing User Name");
-			if (get_input_option("name")=="") error("Missing Child Name");
-			if (get_input_option("dob")=="") error("Missing date of Birth");
-			if (get_input_option("userid")=="") error("Missing email");
-			if (get_input_option("pwd")=="") error("Missing password");
-
-			$user = RegisterUser(get_input_option("username"), get_input_option("userid"), get_input_option("pwd"));
-			$child = RegisterChild(get_input_option("name"), get_input_option("dob"), $user);
-			$session = RegisterSession($user, $child);
-			$token = $session["token"];
-
-			SetHtmlCookie("token", $token);
-
-			print("Successfully setup user.<br/>token=$token;<br/>");
-			break;
-		}
+	case "stats_sql":
+		DisplaySqlStats($client);
 		break;
 
-        default:
-            return false; // error
+	case "stats_sql_col":
+		$item = get_input_option("stats_item");
+		$day_max_delta = get_input_option("day_max_delta");
+		$day_min_delta = get_input_option("day_min_delta");
+		DisplaySqlStats_Col($client, $item, $day_max_delta, $day_min_delta);
+		break;
+
+	case "stats_counts":
+		DisplaySqlStats_Counts($client, $item, $day_max_delta, $day_min_delta);
+		break;
+
+	case "sqlsetup":
+	case "setuplogtable":
+	case "setup_system_tables":
+		SetupSystemTables();
+		break;
+
+	case "delete_system_tables":
+		DeleteSystemTables();
+		break;
+
+	case "delete_reg_table":
+		$mysql = GetMysql();
+		$sql = "delete from `" . get_config_value("registered_users_table_name") . "` where `userid`='$userid'";
+		$mysql->query($sql);
+		break;
+
+	case "setup_user":
+	case "setup_new_user":
+		if (get_input_option("username")=="") error("Missing User Name");
+		if (get_input_option("name")=="") error("Missing Child Name");
+		if (get_input_option("dob")=="") error("Missing date of Birth");
+		if (get_input_option("userid")=="") error("Missing email");
+		if (get_input_option("pwd")=="") error("Missing password");
+
+		$user = RegisterUser(get_input_option("username"), get_input_option("userid"), get_input_option("pwd"));
+		$child = RegisterChild(get_input_option("name"), get_input_option("dob"), $user);
+		$session = RegisterSession($user, $child);
+		$token = $session["token"];
+
+		SetHtmlCookie("token", $token);
+
+		print("Successfully setup user.<br/>token=$token;<br/>");
+		break;
+
+	default:
+		return false; // error
     }
 
     return true;
@@ -210,11 +175,6 @@ function CommonActions()
 
 function PostProcessing()
 {
-	$babytracker_userid = BabyTracker_UserId();
-	$babytracker_pwd = BabyTracker_Pwd();
-	$babytracker_template_key = get_config_value("babytracker_template_key");
-	$babytracker_public_spreadsheet_url = get_config_value("babytracker_public_spreadsheet_url");
-
 	$name = get_input_option("name");
 	$userid = get_input_option("userid");
 	$token = get_input_option("token");
@@ -239,26 +199,19 @@ function PostProcessing()
 	}
 }
 
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-
 function TestMe()
 {
-	$babytracker_userid = BabyTracker_UserId();
-	$babytracker_pwd = BabyTracker_Pwd();
-
+/*
 	read_config_option("test_username", "username", $_POST);
 	read_config_option("test_name", "name", $_POST);
 	read_config_option("test_dob", "dob", $_POST);
 	read_config_option("test_userid", "userid", $_POST);
 	read_config_option("test_pwd", "pwd", $_POST);
-	read_config_option("test_row_id", "sqlrowid", $_POST);
+*/
 	read_config_option("testaction", "postaction", $_POST);
+
 	$_POST["postaction"] = get_input_option("testaction");
-	$token = $_COOKIE["BabyTracker_token"];;
+	$token = $_COOKIE["token"];;
 	$_POST["token"] = $token;
 
     vprint("testaction = " . get_input_option("testaction"));
@@ -271,52 +224,6 @@ function TestMe()
 		case "post":
 			CommonActions();
 			break;
-
-		case "runex":
-			//$file = $_SERVER['SCRIPT_FILENAME'];
-            $file = "BabyTracker.php";
-			$path = dirname($_SERVER['SCRIPT_FILENAME']);
-			$idx=0;
-
-            $count = 0;
-            while ($count < 1) // UNDONE:
-            {
-                $count++;
-			    $idx++;
-                vprint("exec($file?testaction='runall'&output_file=runex.$idx.htm&ignore=100$idx)");
-                $result = exec("$file?testaction='runall'&output_file=runex.$idx.htm&ignore=100$idx");
-				vprint("exec result = [$result]");
-                $result = exec("php runex.php");
-				vprint("exec result = [$result]");
-            }
-			break;
-
-        case "sqladd":
-            TestAddRowToLogTable();
-            break;
-
-        case "sqladdex":
-			$max = rand(10, 200);
-			for ($idx=0; $idx < $max; $idx++)
-				TestAddRowToLogTable();
-            break;
-
-        case "sqlsetup":
-        case "setuplogtable":
-            SetupSystemTables();
-            break;
-
-        case "sqldump":
-            DumpLogTableResults();
-            break;
-
-        case "touch_all":
-            TouchAllRecords();
-            break;
-
-        case "stop_all":
-            StopAllRuns();
-            break;
 
         case "run_sql_file":
             $filename = get_input_option("filename");
@@ -356,33 +263,17 @@ function TestMe()
 			if ($result === true)
 				return; // completed successfully
 
-            vprint("Missing testaction");
-            vprint("valid testaction:");
-            vprint("------- run");
-            vprint("------- sqlprocess");
-            vprint("------- sqlsetup");
-            vprint("------- sqladd");
-            vprint("------- setuplogtable");
-            vprint("------- sqldump");
-            vprint("------- spreadsheetsetup");
-            vprint("------- spreadsheetadd");
-
 			varray_print($_POST);
 			varray_print($_GET);
+            error("Missing testaction");
             break;
     }
 }
 
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-/* ******************************************************************************************* */
-
 if (get_input_option("testaction"))
-    TestMe();
+	TestMe();
 else
-    PostProcessing();
+	PostProcessing();
 
 flush_buffers();
 
