@@ -1,1 +1,71 @@
-<b>require_once()</b> uri=[/BabyTracker/BabyTracker.php?testaction=stats_sql&verbose=1&ignore=168056]<br/><b>require_once()</b> rand=1423 php version = 5.3.1 fileversion=1298354487<br/>﻿﻿﻿﻿<b>query()</b> mysql(<small>select * from BT_Registered_Users where (`userid`='carlos.bear@gmail.com' AND `name`='Kai') OR  0=1</small>)<br/><b>TestMe()</b> testaction = stats_sql<br/><b>query()</b> mysql(<small>select CAST(MAX(`datetime`) as DATE) from user_table_carlos_bear_gmail_com_Kai</small>)<br/><b>query()</b> mysql(<small>select `dob` from BT_Registered_Users where `token`='4d1867f63c5ae' OR (`userid`='carlos.bear@gmail.com' AND `name`='Kai') OR  0=1</small>)<br/><b>query()</b> mysql(<small>select TIMESTAMPDIFF(DAY, '2010-10-01', '2011-04-25')</small>)<br/><b>query()</b> mysql(<small>update user_table_carlos_bear_gmail_com_Kai set amount_oz=IF(ISNULL(amount), NULL, IF((type='breast' OR amount < 9), amount, amount / 29.5735296));</small>)<br/><b>query()</b> mysql(<small>select TIMESTAMPADD(DAY, -1, '2011-04-25')</small>)<br/><b>query()</b> mysql(<small>select TIMESTAMPADD(DAY, 1, '2011-04-25')</small>)<br/><b>DisplaySqlStats()</b> today=2011-04-25 yesterday=2011-04-24<br/><b>FillStatsArray()</b> user_table_carlos_bear_gmail_com_Kai 1 2011-04-25 2011-04-26<br/><b>query()</b> mysql(<small>SELECT '&nbsp;', cast(count(id) as DECIMAL(10,2)) as count,cast(sum(amount_oz) as DECIMAL(10,2)) as sum,cast(avg(amount_oz) as DECIMAL(10,2)) as avg,'&nbsp;' FROM user_table_carlos_bear_gmail_com_Kai  WHERE 1=1 AND `datetime` >= '2011-04-25' AND `datetime` < '2011-04-26'  GROUP BY `type`</small>)<br/><b>query()</b> mysql(<small>select MAX(`datetime`) from user_table_carlos_bear_gmail_com_Kai</small>)<br/><b>query()</b> mysql(<small>select TIMESTAMPADD(DAY, -1, '2011-04-25 22:00:00')</small>)<br/><b>query()</b> mysql(<small>select TIMESTAMPADD(SECOND, 1, '2011-04-25 22:00:00')</small>)<br/><b>FillStatsArray()</b> user_table_carlos_bear_gmail_com_Kai 1 2011-04-24 22:00:00 2011-04-25 22:00:01<br/><b>query()</b> mysql(<small>SELECT '&nbsp;', cast(count(id) as DECIMAL(10,2)) as count,cast(sum(amount_oz) as DECIMAL(10,2)) as sum,cast(avg(amount_oz) as DECIMAL(10,2)) as avg,'&nbsp;' FROM user_table_carlos_bear_gmail_com_Kai  WHERE 1=1 AND `datetime` >= '2011-04-24 22:00:00' AND `datetime` < '2011-04-25 22:00:01'  GROUP BY `type`</small>)<br/><head><link href='../table.css' type='text/css' rel='stylesheet'/><link href='table.css' type='text/css' rel='stylesheet'/></head><table id='gradient-style'><tr><th>Item Description</th><th>Today</th><th>24 Hours</th></tr><tr><td><b>Nurse</b></td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Number of Nurses</td><td>9</td><td>9</td></tr><tr><td>Time Nursed</td><td>52</td><td>52</td></tr><tr><td>Avg Time per Nurse</td><td>5.78</td><td>5.78</td></tr><tr><td> </td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td><b>Bottle</b></td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Number of Bottles</td><td>3</td><td>3</td></tr><tr><td>Amount Fed</td><td>12</td><td>12</td></tr><tr><td>Amount per Bottle</td><td>4</td><td>4</td></tr><tr><td> </td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td><b>Pump</b></td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Number of Pumps</td><td>5</td><td>5</td></tr><tr><td>Amount Pumped</td><td></td><td></td></tr><tr><td>Amount per Pump</td><td></td><td></td></tr><tr><td> </td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td><b>Daipering</b></td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Number of Daipers</td><td>2</td><td>2</td></tr><tr><td>Number of Wet</td><td>2</td><td>2</td></tr><tr><td>Number of Poopy</td><td></td><td></td></tr><tr><td> </td><td></td><td></td></tr></table></span>
+<b>require_once()</b> uri=[/BabyTracker/BabyTracker.php?testaction=stats_sql&verbose=1&ignore=120054]<br/><b>require_once()</b> rand=1366 php version = 5.3.5 fileversion=1304667162<br/>﻿<b>TestMe()</b> testaction = stats_sql<br/><b>query()</b> mysql(<small>select CAST(MAX(`datetime`) as DATE) from </small>)<br/>sql_error query() mysql_query failed for query=select CAST(MAX(`datetime`) as DATE) from  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br/><h1>BabyTracker Sql Server sql_error</h1><br/>Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a><br/>********************************************<br/>query() mysql_query failed for query=select CAST(MAX(`datetime`) as DATE) from , sql sql_error=You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1<br/>********************************************<br/>sql_error array_print(): <pre style="font-size: 11px; line-height: 11px;">Array
+(
+    [0] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.mysql.php
+            [line] => 59
+            [function] => sql_error
+            [args] => Array
+                (
+                    [0] => query() mysql_query failed for query=select CAST(MAX(`datetime`) as DATE) from 
+                )
+
+        )
+
+    [1] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.stats.php
+            [line] => 403
+            [function] => query
+            [class] => mysql
+            [object] => <span style="color: #079700;">mysql</span> Object
+                (
+                    [database:mysql:private] => cgomes
+                    [server:mysql:private] => 
+                    [con:mysql:private] => Resource id #8
+                )
+
+            [type] => ->
+            [args] => Array
+                (
+                    [0] => select CAST(MAX(`datetime`) as DATE) from 
+                )
+
+        )
+
+    [2] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 121
+            [function] => DisplaySqlStats
+            [args] => Array
+                (
+                    [0] => 
+                )
+
+        )
+
+    [3] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 262
+            [function] => CommonActions
+            [args] => Array
+                (
+                )
+
+        )
+
+    [4] => Array
+        (
+            [file] => /Applications/MAMP/htdocs/BabyTracker/BabyTracker.php
+            [line] => 274
+            [function] => TestMe
+            [args] => Array
+                (
+                )
+
+        )
+
+)
+</pre>********************************************<br/>

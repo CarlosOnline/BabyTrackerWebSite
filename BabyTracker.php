@@ -79,11 +79,8 @@ function CommonActions()
 	    read_input_option("left", $data);
 	    read_input_option("right", $data);
 
-	    $row = AddRowToChildTable($data, $token);
-		$sqlrowid = $row["id"];
-	    $data["sqlrowid"] = $sqlrowid;
-
-	    print("Successfully added the data. Data: " . DataToTableRow("", $data, $row["timestamp"]));
+	    AddRowToChildTable($data, $token);
+		print(ChildTableResults($token));
 	    break;
 
 	case "updaterow":
@@ -102,9 +99,8 @@ function CommonActions()
 	    read_input_option("left", $data);
 	    read_input_option("right", $data);
 
-	    $row = UpdateChildTableRow($data, $token);
-
-	    print("Successfully added the data. Data: " . DataToTableRow("", $data, $row["timestamp"]));
+	    UpdateChildTableRow($data, $token);
+		print(ChildTableResults($token));
 	    break;
 
 	case "deleterow":
@@ -112,9 +108,8 @@ function CommonActions()
 	    $data = array(
 	      "sqlrowid" => get_input_option("sqlrowid"));
 
-	    $row = DeleteChildTableRow($data["sqlrowid"], $token);
-
-	    print("Successfully deleted the data. Data: " . DataToTableRow("", $row, $row["timestamp"]));
+	    DeleteChildTableRow($data["sqlrowid"], $token);
+		print(ChildTableResults($token));
 	    break;
 
 	case "stats_sql":
@@ -164,6 +159,26 @@ function CommonActions()
 		SetHtmlCookie("token", $token);
 
 		print("Successfully setup user.<br/>token=$token;<br/>");
+		break;
+
+	case "login":
+	case "login_user":
+		if (get_input_option("name")=="") error("Missing Child Name");
+		if (get_input_option("userid")=="") error("Missing email");
+		if (get_input_option("pwd")=="") error("Missing password");
+
+		$user = LoginUser(get_input_option("userid"), get_input_option("pwd"));
+		$child = RegisterChild(get_input_option("name"), null, $user);
+		$session = RegisterSession($user, $child);
+		$token = $session["token"];
+
+		SetHtmlCookie("token", $token);
+
+		print("Successfully setup user.<br/>token=$token;<br/>");
+		break;
+
+	case "last_rows":
+		vprint(ChildTableResults($token));
 		break;
 
 	default:
@@ -228,6 +243,14 @@ function TestMe()
         case "run_sql_file":
             $filename = get_input_option("filename");
             ExecSqlFile($filename, MakeNewUserTableName($userid, $name));
+            break;
+
+        case "get_data_rows":
+            $mysql = GetMysql();
+            $table = GetChildTableName($token);
+	        $results = $mysql->query("select * from $table order by id desc LIMIT 50");
+			$html = ResultsToTable($mysql, $results);
+			vprint($html);
             break;
 
         case "dump_user_table":

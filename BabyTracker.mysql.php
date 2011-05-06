@@ -341,6 +341,7 @@ function RegisterUser($name, $userid, $pwd)
 	}
 
 	$token = uniqid();
+	vprint("Allocate token=$token");
 
 	$sql = "insert into `" . get_config_value("registered_users_table_name") . "` set\n" .
 			"`name`='$name',\n" .
@@ -377,7 +378,7 @@ function LoginUser($userid, $pwd)
     $user = $mysql->query_results($results);
 	if (!$user || ($user["password"] != $pwd))
 	{
-		error("ERROR: LoginUser failed for $userid.  Invalid userid or password.");
+		error("LoginUser failed for $userid.  Invalid userid or password.");
 	}
 
 	return $user;
@@ -388,9 +389,7 @@ function RegisterChild($childname, $dob, $user)
 	global $g_mysql_babytracker_version;
     $mysql = GetMysql();
 	$user_token = $user["token"];
-	$token = uniqid();
 	$tablename = MakeNewUserTableName($user["userid"], $childname);
-	$title = "Baby $childname Tracker";
 
 	$sql = "select * from `" . get_config_value("registered_children_table_name") . "` \n" .
 			"where `user_token`='$user_token' AND `name`='$childname';\n";
@@ -399,14 +398,21 @@ function RegisterChild($childname, $dob, $user)
 
 	if ($child)
 	{
+		$token = $child["token"];
 		$sql = "update `" . get_config_value("registered_children_table_name") . "` set\n" .
 				"`dob`='$dob',\n" .
 				"`title`='$title' \n" .
+				"where `token`='$token' \n" .
 				";\n";
 		$mysql->query($sql);
 	}
 	else
 	{
+		$token = uniqid();
+		vprint("Allocate token=$token");
+
+		$title = "Baby $childname Tracker";
+
 		$sql = "insert into `" . get_config_value("registered_children_table_name") . "` set\n" .
 				"`user_token`='$user_token',\n" .
 				"`name`='$childname',\n" .
@@ -417,18 +423,16 @@ function RegisterChild($childname, $dob, $user)
 				"`version`=$g_mysql_babytracker_version\n" .
 				";\n";
 		$mysql->query($sql);
+
+		CreateChildTable($tablename);
 	}
 
-	CreateChildTable($tablename);
-
 	$sql = "select * from `" . get_config_value("registered_children_table_name") . "` \n" .
-			"where `user_token`='$user_token' AND `name`='$childname';\n";
+			"where `token`='$token';\n";
 	$results = $mysql->query($sql);
     $child = $mysql->query_results($results);
 	if ($child)
-	{
 		return $child;
-	}
 
 	error("ERROR: RegisterChild failed");
 }
@@ -439,7 +443,6 @@ function RegisterSession($user, $child)
     $mysql = GetMysql();
 	$user_token = $user["token"];
 	$child_token = $child["token"];
-	$token = uniqid();
 	$address = $_SERVER["REMOTE_ADDR"];
 
 	$sql = "select * from `" . get_config_value("registered_sessions_table_name") . "` \n" .
@@ -448,13 +451,13 @@ function RegisterSession($user, $child)
     $session = $mysql->query_results($results);
 	if ($session)
 	{
-		$sql = "update `" . get_config_value("registered_sessions_table_name") . "` set\n" .
-				"`token`='$token'\n" .
-				";\n";
-		$mysql->query($sql);
+		$token = $session["token"];
 	}
 	else
 	{
+		$token = uniqid();
+		vprint("Allocate token=$token");
+
 		$sql = "insert into `" . get_config_value("registered_sessions_table_name") . "` set\n" .
 				"`user_token`='$user_token',\n" .
 				"`child_token`='$child_token',\n" .
@@ -466,13 +469,12 @@ function RegisterSession($user, $child)
 	}
 
 	$sql = "select * from `" . get_config_value("registered_sessions_table_name") . "` \n" .
-			"where `user_token`='$user_token' AND `child_token`='$child_token' AND `registered_address`='$address';\n";
+			"where `token`='$token' AND \n" .
+			"`registered_address`='$address'\n";
 	$results = $mysql->query($sql);
     $session = $mysql->query_results($results);
 	if ($session)
-	{
 		return $session;
-	}
 
 	error("ERROR: RegisterSession failed");
 }
@@ -555,6 +557,16 @@ function GetChildTableName($token)
 	return $child['tablename'];
 }
 
+function GetChildTableRow($sqlrowid, $token)
+{
+	$mysql = GetMysql();
+	$table = GetChildTableName($token);
+
+	$results = $mysql->query("select DATE_FORMAT('timestamp', '%c/%e/%Y') as Date, DATE_FORMAT('timestamp', '%l:%i %r') as Time, Type, Amount, Description from `$table` where `id`='$sqlrowid'");
+    $row = $mysql->query_results($results);
+	return $row;
+}
+
 function AddRowToChildTable($data, $token)
 {
     $date = $data["date"];
@@ -586,8 +598,7 @@ function AddRowToChildTable($data, $token)
 	$new_id = $mysql->insert_id();
 
 	$mysql->query("update `$table` set amount_oz=IF(ISNULL(amount), NULL, IF((type='breast' OR amount < 9), amount, amount / 29.5735296)) WHERE `id`='$new_id';");
-
-	$results = $mysql->query("select * from `$table` where `id`='$new_id'");
+	$results = $mysql->query("select * from `$table` where `id`='$sqlrowid'");
     $row = $mysql->query_results($results);
 	return $row;
 }
@@ -611,6 +622,11 @@ function UpdateChildTableRow($data, $token)
 	if ($description)   $row_data .= "description='$description', ";
 	if ($date && $time) $row_data .= "`datetime`=STR_TO_DATE('$date $time', '%m/%d/%Y %l:%i %p'), ";
 	if ($type) 			$row_data .= "`type`='$type'";
+
+	$results = $mysql->query("select * from `$table` where `id`='$sqlrowid'");
+    $row = $mysql->query_results($results);
+	if ($row == null)
+		error("Update failed rowid='$sqlrowid'");
 
 	$sql = "update `$table` set $row_data where `id`='$sqlrowid';";
 	$mysql->query($sql);
@@ -636,6 +652,31 @@ function DeleteChildTableRow($sqlrowid, $token)
 	$mysql->query($sql);
 
 	return $row;
+}
+
+function ResultsToDisplayTable($mysql, $results)
+{
+    $tablehtml = "";
+	while ($row = $mysql->query_results($results))
+	{
+        if ($tablehtml == "")
+            $tablehtml = MakeDisplayTableHeader($row);
+		$tablehtml .= DataToTableRow($row, $row["timestamp"]);
+	}
+    $tablehtml .= MakeTableFooter();
+    return $tablehtml;
+}
+
+function ChildTableResults($token)
+{
+	$mysql = GetMysql();
+	$table = GetChildTableName($token);
+	$results = $mysql->query("select DATE_FORMAT(`datetime`, '%c/%e/%Y') as date, " .
+							 "DATE_FORMAT(`datetime`, '%l:%i %p') as time, " .
+							 "type, amount, description, timestamp " .
+							 "from `$table` order by id desc LIMIT 50");
+	$html = ResultsToDisplayTable($mysql, $results);
+	return $html;
 }
 
 function ResultsToTable($mysql, $results)

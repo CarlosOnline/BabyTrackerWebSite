@@ -70,7 +70,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="txtPassword">password:</label>
+                    <label for="txtPassword">Password:</label>
                 </td>
                 <td>
                     <input id="txtPassword" name="txtPassword" type="password" value="" size="19"/>
@@ -155,10 +155,10 @@
             return;
         }
 
-        var txtName = document.getElementById("txtBabyName");
-        if (txtName.value == "") {
+        var txtBabyName = document.getElementById("txtBabyName");
+        if (txtBabyName.value == "") {
             alert("Missing Baby Name");
-            txtName.focus();
+            txtBabyName.focus();
             return;
         }
 
@@ -176,14 +176,14 @@
 
         var chkSetupDebugMode = document.getElementById("chkSetupDebugMode");
 
-        createCookie("name", txtName.value, 999);
+        createCookie("name", txtBabyName.value, 999);
         createCookie("dob", txtDOB.value, 999);
         createCookie("username", txtUserName.value, 999);
         createCookie("userid", txtEmail.value, 999);
         //createCookie("password", txtPassword.value, 999);
 
         var postData = "";
-        postData += "name=" + encodeURI(txtName.value) + "&";
+        postData += "name=" + encodeURI(txtBabyName.value) + "&";
         postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
         postData += "username=" + encodeURI(txtUserName.value) + "&";
         postData += "userid=" + encodeURI(txtEmail.value) + "&";

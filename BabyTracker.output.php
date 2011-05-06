@@ -378,16 +378,16 @@ function error($string)
 
 	$func = get_caller_func();
 
-	__print("<h3>BabyTracker Server Error</h3>");
-	__print("Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a>");
-	__print("********************************************");
-	__print("<b>$func()</b> <span style='color: #FF0000; font-size: medium;'>$string</span>");
+	__print("<h3>BabyTracker Server Error</h3>", "text", "");
+	__print("Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a>", "text", "");
+	__print("********************************************", "text", "");
+	__print("<b>$func()</b> <span style='color: #FF0000; font-size: medium;'>$string</span>", "text", "");
 
 	if ($submission_data)
-		__print("Data: $submission_data");
+		__print("Data: $submission_data", "text", "");
 
     if ($last_response)
-        __print($last_response, "xml");
+        __print($last_response, "xml", "");
 
     set_last_error(get_last_response());
 
@@ -461,26 +461,6 @@ function CommandLineToString($data)
 	return $string;
 }
 
-function DataToTableRow($state, $data, $timestamp)
-{
-	$dataString = DataToStringEx($data) . "timestamp=" . $timestamp . "& ";
-	$editTag = "<a href='javascript:OnEditRow_Click(\"$dataString\");'><img src='images/edit.png' /></a>";
-	$deleteTag = "<a href='javascript:OnDeleteRow_Click(\"$dataString\");'><img src='images/delete.png' /></a>";
-
-	$string = "<tr class='dataRow'>";
-	//$string .= "<td class='dataCellState'>$state</td>";
-	$string .= "<td class='dataCell'>$editTag</td>";
-	$string .= "<td class='dataCell'>" . @$data["date"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["time"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["type"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["amount"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["description"] . "</td>";
-	$string .= "<td class='dataCell'>$deleteTag</td>";
-	$string .= "</tr>";
-
-	return $string;
-}
-
 function LogCommandLine($prefix)
 {
 	$data = "<span style='font-size: 11;'>";
@@ -545,9 +525,45 @@ function MakeTableHeader($data)
 	return $string;
 }
 
+function MakeDisplayTableHeader($data)
+{
+    $styleTable = GetTableStyle();
+    $style = GetTableRowStyle();
+	$string = "<span style='font-size: 11;'>";
+    $string .= "<table class='dataTable' $styleTable><tr class='dataRow' $styleTable>";
+	$string .= "<th class='dataHeader' $style>Edit</th>";
+	$string .= "<th class='dataHeader' $style>Date</th>";
+	$string .= "<th class='dataHeader' $style>Time</th>";
+	$string .= "<th class='dataHeader' $style>Type</th>";
+	$string .= "<th class='dataHeader' $style>Amount</th>";
+	$string .= "<th class='dataHeader' $style>Description</th>";
+	$string .= "<th class='dataHeader' $style>Delete</th>";
+	$string .= "</tr>";
+	return $string;
+}
+
 function MakeTableFooter()
 {
 	return "</table></span>";
+}
+
+function DataToTableRow($data, $timestamp)
+{
+	$dataString = DataToStringEx($data) . "timestamp=" . $timestamp . "& ";
+	$editTag = "<a href='javascript:OnEditRow_Click(\"$dataString\");'><img src='images/edit.png' /></a>";
+	$deleteTag = "<a href='javascript:OnDeleteRow_Click(\"$dataString\");'><img src='images/delete.png' /></a>";
+
+	$string = "<tr class='dataRow'>";
+	$string .= "<td class='dataCell'>$editTag</td>";
+	$string .= "<td class='dataCell'>" . @$data["date"] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data["time"] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data["type"] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data["amount"] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data["description"] . "</td>";
+	$string .= "<td class='dataCell'>$deleteTag</td>";
+	$string .= "</tr>";
+
+	return $string;
 }
 
 function MakeTableHeader_trans($data)

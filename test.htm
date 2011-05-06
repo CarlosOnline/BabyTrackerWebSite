@@ -34,6 +34,8 @@
 <span width="80%" >
     <span style='float:none'>
         <input type="button" onclick="SetupUser(this);" value="setup_new_user" />
+        <input type="button" onclick="LoginUser(this);" value="login_user" />
+        <input type="button" onclick="OnTestClick(this);" value="last_rows" />
         <input type="button" onclick="OnTestClick(this);" value="dump_user_table" />
         <input type="button" onclick="OnTestClick(this);" value="dump_reg_table" />
         <input type="button" onclick="OnTestClick(this);" value="stats_sql" />
@@ -157,10 +159,10 @@
             return;
         }
 
-        var txtName = document.getElementById("txtBabyName");
-        if (txtName.value == "") {
+        var txtBabyName = document.getElementById("txtBabyName");
+        if (txtBabyName.value == "") {
             alert("Missing Baby Name");
-            txtName.focus();
+            txtBabyName.focus();
             return;
         }
 
@@ -176,14 +178,14 @@
             return;
         }
 
-        createCookie("name", txtName.value, 999);
+        createCookie("name", txtBabyName.value, 999);
         createCookie("dob", txtDOB.value, 999);
         createCookie("username", txtUserName.value, 999);
         createCookie("userid", txtEmail.value, 999);
         createCookie("password", txtPassword.value, 999);
 
         var postData = "";
-        postData += "name=" + encodeURI(txtName.value) + "&";
+        postData += "name=" + encodeURI(txtBabyName.value) + "&";
         postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
         postData += "username=" + encodeURI(txtUserName.value) + "&";
         postData += "userid=" + encodeURI(txtEmail.value) + "&";
@@ -191,6 +193,49 @@
         postData += "postaction=setup_new_user";
 
         var url = "BabyTracker.php?testaction=setup_new_user&" + postData;
+        url += GetCheckboxOptions();
+        url += OutputFileOption(Obj);
+        url += "&ignore=" + randomNumber(200000);
+
+        document.title = Obj.value;
+        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("frm").src = url;
+    }
+
+    function LoginUser(Obj) {
+
+        var txtEmail = document.getElementById("txtEmail");
+        if (txtEmail.value == "") {
+            alert("Missing email alias");
+            txtEmail.focus();
+            return;
+        }
+
+        var txtPassword = document.getElementById("txtPassword");
+        if (txtPassword.value == "") {
+            alert("Missing password");
+            txtPassword.focus();
+            return;
+        }
+
+        var txtBabyName = document.getElementById("txtBabyName");
+        if (txtBabyName.value == "") {
+            alert("Missing Baby Name");
+            txtBabyName.focus();
+            return;
+        }
+
+        createCookie("name", txtBabyName.value, 999);
+        createCookie("userid", txtEmail.value, 999);
+        createCookie("password", txtPassword.value, 999);
+
+        var postData = "";
+        postData += "name=" + encodeURI(txtBabyName.value) + "&";
+        postData += "userid=" + encodeURI(txtEmail.value) + "&";
+        postData += "pwd=" + encodeURI(txtPassword.value) + "&";
+        postData += "postaction=login_user";
+
+        var url = "BabyTracker.php?testaction=login_user&" + postData;
         url += GetCheckboxOptions();
         url += OutputFileOption(Obj);
         url += "&ignore=" + randomNumber(200000);
