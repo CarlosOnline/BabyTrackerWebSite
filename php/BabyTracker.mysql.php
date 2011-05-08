@@ -598,7 +598,7 @@ function AddRowToChildTable($data, $token)
 	$new_id = $mysql->insert_id();
 
 	$mysql->query("update `$table` set amount_oz=IF(ISNULL(amount), NULL, IF((type='breast' OR amount < 9), amount, amount / 29.5735296)) WHERE `id`='$new_id';");
-	$results = $mysql->query("select * from `$table` where `id`='$sqlrowid'");
+	$results = $mysql->query("select * from `$table` where `id`='$new_id'");
     $row = $mysql->query_results($results);
 	return $row;
 }

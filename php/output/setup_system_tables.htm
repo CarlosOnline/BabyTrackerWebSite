@@ -1,11 +1,11 @@
-<b>require_once()</b> uri=[/BabyTracker/BabyTracker.php?testaction=setup_system_tables&verbose=1&ignore=130453]<br/><b>require_once()</b> rand=1505 php version = 5.3.5 fileversion=1304674353<br/>﻿<b>TestMe()</b> testaction = setup_system_tables<br/><b>exec_file()</b> sql/create_registration_table.sql<br/><b>query()</b> mysql(<small># parameters: BT_Registered_Users, BT_Registered_Children, BT_Registered_Sessions, MyISAM
+<b>require_once()</b> uri=[/BabyTracker/php/BabyTracker.php?testaction=setup_system_tables&verbose=1&ignore=5055]<br/><b>require_once()</b> rand=853 php version = 5.3.5 fileversion=1304846326<br/><b>get_config_value()</b> <b>warning</b> config testaction not found<br/><b>TestMe()</b> testaction = setup_system_tables<br/><b>exec_file()</b> sql/create_registration_table.sql<br/><b>query()</b> mysql(<small># parameters: BT_Registered_Users, BT_Registered_Children, BT_Registered_Sessions, MyISAM
 
 CREATE TABLE IF NOT EXISTS `BT_Registered_Users` ( .
 `id` INT NOT NULL AUTO_INCREMENT,
-`name` VARCHAR(256) NOT NULL,
-`userid` VARCHAR(256) NOT NULL,
-`password` VARCHAR(256) NOT NULL,
-`token` VARCHAR(256) NOT NULL,
+`name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`userid` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`password` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`token` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
 `version` DECIMAL(5,2) NOT NULL DEFAULT 2.0,
 `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`)) ENGINE = MyISAM</small>)<br/><b>query()</b> mysql(<small>
@@ -13,22 +13,22 @@ ALTER TABLE `BT_Registered_Users` add unique index(`userid`)</small>)<br/><b>que
 
 CREATE TABLE IF NOT EXISTS `BT_Registered_Children` ( .
 `id` INT NOT NULL AUTO_INCREMENT,
-`user_token` VARCHAR(256) NOT NULL,
-`name` VARCHAR(256) NOT NULL,
+`user_token` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`name` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
 `dob` DATE NOT NULL,
-`token` VARCHAR(256) NOT NULL,
-`tablename` VARCHAR(256) NULL,
-`title` VARCHAR(128) NULL,
+`token` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`tablename` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
+`title` VARCHAR(128) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL,
 `version` DECIMAL(5,2) NOT NULL DEFAULT 2.0,
 `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`)) ENGINE = MyISAM</small>)<br/><b>query()</b> mysql(<small>
 
 CREATE TABLE IF NOT EXISTS `BT_Registered_Sessions` ( .
 `id` INT NOT NULL AUTO_INCREMENT,
-`user_token` VARCHAR(256) NOT NULL,
-`child_token` VARCHAR(256) NOT NULL,
-`token` VARCHAR(256) NOT NULL,
-`registered_address` VARCHAR(256) NOT NULL,
+`user_token` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`child_token` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`token` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+`registered_address` VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
 `version` DECIMAL(5,2) NOT NULL DEFAULT 2.0,
 `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`)) ENGINE = MyISAM</small>)<br/>

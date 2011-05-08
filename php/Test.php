@@ -94,8 +94,8 @@ session_start();
 	<input type="button" onclick="LaunchPhp_Click(this);" value="Test.php" /><br />
 </span>
 <span>
-    <div id="divFrame">
     <input id="lblUrl" value="" size='200' readonly='readonly'  style='background-color:#fed;'/>
+    <div id="divFrame">
 	  <iframe src="" id="frm" width="80%" height='500px'>Click a button</iframe></div>
 </span>
 
@@ -245,7 +245,7 @@ session_start();
         url += "&ignore=" + randomNumber(200000);
 
         document.title = Obj.value;
-        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("lblUrl").value = url;
         document.getElementById("frm").src = url;
     }
 
@@ -302,7 +302,7 @@ session_start();
         url += "&ignore=" + randomNumber(200000);
 
         document.title = Obj.value;
-        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("lblUrl").value = url;
         document.getElementById("frm").src = url;
     }
 
@@ -314,7 +314,7 @@ session_start();
         url += "&ignore=" + randomNumber(200000);
 
         document.title = Obj.value;
-        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("lblUrl").value = url;
         document.getElementById("frm").src = url;
     }
 
@@ -326,7 +326,7 @@ session_start();
         url += OutputFileOption(Obj);
 
         document.title = Obj.value;
-        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("lblUrl").value = url;
         document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
     }
 
@@ -338,7 +338,7 @@ session_start();
         url += "&ignore=" + randomNumber(200000);
 
         document.title = Obj.value;
-        document.getElementById("lblUrl").innerHTML = url;
+        document.getElementById("lblUrl").value = url;
         document.getElementById("frm").src = url;
     }
 
@@ -356,14 +356,13 @@ session_start();
             url += GetCheckboxOptions();
             url += OutputFileOption(Obj);
             url += "&ignore=" + randomNumber(200000);
-
             url += "&date=" + DateString();
             url += "&time=" + TimeString();
             url += "&type=" + Type(randomNumber(4));
             url += "&amount=" + randomNumber(200);
 
             document.title = Obj.value;
-            document.getElementById("lblUrl").innerHTML = url;
+            document.getElementById("lblUrl").value = url;
             document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
         }
     }
@@ -385,7 +384,7 @@ session_start();
             url += "&sqlrowid=" + document.getElementById("txtExtraValue").value;
 
             document.title = Obj.value;
-            document.getElementById("lblUrl").innerHTML = url;
+            document.getElementById("lblUrl").value = url;
             document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
         }
     }
@@ -403,7 +402,7 @@ session_start();
             url += "&sqlrowid=" + document.getElementById("txtExtraValue").value;
 
             document.title = Obj.value;
-            document.getElementById("lblUrl").innerHTML = url;
+            document.getElementById("lblUrl").value = url;
             document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
         }
     }
@@ -435,7 +434,7 @@ session_start();
 		//url += "&ignore=" + randomNumber(200000);
 
 		document.title = Obj.value;
-		document.getElementById("lblUrl").innerHTML = url;
+		document.getElementById("lblUrl").value = url;
 		document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
     }
 

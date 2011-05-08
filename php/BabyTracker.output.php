@@ -713,8 +713,8 @@ function MakeTableFooter()
 function DataToTableRow($data, $timestamp)
 {
 	$dataString = DataToStringEx($data) . "timestamp=" . $timestamp . "& ";
-	$editTag = "<a href='javascript:OnEditRow_Click(\"$dataString\");'><img src='images/edit.png' /></a>";
-	$deleteTag = "<a href='javascript:OnDeleteRow_Click(\"$dataString\");'><img src='images/delete.png' /></a>";
+	$editTag = "<a href='javascript:OnEditRow_Click(\"$dataString\");'><img src='../images/edit.png' /></a>";
+	$deleteTag = "<a href='javascript:OnDeleteRow_Click(\"$dataString\");'><img src='../images/delete.png' /></a>";
 
 	$string = "<tr class='dataRow'>";
 	$string .= "<td class='dataCell'>$editTag</td>";

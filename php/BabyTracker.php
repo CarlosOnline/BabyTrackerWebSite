@@ -60,7 +60,7 @@ function CommonActions()
 	case 'addrow':
 	    if (get_input_date('date') == "") error('Missing date');
 	    if (get_input_time('time') == "") error('Missing time');
-	    if (get_input_word('type') == "") error('Missing type');
+	    if (get_input_words('type') == "") error('Missing type');
 	    if ((get_input_words('type') != 'Wet Diaper') && (get_input_words('type') != 'Poopy Diaper'))
 	    if (get_input_number('amount') == "") error('Missing amount');
 	    if ($token == "") error ("Missing token, Not signed in");
@@ -70,8 +70,8 @@ function CommonActions()
 	      'time' => get_input_time('time'),
 	      'type' => get_input_words('type'));
 
-	    read_input_int('amount', $data);
-	    read_input_text('description', $data);
+	    read_input_option('amount', $data, 'int');
+	    read_input_option('description', $data, 'text');
 
 	    AddRowToChildTable($data, $token);
 		print(ChildTableResults($token));
@@ -83,11 +83,11 @@ function CommonActions()
 	    $data = array(
 	      'sqlrowid' => get_input_number('sqlrowid'));
 
-	    read_input_date('date', $data);
-	    read_input_time('time', $data);
-	    read_input_words('type', $data);
-	    read_input_int('amount', $data);
-	    read_input_text('description', $data);
+	    read_input_option('date', $data, 'date');
+	    read_input_option('time', $data, 'time');
+	    read_input_option('type', $data, 'words');
+	    read_input_option('amount', $data, 'int');
+	    read_input_option('description', $data, 'text');
 
 	    UpdateChildTableRow($data, $token);
 		print(ChildTableResults($token));
