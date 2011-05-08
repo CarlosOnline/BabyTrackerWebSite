@@ -1,0 +1,14 @@
+Remove
+
+function UpdateAllUploadSheetRowId()
+function AddRowToUploadTable($mysql, $data, $client)
+function AddUpdateToUploadTable($mysql, $data, $client)
+function AddDeleteToUploadTable($mysql, $data, $client)
+function DumpLogTableResults()
+function GetProcessingErrors($key = "")
+function ResetErrors($key = "")
+function TouchAllRecords($key = "")
+function StopAllRuns($key = "")
+function ProcessLogTable_Row($row)
+function GetExcludedKeyList($mysql)
+function GetUserRegValueEx($item, $key)

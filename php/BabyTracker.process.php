@@ -5,7 +5,7 @@
 //require_once("BabyTracker.mysql.php");
 //require_once("BabyTracker.stats.php");
 
-define("MLPerOunce", 29.5735296);
+define('MLPerOunce', 29.5735296);
 $html_space = "&nbsp;";
 
 function DeleteLogTable($key = "", $sqlrowid = "")
@@ -21,10 +21,10 @@ function DeleteLogTable($key = "", $sqlrowid = "")
 	if ($key) $key_clause = "and `key`='$key'";
 	if ($sqlrowid) $rowid_clause = "and `id`='$sqlrowid'";
 
-	$mysql->query("START TRANSACTION");
-	$mysql->query("BEGIN");
+	$mysql->query('START TRANSACTION');
+	$mysql->query('BEGIN');
 	$mysql->query("delete from $table where 1=1 $key_clause $rowid_clause");
-	$mysql->query("COMMIT");
+	$mysql->query('COMMIT');
 }
 
 function GetExcludedKeyList($mysql)
@@ -50,7 +50,7 @@ function ProcessLogTable($key, $sqlrowid, $all = 0)
 
     $table = get_config_value("uploads_table_name");
     $count = 0;
-	$for_update = "FOR UPDATE";  // for row locking
+	$for_update = 'FOR UPDATE';  // for row locking
 	$key_clause = "";
 	$rowid_clause = "";
 	$uniqid = uniqid("", true);
@@ -76,42 +76,42 @@ function ProcessLogTable($key, $sqlrowid, $all = 0)
 
 		UpdateAllUploadSheetRowId();
 
-		$mysql->query("START TRANSACTION");
-		$mysql->query("BEGIN");
+		$mysql->query('START TRANSACTION');
+		$mysql->query('BEGIN');
 		$mysql->query("update $table set `state`='processing', `changedby`='$uniqid' $common_update_sql " .
 					  "where `attempt`<= 20 and (`state`='new' $failed_clause) $exclude_rows $key_exclude_list ORDER BY `attempt` LIMIT 1");
 	    $results = $mysql->query("select * from $table where `state`='processing' AND `changedby`='$uniqid' $for_update");
-		$mysql->query("COMMIT");
+		$mysql->query('COMMIT');
 	    while ($row = $mysql->query_results($results))
 	    {
-        	LogCommandLineMessage("TRANS:", "<b>row id=" . $row["id"] . "</b> from ProcessLogs() all=$all uid=$uniqid " . DataToStringEx($row));
+        	LogCommandLineMessage("TRANS:", "<b>row id=" . $row['id'] . "</b> from ProcessLogs() all=$all uid=$uniqid " . DataToStringEx($row));
 
-			$attempt=$row["attempt"] + 1;
-			$id_clause = " `id`='" . $row["id"] . "' ";
+			$attempt=$row['attempt'] + 1;
+			$id_clause = " `id`='" . $row['id'] . "' ";
 
-			vprint("processing row id=[" . $row["id"] ."]");
+			vprint("processing row id=[" . $row['id'] ."]");
             $result = ProcessLogTable_Row($row); // cant be rolled back
 
 			// NOTE: if catastrophic then spreadsheet will be updated but not sql.
 			// fix is to search for sql sqlrowid or uniqueid in google spreadsheet and
 			// detect if already added
 
-			$mysql->query("START TRANSACTION");
-			$mysql->query("BEGIN");
+			$mysql->query('START TRANSACTION');
+			$mysql->query('BEGIN');
             if ($result === 0)
             {
-				vprint("success row id=[" . $row["id"] ."]");
+				vprint("success row id=[" . $row['id'] ."]");
 		        $mysql->query("delete from $table where $id_clause");
             }
             else
             {
-				vprint("failed row id=[" . $row["id"] ."] error=$result");
+				vprint("failed row id=[" . $row['id'] ."] error=$result");
                 $errno = get_last_errno();
                 $mysql->query("update $table set `state`='failed', `failure_message`='$result', `errno`='$errno' $common_update_sql where $id_clause");
                 if ($errno >= 400 && $errno <= 500)
-                    $key_exclude_list .= " AND `key`<>'" . $row["key"] . "'";
+                    $key_exclude_list .= " AND `key`<>'" . $row['key'] . "'";
             }
-			$mysql->query("COMMIT");
+			$mysql->query('COMMIT');
 			mysql_free_result($result);
 			if ($all) {
 				$count = 0;
@@ -130,9 +130,9 @@ function ProcessLogTable($key, $sqlrowid, $all = 0)
 
 function RunProcessLogTable($key = "", $sqlrowid = "")
 {
-    vprint("Starting " . strftime("%b %d %Y %X", time()));
+    vprint('Starting ' . strftime("%b %d %Y %X", time()));
     ProcessLogTable($key, $sqlrowid);
-	vprint("End " . strftime("%b %d %Y %X", time()));
+	vprint('End ' . strftime("%b %d %Y %X", time()));
 }
 
 function TestAddToSpreadsheet($client)
@@ -140,15 +140,15 @@ function TestAddToSpreadsheet($client)
 	$rand = rand(0, 2000);
 	vprint("Adding Row amount=$rand");
 	$data = array(
-		"date" => "10/1/2010",
-		"time" => "10:01 am",
-		"type" => "Wet Diaper",
-		"amount" => $rand);
+		'date' => "10/1/2010",
+		'time' => "10:01 am",
+		'type' => 'Wet Diaper',
+		'amount' => $rand);
 
-	$title = $client["title"];
-	$key = $client["key"];
-	$spreadsheetid = $client["spreadsheetid"];
-	$worksheetid = $client["worksheetid"];
+	$title = $client['title'];
+	$key = $client['key'];
+	$spreadsheetid = $client['spreadsheetid'];
+	$worksheetid = $client['worksheetid'];
 	Zend_InserRow($data, $client);
 }
 
@@ -163,14 +163,14 @@ function TestAddRowToLogTable()
 	$worksheetid=get_config_value("test_worksheetid");
 
 	$data = array(
-		"date" => "10/1/2010",
-		"time" => "10:01 am",
-		"type" => "Bottle",
-		"amount" => $rand,
-        "description" => "remo",
-        "key" => $key,
-        "spreadsheetid" => $spreadsheetid,
-        "worksheetid" => $worksheetid);
+		'date' => "10/1/2010",
+		'time' => "10:01 am",
+		'type' => 'Bottle',
+		'amount' => $rand,
+        'description' => 'remo',
+        'key' => $key,
+        'spreadsheetid' => $spreadsheetid,
+        'worksheetid' => $worksheetid);
 
     $mysql = GetMysql();
 	$sqlrowid = AddRowToChildTable($mysql, $title, $data);

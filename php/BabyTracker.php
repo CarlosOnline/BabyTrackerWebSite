@@ -1,12 +1,11 @@
 <?php
 
 ignore_user_abort(1);
-//echo phpinfo();
-
-setcookie("babytracker_version", "1.5");
-
 error_reporting(E_ALL);
 ini_set('error_reporting', E_ALL);
+ini_set("display_errors", 1);
+
+session_start();
 
 require_once("BabyTracker.output.php");
 require_once("BabyTracker.mysql.php");
@@ -20,7 +19,6 @@ function shutdown()
     // before the script is complete.
 
 	CloseMysql();
-	CloseSpreadsheets();
 }
 
 register_shutdown_function('shutdown');
@@ -31,7 +29,7 @@ function error_handler($level, $message, $file, $line, $context)
 
     if ($mysql)
     {
-        $mysql->query("ROLLBACK");
+        $mysql->query('ROLLBACK');
     }
 
     //Handle user errors, warnings, and notices ourself
@@ -44,10 +42,10 @@ function error_handler($level, $message, $file, $line, $context)
 
 function CommonActions()
 {
-	$file = get_input_option("filename");
-	$action = get_input_option("postaction");
-	@$sqlrowid = get_input_option("sqlrowid");
-	@$token = get_input_option("token");
+	$file = get_input_text('filename');
+	$action = get_input_word('postaction');
+	@$sqlrowid = get_input_number('sqlrowid');
+	@$token = $_COOKIE['token'];
 
     switch ($action)
     {
@@ -59,56 +57,48 @@ function CommonActions()
 		delete_all_output_files();
 		break;
 
-	case "addrow":
-	    if (get_input_option("date") == "") error("Missing date");
-	    if (get_input_option("time") == "") error("Missing time");
-	    if (get_input_option("type") == "") error("Missing type");
-	    if ((get_input_option("type") != "Wet Diaper") && (get_input_option("type") != "Poopy Diaper"))
-	    if (get_input_option("amount") == "") error("Missing amount");
+	case 'addrow':
+	    if (get_input_date('date') == "") error('Missing date');
+	    if (get_input_time('time') == "") error('Missing time');
+	    if (get_input_word('type') == "") error('Missing type');
+	    if ((get_input_words('type') != 'Wet Diaper') && (get_input_words('type') != 'Poopy Diaper'))
+	    if (get_input_number('amount') == "") error('Missing amount');
 	    if ($token == "") error ("Missing token, Not signed in");
 
 	    $data = array(
-	      "date" => get_input_option("date"),
-	      "time" => get_input_option("time"),
-	      "type" => get_input_option("type"));
+	      'date' => get_input_date('date'),
+	      'time' => get_input_time('time'),
+	      'type' => get_input_words('type'));
 
-	    read_input_option("amount", $data);
-	    read_input_option("description", $data);
-	    read_input_option("formula", $data);
-	    read_input_option("breastmilk", $data);
-	    read_input_option("left", $data);
-	    read_input_option("right", $data);
+	    read_input_int('amount', $data);
+	    read_input_text('description', $data);
 
 	    AddRowToChildTable($data, $token);
 		print(ChildTableResults($token));
 	    break;
 
-	case "updaterow":
-	    if (get_input_option("sqlrowid") == "") error("Missing sqlrowid");
+	case 'updaterow':
+	    if (get_input_number('sqlrowid') == "") error('Missing sqlrowid');
 
 	    $data = array(
-	      "sqlrowid" => get_input_option("sqlrowid"));
+	      'sqlrowid' => get_input_number('sqlrowid'));
 
-	    read_input_option("date", $data);
-	    read_input_option("time", $data);
-	    read_input_option("type", $data);
-	    read_input_option("amount", $data);
-	    read_input_option("description", $data);
-	    read_input_option("formula", $data);
-	    read_input_option("breastmilk", $data);
-	    read_input_option("left", $data);
-	    read_input_option("right", $data);
+	    read_input_date('date', $data);
+	    read_input_time('time', $data);
+	    read_input_words('type', $data);
+	    read_input_int('amount', $data);
+	    read_input_text('description', $data);
 
 	    UpdateChildTableRow($data, $token);
 		print(ChildTableResults($token));
 	    break;
 
-	case "deleterow":
-	    if (get_input_option("sqlrowid") == "") error("Missing sqlrowid");
+	case 'deleterow':
+	    if (get_input_int('sqlrowid') == "") error('Missing sqlrowid');
 	    $data = array(
-	      "sqlrowid" => get_input_option("sqlrowid"));
+	      'sqlrowid' => get_input_int('sqlrowid'));
 
-	    DeleteChildTableRow($data["sqlrowid"], $token);
+	    DeleteChildTableRow($data['sqlrowid'], $token);
 		print(ChildTableResults($token));
 	    break;
 
@@ -117,9 +107,9 @@ function CommonActions()
 		break;
 
 	case "stats_sql_col":
-		$item = get_input_option("stats_item");
-		$day_max_delta = get_input_option("day_max_delta");
-		$day_min_delta = get_input_option("day_min_delta");
+		$item = get_input_word("stats_item");
+		$day_max_delta = get_input_int("day_max_delta");
+		$day_min_delta = get_input_int("day_min_delta");
 		DisplaySqlStats_Col($client, $item, $day_max_delta, $day_min_delta);
 		break;
 
@@ -127,8 +117,8 @@ function CommonActions()
 		DisplaySqlStats_Counts($client, $item, $day_max_delta, $day_min_delta);
 		break;
 
-	case "sqlsetup":
-	case "setuplogtable":
+	case 'sqlsetup':
+	case 'setuplogtable':
 	case "setup_system_tables":
 		SetupSystemTables();
 		break;
@@ -145,34 +135,36 @@ function CommonActions()
 
 	case "setup_user":
 	case "setup_new_user":
-		if (get_input_option("username")=="") error("Missing User Name");
-		if (get_input_option("name")=="") error("Missing Child Name");
-		if (get_input_option("dob")=="") error("Missing date of Birth");
-		if (get_input_option("userid")=="") error("Missing email");
-		if (get_input_option("pwd")=="") error("Missing password");
+		if (get_input_text('username')=="") error('Missing User Name');
+		if (get_input_text('name')=="") error('Missing Child Name');
+		if (get_input_date('dob')=="") error('Missing date of Birth');
+		if (get_input_email('userid')=="") error('Missing email');
+		if (get_input_pwd('pwd')=="") error('Missing password');
+		if (get_input_id('captcha')=="") error('Missing validation');
+		if (get_input_id('captcha') != validate_input($_SESSION['captcha'], 'id')) error('Incorrect validation');
 
-		$user = RegisterUser(get_input_option("username"), get_input_option("userid"), get_input_option("pwd"));
-		$child = RegisterChild(get_input_option("name"), get_input_option("dob"), $user);
+		$user = RegisterUser(get_input_text('username'), get_input_email('userid'), get_input_pwd('pwd'));
+		$child = RegisterChild(get_input_text('name'), get_input_date('dob'), $user);
 		$session = RegisterSession($user, $child);
-		$token = $session["token"];
+		$token = $session['token'];
 
-		SetHtmlCookie("token", $token);
+		SetHtmlCookie('token', $token);
 
 		print("Successfully setup user.<br/>token=$token;<br/>");
 		break;
 
-	case "login":
+	case 'login':
 	case "login_user":
-		if (get_input_option("name")=="") error("Missing Child Name");
-		if (get_input_option("userid")=="") error("Missing email");
-		if (get_input_option("pwd")=="") error("Missing password");
+		if (get_input_text('name')=="") error('Missing Child Name');
+		if (get_input_email('userid')=="") error('Missing email');
+		if (get_input_pwd('pwd')=="") error('Missing password');
 
-		$user = LoginUser(get_input_option("userid"), get_input_option("pwd"));
-		$child = RegisterChild(get_input_option("name"), null, $user);
+		$user = LoginUser(get_input_email('userid'), get_input_pwd('pwd'));
+		$child = RegisterChild(get_input_text('name'), null, $user);
 		$session = RegisterSession($user, $child);
-		$token = $session["token"];
+		$token = $session['token'];
 
-		SetHtmlCookie("token", $token);
+		SetHtmlCookie('token', $token);
 
 		print("Successfully setup user.<br/>token=$token;<br/>");
 		break;
@@ -190,22 +182,22 @@ function CommonActions()
 
 function PostProcessing()
 {
-	$name = get_input_option("name");
-	$userid = get_input_option("userid");
-	$token = get_input_option("token");
-	read_input_option("pwd", $client);
+	$name = get_input_text('name');
+	$userid = get_input_email('userid');
+	$token = $_COOKIE('token');
+	read_input_pwd('pwd', $client);
 
-	@$table = $client["tablename"];
-	$title = $client["title"];
+	@$table = $client['tablename'];
+	$title = $client['title'];
 
-    if (CommonActions(get_input_option("postaction"),
-					  get_input_option("sqlrowid"),
+    if (CommonActions(get_input_words('postaction'),
+					  get_input_int('sqlrowid'),
 					  $client))
 	{
 		return;
 	}
 
-	$postaction = get_input_option("postaction");
+	$postaction = get_input_words('postaction');
 	switch($postaction)
 	{
 		default:
@@ -216,34 +208,21 @@ function PostProcessing()
 
 function TestMe()
 {
-/*
-	read_config_option("test_username", "username", $_POST);
-	read_config_option("test_name", "name", $_POST);
-	read_config_option("test_dob", "dob", $_POST);
-	read_config_option("test_userid", "userid", $_POST);
-	read_config_option("test_pwd", "pwd", $_POST);
-*/
-	read_config_option("testaction", "postaction", $_POST);
+	read_config_option('testaction', 'postaction', $_POST);
 
-	$_POST["postaction"] = get_input_option("testaction");
-	$token = $_COOKIE["token"];;
-	$_POST["token"] = $token;
+	$_POST['postaction'] = get_input_words('testaction');
+	@$token = $_COOKIE['token'];
 
-    vprint("testaction = " . get_input_option("testaction"));
+    vprint("testaction = " . get_input_words('testaction'));
 	//varray_print($_POST);
 	//varray_print($_GET);
 	//varray_print($_COOKIE);
 
-    switch (get_input_option("testaction"))
+    switch (get_input_words('testaction'))
     {
-		case "post":
+		case 'post':
 			CommonActions();
 			break;
-
-        case "run_sql_file":
-            $filename = get_input_option("filename");
-            ExecSqlFile($filename, MakeNewUserTableName($userid, $name));
-            break;
 
         case "get_data_rows":
             $mysql = GetMysql();
@@ -288,12 +267,12 @@ function TestMe()
 
 			varray_print($_POST);
 			varray_print($_GET);
-            error("Missing testaction");
+            error('Missing testaction');
             break;
     }
 }
 
-if (get_input_option("testaction"))
+if (get_input_words('testaction'))
 	TestMe();
 else
 	PostProcessing();

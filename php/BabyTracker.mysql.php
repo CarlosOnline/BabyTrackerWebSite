@@ -1,7 +1,5 @@
 <?php
 
-//require_once("BabyTracker.output.php");
-
 $g_mysql = 0;
 $g_mysql_babytracker_version = 2.1;
 
@@ -25,7 +23,7 @@ class mysql
 	}
 
 	function RegTableName() {
-	    return "RegisteredUsers";
+	    return 'RegisteredUsers';
 	}
 
 	public function Database() {
@@ -90,7 +88,7 @@ class mysql
 	{
 		vprint($filename);
 
-		$fp = fopen($filename, "r");
+		$fp = fopen($filename, 'r');
 		$contents = fread($fp, filesize($filename));
 		fclose($fp);
 		$contents = rtrim($contents);
@@ -216,10 +214,10 @@ function GetMysql()
 
 	if ($g_mysql === 0)
 	{
-		$dbserver = $config["dbserver"];
-		$dbuserid = $config["dbuserid"];
-		$dbpwd = $config["dbpwd"];
-		$database = $config["database"];
+		$dbserver = $config['dbserver'];
+		$dbuserid = $config['dbuserid'];
+		$dbpwd = $config['dbpwd'];
+		$database = $config['database'];
 
 		$g_mysql = new mysql();
 		$g_mysql->open($dbserver, $dbuserid, $dbpwd, $database);
@@ -245,10 +243,10 @@ function GetEngineName()
 /*
 	$lock = get_config_value("lock_tables");
     if ($lock)
-        $engine = "InnoDB";
+        $engine = 'InnoDB';
     else
 */
-        $engine = "MyISAM";
+        $engine = 'MyISAM';
 	return $engine;
 }
 
@@ -268,17 +266,19 @@ function SetupUploadTable()
 	$results = $mysql->exec_file("sql/create_upload_table.sql", $search, $replace);
 }
 
-function CreateChildTable($table)
+function CreateChildTable($table, $current_version)
 {
 	$mysql = GetMysql();
     $engine = GetEngineName();
 	$search = array(
 		"\$table",
 		"\$engine",
+		"\$current_version",
 	);
 	$replace = array(
 		"$table",
 		"$engine",
+		"$current_version",
 	);
 	$results = $mysql->exec_file("sql/create_user_table.sql", $search, $replace);
 }
@@ -376,7 +376,7 @@ function LoginUser($userid, $pwd)
 			"where `userid`='$userid';\n";
 	$results = $mysql->query($sql);
     $user = $mysql->query_results($results);
-	if (!$user || ($user["password"] != $pwd))
+	if (!$user || ($user['password'] != $pwd))
 	{
 		error("LoginUser failed for $userid.  Invalid userid or password.");
 	}
@@ -388,8 +388,8 @@ function RegisterChild($childname, $dob, $user)
 {
 	global $g_mysql_babytracker_version;
     $mysql = GetMysql();
-	$user_token = $user["token"];
-	$tablename = MakeNewUserTableName($user["userid"], $childname);
+	$user_token = $user['token'];
+	$tablename = MakeNewUserTableName($user['userid'], $childname);
 
 	$sql = "select * from `" . get_config_value("registered_children_table_name") . "` \n" .
 			"where `user_token`='$user_token' AND `name`='$childname';\n";
@@ -398,10 +398,9 @@ function RegisterChild($childname, $dob, $user)
 
 	if ($child)
 	{
-		$token = $child["token"];
+		$token = $child['token'];
 		$sql = "update `" . get_config_value("registered_children_table_name") . "` set\n" .
-				"`dob`='$dob',\n" .
-				"`title`='$title' \n" .
+				"`dob`='$dob'\n" .
 				"where `token`='$token' \n" .
 				";\n";
 		$mysql->query($sql);
@@ -423,14 +422,15 @@ function RegisterChild($childname, $dob, $user)
 				"`version`=$g_mysql_babytracker_version\n" .
 				";\n";
 		$mysql->query($sql);
-
-		CreateChildTable($tablename);
 	}
 
 	$sql = "select * from `" . get_config_value("registered_children_table_name") . "` \n" .
 			"where `token`='$token';\n";
 	$results = $mysql->query($sql);
     $child = $mysql->query_results($results);
+
+	CreateChildTable($tablename, $child['version']);
+
 	if ($child)
 		return $child;
 
@@ -441,8 +441,8 @@ function RegisterSession($user, $child)
 {
 	global $g_mysql_babytracker_version;
     $mysql = GetMysql();
-	$user_token = $user["token"];
-	$child_token = $child["token"];
+	$user_token = $user['token'];
+	$child_token = $child['token'];
 	$address = $_SERVER["REMOTE_ADDR"];
 
 	$sql = "select * from `" . get_config_value("registered_sessions_table_name") . "` \n" .
@@ -451,7 +451,7 @@ function RegisterSession($user, $child)
     $session = $mysql->query_results($results);
 	if ($session)
 	{
-		$token = $session["token"];
+		$token = $session['token'];
 	}
 	else
 	{
@@ -569,19 +569,19 @@ function GetChildTableRow($sqlrowid, $token)
 
 function AddRowToChildTable($data, $token)
 {
-    $date = $data["date"];
-    $time = $data["time"];
-    $type = $data["type"];
-    $amount = @$data["amount"];
-    $description = @$data["description"];
-	$formula = @$data["formula"];
-	$breastmilk = @$data["breastmilk"];
-	$left = @$data["left"];
-	$right = @$data["right"];
+    $date = $data['date'];
+    $time = $data['time'];
+    $type = $data['type'];
+    $amount = @$data['amount'];
+    $description = @$data['description'];
+	$formula = @$data['formula'];
+	$breastmilk = @$data['breastmilk'];
+	$left = @$data['left'];
+	$right = @$data['right'];
 	$mysql = GetMysql();
 	$table = GetChildTableName($token);
 
-    vprint("Starting");
+    vprint('Starting');
 
     $row_data = "";
 	if ($amount)        $row_data .= "`amount`='$amount', \n";
@@ -605,17 +605,17 @@ function AddRowToChildTable($data, $token)
 
 function UpdateChildTableRow($data, $token)
 {
-	$sqlrowid = $data["sqlrowid"];
-    $date = $data["date"];
-    $time = $data["time"];
-    $type = $data["type"];
-    $amount = @$data["amount"];
-    $description = @$data["description"];
+	$sqlrowid = $data['sqlrowid'];
+    $date = $data['date'];
+    $time = $data['time'];
+    $type = $data['type'];
+    $amount = @$data['amount'];
+    $description = @$data['description'];
 
 	$mysql = GetMysql();
 	$table = GetChildTableName($token);
 
-    vprint("Starting");
+    vprint('Starting');
 
     $row_data = "`timestamp`=NOW(), ";
 	if ($amount)        $row_data .= "amount='$amount', ";
@@ -639,7 +639,7 @@ function UpdateChildTableRow($data, $token)
 
 function DeleteChildTableRow($sqlrowid, $token)
 {
-    vprint("Starting");
+    vprint('Starting');
 	$mysql = GetMysql();
 	$table = GetChildTableName($token);
 
@@ -661,7 +661,7 @@ function ResultsToDisplayTable($mysql, $results)
 	{
         if ($tablehtml == "")
             $tablehtml = MakeDisplayTableHeader($row);
-		$tablehtml .= DataToTableRow($row, $row["timestamp"]);
+		$tablehtml .= DataToTableRow($row, $row['timestamp']);
 	}
     $tablehtml .= MakeTableFooter();
     return $tablehtml;
@@ -692,23 +692,6 @@ function ResultsToTable($mysql, $results)
     return $tablehtml;
 }
 
-function UserTableName($userid, $name, $token)
-{
-    $table = @$_COOKIE["tablename"];
-    if ($table)
-        return $table;
-
-    $table = get_input_option("tablename");
-    if ($table)
-        return $table;
-
-    $table = GetRegisteredTableName($token, $userid, $name);
-    if ($table)
-        return $table;
-
-    return MakeNewUserTableName($userid, $name);
-}
-
 function MakeNewUserTableName($userid, $name)
 {
 	$specials = array(
@@ -730,7 +713,7 @@ function GetRegisteredTableName($token="", $userid="", $name="")
 	$results = $mysql->query("select `tablename` from $table where $where_clause 0=1");
     $ret = $mysql->query_results($results);
 
-    return @$ret["tablename"];
+    return @$ret['tablename'];
 }
 
 function ExecSqlFile($filename, $tablename)
@@ -750,9 +733,9 @@ function ExecSqlFile($filename, $tablename)
 
 function GetUserRegValue($item, $client)
 {
-    @$token = $client["token"];
-    $userid = $client["userid"];
-    $name = $client["name"];
+    @$token = $client['token'];
+    $userid = $client['userid'];
+    $name = $client['name'];
 
     $mysql = GetMysql();
     $table = get_config_value("registered_users_table_name");
@@ -768,9 +751,9 @@ function GetUserRegValue($item, $client)
 
 function DeleteUserRegRow($client)
 {
-    @$token = $client["token"];
-    $userid = $client["userid"];
-    $name = $client["name"];
+    @$token = $client['token'];
+    $userid = $client['userid'];
+    $name = $client['name'];
 
     $mysql = GetMysql();
     $table = get_config_value("registered_users_table_name");
@@ -806,7 +789,7 @@ function GetClient($token)
 	$client = GetClientEx($token, $address);
 	if ($client)
 	{
-		$client["address"] = $address;
+		$client['address'] = $address;
 	}
 	return $client;
 }

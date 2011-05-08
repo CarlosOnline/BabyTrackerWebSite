@@ -12,7 +12,7 @@ Zend_Loader::loadClass('Zend_Gdata_Spreadsheets');
 
 function Zend_InserRow($data, $client)
 {
-	vprint("Starting");
+	vprint('Starting');
 	varray_print($data);
 	varray_print($client);
 
@@ -23,16 +23,16 @@ function Zend_InserRow($data, $client)
 
 	$service = Zend_Gdata_Spreadsheets::AUTH_SERVICE_NAME;
 	$login = Zend_Gdata_ClientLogin::getHttpClient($babytracker_userid, $babytracker_pwd, $service);
-	vprint("1");
+	vprint('1');
 	$spreadsheetService = new Zend_Gdata_Spreadsheets($login);
 	if (!$spreadsheetService) {
-		vprint("Failed to get the spreadsheet service");
+		vprint('Failed to get the spreadsheet service');
 	}
 	//$spreadsheetService = new Zend_Gdata_Spreadsheets(GetCachedSessionToken());
 	vprint("2  !!!");
 	$insertedEntry = $spreadsheetService->insertRow($data,
-                                                    $client["spreadsheetid"],
-                                                    $client["worksheetid"]);
+                                                    $client['spreadsheetid'],
+                                                    $client['worksheetid']);
 
 	//$entry = $insertedEntry instanceof Zend_Gdata_Spreadsheets_ListEntry;
 	$entry = $insertedEntry;

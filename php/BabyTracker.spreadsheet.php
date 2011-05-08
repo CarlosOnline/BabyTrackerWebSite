@@ -17,7 +17,7 @@ function BabyTracker_Pwd() {
 }
 
 function Data_Worksheet() {
-	return "Data";
+	return 'Data';
 }
 
 class RowData {
@@ -107,7 +107,7 @@ class spreadsheet {
 			//"Host: www.google.com",
 			//"Accept: text/html, image/gif, image/jpeg, *; q=.2, q=.2",
 			//"Connection: keep-alive",
-			//"service" => "wise",
+			//'service' => 'wise',
 			);
 
 		vprint("url=$url");
@@ -140,11 +140,11 @@ class spreadsheet {
 
 		$url = "https://www.google.com/accounts/ClientLogin";
 		$fields = array(
-			"accountType" => "HOSTED_OR_GOOGLE",
-			"Email" => $username,
-			"Passwd" => $password,
-			"service" => "wise",
-			"source" => "pfbc"
+			'accountType' => "HOSTED_OR_GOOGLE",
+			'Email' => $username,
+			'Passwd' => $password,
+			'service' => 'wise',
+			'source' => 'pfbc'
 		);
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_URL, $url);
@@ -180,11 +180,11 @@ class spreadsheet {
 
 		$url = "https://www.google.com/accounts/ClientLogin";
 		$fields = array(
-			"accountType" => "GOOGLE",
-			"Email" => $username,
-			"Passwd" => $password,
-			"service" => "writely",
-			"source" => "Baby Tracker"
+			'accountType' => 'GOOGLE',
+			'Email' => $username,
+			'Passwd' => $password,
+			'service' => 'writely',
+			'source' => 'Baby Tracker'
 		);
 
 		$curl = curl_init("https://www.google.com/accounts/ClientLogin");
@@ -214,7 +214,7 @@ class spreadsheet {
 
     public function authenticate($username, $password)
     {
-		//vprint("starting");
+		//vprint('starting');
         $this->authenticate_wise($username, $password);
         $this->authenticate_writely($username, $password);
         return $this->token_writely;
@@ -259,7 +259,7 @@ class spreadsheet {
 		if ($this->column_array)
 			return $this->column_array;
 
-		vprint("Starting");
+		vprint('Starting');
 		$url = "https://spreadsheets.google.com/feeds/cells/" . $this->spreadsheetid . "/" . $this->worksheetid . "/private/full?max-row=1";
 		vprint("url=$url");
 		$response = $this->exec_curl_get($url, true);
@@ -298,7 +298,7 @@ class spreadsheet {
 
 	public function add($data, $verify_columns = 0)
 	{
-		//vprint("Starting");
+		//vprint('Starting');
 
 		$url = $this->getPostUrl();
 
@@ -330,7 +330,7 @@ class spreadsheet {
 		vprint("Starting $row, $col, $data");
 
 		$url = $this->getLinkUrl("http://schemas.google.com/spreadsheets/2006#cellsfeed");
-		$cell = "R" . $row . "C" . $col;
+		$cell = 'R' . $row . 'C' . $col;
 
 		$fields = '<entry xmlns="http://www.w3.org/2005/Atom" xmlns:gs="http://schemas.google.com/spreadsheets/2006">';
 		$fields .=  "<id>https://spreadsheets.google.com/feeds/cells/$this->spreadsheetid/$this->worksheetid/private/full/$cell</id>";
@@ -345,24 +345,24 @@ class spreadsheet {
 
 	public function updateRow($data)
 	{
-		vprint("Starting");
+		vprint('Starting');
 		array_print($data);
-		$row = $data["sheetrowid"];
+		$row = $data['sheetrowid'];
 
 		$dataset = array();
-		$dataset[] = new RowData($row, $this->getColumnIndex("date"), $data["date"]);
-		$dataset[] = new RowData($row, $this->getColumnIndex("time"), $data["time"]);
-		$dataset[] = new RowData($row, $this->getColumnIndex("type"), $data["type"]);
-		$dataset[] = new RowData($row, $this->getColumnIndex("amount"), $data["amount"]);
-		$dataset[] = new RowData($row, $this->getColumnIndex("description"), $data["description"]);
-		$dataset[] = new RowData($row, $this->getColumnIndex("sqlrowid"), $data["sqlrowid"]);
+		$dataset[] = new RowData($row, $this->getColumnIndex('date'), $data['date']);
+		$dataset[] = new RowData($row, $this->getColumnIndex('time'), $data['time']);
+		$dataset[] = new RowData($row, $this->getColumnIndex('type'), $data['type']);
+		$dataset[] = new RowData($row, $this->getColumnIndex('amount'), $data['amount']);
+		$dataset[] = new RowData($row, $this->getColumnIndex('description'), $data['description']);
+		$dataset[] = new RowData($row, $this->getColumnIndex('sqlrowid'), $data['sqlrowid']);
 
 		return $this->batch_update($dataset);
 	}
 
 	public function batch_update($dataset)
 	{
-		vprint("Starting");
+		vprint('Starting');
 
 		$url = $this->getLinkUrl("http://schemas.google.com/spreadsheets/2006#cellsfeed");
 		$post_url = $this->getPostUrl();
@@ -378,7 +378,7 @@ class spreadsheet {
 		{
 			$row = $dataset[$idx]->row;
 			$col = $dataset[$idx]->col;
-			$cell = "R" . $row . "C" . $col;
+			$cell = 'R' . $row . 'C' . $col;
 			$data = htmlentities($dataset[$idx]->value);
 			$batchid = "A$idx";
 			$entry .= "<entry>" . PHP_EOL .
@@ -403,7 +403,7 @@ class spreadsheet {
 
 		$results = $this->exec_curl_post($url, $feed, true);
 
-		vprint("processing results");
+		vprint('processing results');
 		$results = str_replace("batch:", "", $results);
 		$results = str_replace("batch:", "", $results);
 		$results = str_replace("gs:", "", $results);
@@ -414,7 +414,7 @@ class spreadsheet {
 			$entry = $xml->entry[$idx];
 			//vprint("Processing result row=" . $entry->title . " code=" . $entry->status->attributes()->code . " reason=" . $entry->status->attributes()->reason);
 
-			if ($entry->status->attributes()->code != 200 || $entry->status->attributes()->reason != "Success")
+			if ($entry->status->attributes()->code != 200 || $entry->status->attributes()->reason != 'Success')
 			{
 				set_last_response($results, $entry->status->attributes()->reason, $entry->status->attributes()->code);
 				error("Updating row=" . $entry->title . " code=" . $entry->status->attributes()->code . " reason=" . $entry->status->attributes()->reason);
@@ -428,7 +428,7 @@ class spreadsheet {
 		vprint("Staring range=$minrow $mincol $maxrow $maxcol");
 
 		if (!$this->getPostUrl())
-            error("failed to get post url");
+            error('failed to get post url');
 
         $url = "https://spreadsheets.google.com/feeds/cells/$this->spreadsheetid/$this->worksheetid/private/basic?min-row=$minrow&min-col=$mincol&max-col=$maxcol";
 		return $this->exec_curl_get($url, true);
@@ -536,7 +536,7 @@ class spreadsheet {
 
 	private function get_curl_wise($url)
 	{
-        //vprint("Starting");
+        //vprint('Starting');
 
 		if(empty($this->token_wise))
 			error("get_curl_wise() no security token");
@@ -630,7 +630,7 @@ class spreadsheet {
 	private function exec_curl_put($url, $fields, $wise_version)
 	{
 		if(empty($url))
-			error("missing url");
+			error('missing url');
 
 		/* Prepare the data for HTTP PUT. */
 		$file = tmpfile();
@@ -668,7 +668,7 @@ class spreadsheet {
 	{
 		if ($this->curl != "")
 		{
-			vprint("spreadsheet closed");
+			vprint('spreadsheet closed');
 			curl_close($this->curl);
 			$this->curl = "";
 		}
@@ -690,14 +690,14 @@ class spreadsheet {
 
 		if (!$this->spreadsheetid)
 		{
-			vprint("did not find id for " . $this->spreadsheet);
+			vprint('did not find id for ' . $this->spreadsheet);
 			return "";
 		}
 
 		$url = "https://spreadsheets.google.com/feeds/worksheets/" . $this->spreadsheetid . "/private/full";
 		if(empty($this->worksheet))
 		{
-			vprint("worksheet name not set");
+			vprint('worksheet name not set');
 			return $url;
 		}
 
@@ -746,14 +746,14 @@ class spreadsheet {
 		$idx = 0;
 		while ($spreadsheetXml->link[$idx])
 		{
-			if ($spreadsheetXml->link[$idx]->attributes()->rel == "alternate")
+			if ($spreadsheetXml->link[$idx]->attributes()->rel == 'alternate')
 			{
 				$href = $spreadsheetXml->link[$idx]->attributes()->href;
 				if(stripos($href, "key=") !== false)
 				{
 					preg_match("/key=([:a-z0-9_\-]+)/i", $href, $matches);
 					$this->key = $matches[1];
-					vprint("returning " . $this->key);
+					vprint('returning ' . $this->key);
 					return $this->key;
 				}
 			}
@@ -765,7 +765,7 @@ class spreadsheet {
 
 	private function getID()
 	{
-		vprint("for " . $this->spreadsheet);
+		vprint('for ' . $this->spreadsheet);
 		if ($this->spreadsheet)
 			$url = "https://spreadsheets.google.com/feeds/spreadsheets/private/full?title=" . urlencode($this->spreadsheet);
 		else
@@ -786,14 +786,14 @@ class spreadsheet {
 			if (!$this->key && $spreadsheetXml->entry[$idx]->title == $this->spreadsheet)
 			{
 				$this->spreadsheetid = basename(trim($spreadsheetXml->entry[$idx]->id));
-				vprint("returning " . $this->spreadsheetid);
+				vprint('returning ' . $this->spreadsheetid);
 				return($this->spreadsheetid);
 			}
 
 			$idxLink = 0;
 			while ($spreadsheetXml->entry[$idx]->link)
 			{
-				if ($spreadsheetXml->entry[$idx]->link[$idxLink]->attributes()->rel == "alternate")
+				if ($spreadsheetXml->entry[$idx]->link[$idxLink]->attributes()->rel == 'alternate')
 				{
 					$href = $spreadsheetXml->entry[$idx]->link[$idxLink]->attributes()->href;
 					if(stripos($href, "key="))
@@ -804,7 +804,7 @@ class spreadsheet {
 						if ($keyFound == $this->key || "spreadsheet:$keyFound" == $this->key )
 						{
 							$this->spreadsheetid = basename(trim($spreadsheetXml->entry[$idx]->id));
-							vprint("returning " . $this->spreadsheetid);
+							vprint('returning ' . $this->spreadsheetid);
 							return $this->spreadsheetid;
 						}
 					}
@@ -816,7 +816,7 @@ class spreadsheet {
 			$idx++;
 		}
 
-		vprint("returning " . $this->spreadsheetid);
+		vprint('returning ' . $this->spreadsheetid);
         vxml_print($response);
 		return $this->spreadsheetid;
 	}
@@ -887,7 +887,7 @@ class spreadsheet {
 		vprint("Starting $sqlrowid");
 
 		if (!$this->getPostUrl())
-            error("failed to get post url");
+            error('failed to get post url');
 
 		$rowCount = $client["last_row"];
 		if (!$rowCount)
@@ -988,18 +988,18 @@ function SpreadsheetAdd($data, $row, $client)
 		default:
 			//SetActionState("SpreadsheetAdd_start");
 			$doc->add($data);
-			SetActionState("SpreadsheetAdd_added", $row["id"]);
+			SetActionState("SpreadsheetAdd_added", $row['id']);
 
 		case "SpreadsheetAdd_added":
-			$sheetrowid = $doc->GetRowBySqlId($data["sqlrowid"], $client);
+			$sheetrowid = $doc->GetRowBySqlId($data['sqlrowid'], $client);
 			if ($sheetrowid)
 			{
 				// update sheet row id
-				$data["sheetrowid"] = $sheetrowid;
-				SetUserTableSheetRowId($data["sqlrowid"], $sheetrowid, $client);
+				$data['sheetrowid'] = $sheetrowid;
+				SetUserTableSheetRowId($data['sqlrowid'], $sheetrowid, $client);
 			}
 			else
-				error("Failed to get sheetrowid for data");
+				error('Failed to get sheetrowid for data');
 			break;
 	}
 
@@ -1007,7 +1007,7 @@ function SpreadsheetAdd($data, $row, $client)
 
 function SpreadsheetUpdate($data, $client)
 {
-	vprint("Starting");
+	vprint('Starting');
 	array_print($data);
 
 	$worksheetid = $client['worksheetid'];
@@ -1016,17 +1016,17 @@ function SpreadsheetUpdate($data, $client)
 	$doc->setWorksheet(Data_Worksheet());
 	$doc->setWorksheetId($worksheetid);
 	UpdateUploadSheetRowId($data, $client);
-	if (!$data["sheetrowid"])
-		error("Missing sheetrowid");
+	if (!$data['sheetrowid'])
+		error('Missing sheetrowid');
 
 	return $doc->updateRow($data);
 }
 
 function SpreadsheetDelete($data, $client)
 {
-	vprint("Starting");
-	$data["date"] = "";
-	$data["time"] = "";
+	vprint('Starting');
+	$data['date'] = "";
+	$data['time'] = "";
 	array_print($data);
 
 	$worksheetid = $client['worksheetid'];
@@ -1035,10 +1035,10 @@ function SpreadsheetDelete($data, $client)
 	$doc->setWorksheet(Data_Worksheet());
 	$doc->setWorksheetId($worksheetid);
 	UpdateUploadSheetRowId($data, $client);
-	if (!$data["sheetrowid"])
-		error("Missing sheetrowid");
+	if (!$data['sheetrowid'])
+		error('Missing sheetrowid');
 
-	$data["sqlrowid"] = "";
+	$data['sqlrowid'] = "";
 	return $doc->updateRow($data);
 }
 
@@ -1047,9 +1047,9 @@ function GetSpreadsheetStatsPage($client)
     //r1c1:r30c14
     //$range="R1C1:R30C14";
 
-    $range="R1C1";
+    $range='R1C1';
 	$docApp = GetSpreadsheet($client);
-	$docApp->setWorksheet("Stats");
+	$docApp->setWorksheet('Stats');
 	$results = $docApp->get_cells(1,1,30,14);
 	return $results;
 }
@@ -1060,11 +1060,11 @@ function GetSpreadssetStatsCell($client)
 	$xml = simplexml_load_string($results);
 	//array_print($xml);
 
-	$cells = array("item" => "value");
+	$cells = array('item' => 'value');
 
 	foreach ($xml as $item => $value)
 	{
-		if ($item == "entry")
+		if ($item == 'entry')
 		{
 			$title = $value->title;
 			$cells["$title"] = $value->content;

@@ -1,1 +1,0 @@
-1 0 * * *   php public_html/BabyTracker/BabyTracker.runall.background.php >> public_html/BabyTracker/output/background.htm

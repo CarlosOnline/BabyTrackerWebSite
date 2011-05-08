@@ -1,0 +1,30 @@
+<b>require_once()</b> uri=[/BabyTracker/BabyTracker.php?testaction=setup_user_table&verbose=1&ignore=43222]<br/><b>require_once()</b> rand=491 php version = 5.3.5 fileversion=1304299405<br/>﻿﻿﻿﻿<b>query()</b> mysql(<small>select * from BT_Registered_Users where (`userid`='me@server.com' AND `name`='KaiChan') OR  0=1</small>)<br/><b>TestMe()</b> testaction = setup_user_table<br/><b>query()</b> mysql(<small>DROP TABLE IF EXISTS `user_table_me_server_com_KaiChan`;</small>)<br/><b>SetHtmlCookie()</b> setcookie() [tablename] to [user_table_me_server_com_KaiChan]<br/><b>exec_file()</b> sql/create_user_table.sql<br/><b>query()</b> mysql(<small># parameters: user_table_me_server_com_KaiChan, MyISAM
+
+CREATE TABLE IF NOT EXISTS `user_table_me_server_com_KaiChan` (
+`id` INT NOT NULL AUTO_INCREMENT,
+`datetime` DATETIME NOT NULL,
+`type` ENUM('Breast','Bottle','Pump','Wet Diaper','Poopy Diaper','Deleted') NOT NULL,
+`attributes` int NULL,
+`amount` DECIMAL(6,2) NULL,
+`description` VARCHAR(256) NULL,
+`version` int NOT NULL DEFAULT 0,
+`amount_oz` DECIMAL(6,2) NULL,
+`timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`sheetrowid` BIGINT NULL,
+`sheetversion` VARCHAR(256) NULL,
+PRIMARY KEY (`id`)) ENGINE = MyISAM</small>)<br/><b>query()</b> mysql(<small>select * from BT_Registered_Users where `token`='4dbe08515caa3' OR (`userid`='me@server.com' AND `name`='KaiChan') OR  0=1</small>)<br/><b>query()</b> mysql(<small>insert into `BT_Registered_Users` set
+`name`='KaiChan',
+`dob`=STR_TO_DATE('10/1/2010', '%m/%d/%Y'),
+`userid`='me@server.com',
+`token`='4dbe08515caa3',
+`tablename`='user_table_me_server_com_KaiChan',
+`title`='Baby KaiChan Tracker',
+`key`='',
+`spreadsheetid`='',
+`worksheetid`=''
+ON DUPLICATE KEY UPDATE
+`dob`=STR_TO_DATE('10/1/2010', '%m/%d/%Y'),
+`key`='',
+`spreadsheetid`='',
+`worksheetid`='';
+</small>)<br/>

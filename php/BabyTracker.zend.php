@@ -9,7 +9,7 @@ Zend_Loader::loadClass('Zend_Gdata_AuthSub');
 print("<title>Authorize Baby Tracker Account</title>");
 function ZendAuthSubTestOld()
 {
-	vprint("Start");
+	vprint('Start');
 
 	$hostedDomain = 'https://secure.iinet.com/joyofplaying.com';
 	$nextUrl = 'https://secure.iinet.com/joyofplaying.com/BabyTracker/RetrieveToken.php';
@@ -27,7 +27,7 @@ function ZendAuthSubTestOld()
 
 function RequestSingleUseToken()
 {
-	vprint("Start");
+	vprint('Start');
 
 	$url = "https://www.google.com/accounts/AuthSubRequest?";
 	$url .= "next=https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.zend.php";
@@ -66,9 +66,9 @@ function Zend_GetSessionToken()
 	}
 }
 
-if (get_input_option("delete")) {
+if (get_input_option('delete', 'bool')) {
     send_to_newfile("", "session_token.cfg");
-    vprint("delete session token");
+    vprint('delete session token');
 }
 
 Zend_GetSessionToken();

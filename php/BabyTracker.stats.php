@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 $html_space = "&nbsp;";
 
@@ -13,7 +13,7 @@ function FormatCellValue($value)
 
 	switch($value)
 	{
-		case "0":
+		case '0':
 		case "0.0":
 		case "0.00":
 			return "";
@@ -22,11 +22,11 @@ function FormatCellValue($value)
 			$value = "";
 			break;
 
-		case "Pump":
-		case "Breast":
-		case "Bottle":
-		case "Daipering":
-		case "Diapering":
+		case 'Pump':
+		case 'Breast':
+		case 'Bottle':
+		case 'Daipering':
+		case 'Diapering':
 			$value = "<hr><b>$value</b>";
 			break;
 	}
@@ -38,11 +38,11 @@ function IsSectionName($value)
 {
 	switch($value)
 	{
-		case "Pump":
-		case "Breast":
-		case "Bottle":
-		case "Daipering":
-		case "Diapering":
+		case 'Pump':
+		case 'Breast':
+		case 'Bottle':
+		case 'Daipering':
+		case 'Diapering':
 			return true;
 			break;
 	}
@@ -52,38 +52,38 @@ function IsSectionName($value)
 
 function FillRowHeaderArray(&$col)
 {
-    $col[] = "Nurse";
-	$col[] = "Number of Nurses";
-	$col[] = "Time Nursed";
-    $col[] = "Avg Time per Nurse";
-//    $col[] = "Nurses per Day";
-//    $col[] = "Time per Day";
-    $col[] = " ";
+    $col[] = 'Nurse';
+	$col[] = 'Number of Nurses';
+	$col[] = 'Time Nursed';
+    $col[] = 'Avg Time per Nurse';
+//    $col[] = 'Nurses per Day';
+//    $col[] = 'Time per Day';
+    $col[] = ' ';
 
-    $col[] = "Bottle";
-    $col[] = "Number of Bottles";
-    $col[] = "Amount Fed";
-    $col[] = "Amount per Bottle";
-//    $col[] = "Bottles per Day";
-//    $col[] = "Amount per Day";
-    $col[] = " ";
+    $col[] = 'Bottle';
+    $col[] = 'Number of Bottles';
+    $col[] = 'Amount Fed';
+    $col[] = 'Amount per Bottle';
+//    $col[] = 'Bottles per Day';
+//    $col[] = 'Amount per Day';
+    $col[] = ' ';
 
-    $col[] = "Pump";
-    $col[] = "Number of Pumps";
-	$col[] = "Amount Pumped";
-    $col[] = "Amount per Pump";
-//    $col[] = "Pumps per Day";
-//    $col[] = "Amount per Day";
-    $col[] = " ";
+    $col[] = 'Pump';
+    $col[] = 'Number of Pumps';
+	$col[] = 'Amount Pumped';
+    $col[] = 'Amount per Pump';
+//    $col[] = 'Pumps per Day';
+//    $col[] = 'Amount per Day';
+    $col[] = ' ';
 
-    $col[] = "Daipering";
-    $col[] = "Number of Daipers";
-    $col[] = "Number of Wet";
-    $col[] = "Number of Poopy";
-//    $col[] = "Diapers per day";
+    $col[] = 'Daipering';
+    $col[] = 'Number of Daipers';
+    $col[] = 'Number of Wet';
+    $col[] = 'Number of Poopy';
+//    $col[] = 'Diapers per day';
 //    $col[] = "Average wet / day";
 //    $col[] = "Average poopy / day";
-    $col[] = " ";
+    $col[] = ' ';
 }
 
 function GetQuickStats($mysql, $table, $day_count, &$col, $daystart = 0, $dayend = 0)
@@ -107,7 +107,7 @@ function GetQuickStats($mysql, $table, $day_count, &$col, $daystart = 0, $dayend
     $return_array = 0;
     $field_list = "";
 
-	$sql = "SELECT " .
+	$sql = 'SELECT ' .
     		"cast(count(id) as DECIMAL(10,2)) as count,".
 			"cast(sum(amount_oz) as DECIMAL(10,2)) as sum,".
 			"cast(avg(amount_oz) as DECIMAL(10,2)) as avg,".
@@ -137,9 +137,9 @@ function GetQuickStats($mysql, $table, $day_count, &$col, $daystart = 0, $dayend
     $poopy_array = $mysql->query_results($results);
     $diaper_array = array();
     $diaper_array[] = "$html_space";
-    $diaper_array[] = $wet_array["count"] + $poopy_array["count"];
-    $diaper_array[] = $wet_array["count"];
-    $diaper_array[] = $poopy_array["count"];
+    $diaper_array[] = $wet_array['count'] + $poopy_array['count'];
+    $diaper_array[] = $wet_array['count'];
+    $diaper_array[] = $poopy_array['count'];
     $diaper_array[] = $wet_array["count_per_day"] + $poopy_array["count_per_day"];
     $diaper_array[] = $wet_array["count_per_day"];
     $diaper_array[] = $poopy_array["count_per_day"];
@@ -164,7 +164,7 @@ function FillStatsArray($mysql, $table, $day_count, &$col, $daystart = 0, $dayen
     $return_array = 0;
     $field_list = "";
 
-	$sql = "SELECT " .
+	$sql = 'SELECT ' .
 	        "'$html_space', " .
     		"cast(count(id) as DECIMAL(10,2)) as count,".
 			"cast(sum(amount_oz) as DECIMAL(10,2)) as sum,".
@@ -201,9 +201,9 @@ function FillStatsArray($mysql, $table, $day_count, &$col, $daystart = 0, $dayen
     $poopy_array = $mysql->query_results($results);
     $diaper_array = array();
     $diaper_array[] = "$html_space";
-    $diaper_array[] = $wet_array["count"] + $poopy_array["count"];
-    $diaper_array[] = $wet_array["count"];
-    $diaper_array[] = $poopy_array["count"];
+    $diaper_array[] = $wet_array['count'] + $poopy_array['count'];
+    $diaper_array[] = $wet_array['count'];
+    $diaper_array[] = $poopy_array['count'];
     //$diaper_array[] = $wet_array["count_per_day"] + $poopy_array["count_per_day"];
     //$diaper_array[] = $wet_array["count_per_day"];
     //$diaper_array[] = $poopy_array["count_per_day"];
@@ -227,7 +227,7 @@ function FillStatsArrayWithCount($mysql, $table, $day_count, &$col, $daystart = 
     $return_array = 0;
     $field_list = "";
 
-	$sql = "SELECT " .
+	$sql = 'SELECT ' .
     		"cast(count(id) as DECIMAL(10,2)) as count,".
 			"FROM $table ";
 
@@ -264,15 +264,15 @@ function DisplayStatsCounts($stats)
     print($html);
 }
 
-function DisplaySqlStats_Col($ids, $item="total", $day_max_delta=0, $day_min_delta=0)
+function DisplaySqlStats_Col($ids, $item='total', $day_max_delta=0, $day_min_delta=0)
 {
     //set_output_flag("no_sql", 1);
     global $html_space;
 
 	$mysql = GetMysql();
-    @$table = $ids["tablename"];
+    @$table = $ids['tablename'];
 	$max_date = GetQueryValue($mysql->query("select CAST(MAX(`datetime`) as DATE) from $table"));
-    $dob = GetUserRegValue("dob", $ids);
+    $dob = GetUserRegValue('dob', $ids);
 	$day_count = GetQueryValue($mysql->query("select TIMESTAMPDIFF(DAY, '$dob', '$max_date')"));
 	$year = GetQueryValue($mysql->query("select YEAR('$max_date')"));
 	$month = GetQueryValue($mysql->query("select MONTH('$max_date')"));
@@ -285,20 +285,20 @@ function DisplaySqlStats_Col($ids, $item="total", $day_max_delta=0, $day_min_del
     $stats = array();
 
 	$col = array();
-    $col[] = "Item Description";
+    $col[] = 'Item Description';
     FillRowHeaderArray($col);
     $stats[] = $col;
 
     switch ($item)
     {
-        case "total":
+        case 'total':
 	        $col = array();
-            $col[] = "Total";
+            $col[] = 'Total';
             FillStatsArray($mysql, $table, $day_count, $col);
             $stats[] = $col;
             break;
 
-        case "today":
+        case 'today':
         	$col = array();
             // UNDONE: set title Today
             $col[] = GetQueryValue($mysql->query("select DATE_FORMAT('$max_date', '%m/%d')"));
@@ -306,18 +306,18 @@ function DisplaySqlStats_Col($ids, $item="total", $day_max_delta=0, $day_min_del
             $stats[] = $col;
             break;
 
-        case "now":
+        case 'now':
         // UNDONE: Use NOW!!!
 	        $now = GetQueryValue($mysql->query("select MAX(`datetime`) from $table"));
 	        $now24 = GetQueryValue($mysql->query("select TIMESTAMPADD(DAY, -1, '$now')"));
 	        $now1 = GetQueryValue($mysql->query("select TIMESTAMPADD(SECOND, 1, '$now')"));
 	        $col = array();
-            $col[] = "Last 24 Hours";
+            $col[] = 'Last 24 Hours';
             FillStatsArray($mysql, $table, 1, $col, $now24, $now1);
             $stats[] = $col;
             break;
 
-        case "month":
+        case 'month':
 	        $col = array();
             $col[] = GetQueryValue($mysql->query("select MONTHNAME('$cur_month')"));
             FillStatsArray($mysql, $table, $cur_month_count, $col, $cur_month, $next_month);
@@ -331,15 +331,15 @@ function DisplaySqlStats_Col($ids, $item="total", $day_max_delta=0, $day_min_del
             $stats[] = $col;
             break;
 
-        case "week":
+        case 'week':
 	        $col = array();
-            $col[] = "Week";
+            $col[] = 'Week';
 	        $day7 = GetQueryValue($mysql->query("select DATE_SUB('$max_date', INTERVAL 7 DAY)"));
             FillStatsArray($mysql, $table, 7, $col, $day7, $max_date);
             $stats[] = $col;
             break;
 
-        case "day":
+        case 'day':
 	        $day_max = GetQueryValue($mysql->query("select DATE_SUB('$max_date', INTERVAL $day_max_delta day)"));
 	        $day_min = GetQueryValue($mysql->query("select DATE_SUB('$max_date', INTERVAL $day_min_delta day)"));
 	        $col = array();
@@ -361,19 +361,19 @@ function DisplaySqlStats_Counts($ids)
 {
     //set_output_flag("no_sql", 1);
 	$mysql = GetMysql();
-    @$table = $ids["tablename"];
+    @$table = $ids['tablename'];
 
     $stats = array();
 
 	$row = array();
-    $row["Nurses"] = "Nurses";
-    $row["Bottles"] = "Bottles";
-    $row["Pumps"] = "Pumps";
-    $row["Wet Diapers"] = "Wet Diaper";
-    $row["Poopy Diapers"] = "Poopy Diaper";
+    $row['Nurses'] = 'Nurses';
+    $row['Bottles'] = 'Bottles';
+    $row['Pumps'] = 'Pumps';
+    $row['Wet Diapers'] = 'Wet Diaper';
+    $row['Poopy Diapers'] = 'Poopy Diaper';
     $stats[] = $row;
 
-    $sql = "SELECT " .
+    $sql = 'SELECT ' .
            "count(id) " .
            "FROM $table GROUP BY `type`;";
 
@@ -399,9 +399,9 @@ function DisplaySqlStats($ids, $all=1, $total=0, $range_start=0, $range_end=0)
     global $html_space;
 
 	$mysql = GetMysql();
-    @$table = $ids["tablename"];
+    @$table = $ids['tablename'];
 	$max_date = GetQueryValue($mysql->query("select CAST(MAX(`datetime`) as DATE) from $table"));
-    $dob = GetUserRegValue("dob", $ids);
+    $dob = GetUserRegValue('dob', $ids);
 	$day_count = GetQueryValue($mysql->query("select TIMESTAMPDIFF(DAY, '$dob', '$max_date')"));
 
 // Number of Nurse Today
@@ -416,14 +416,14 @@ function DisplaySqlStats($ids, $all=1, $total=0, $range_start=0, $range_end=0)
     $stats = array();
 
 	$col = array();
-    $col[] = "Item Description";
+    $col[] = 'Item Description';
     FillRowHeaderArray($col);
     $stats[] = $col;
 
 	$col = array();
 
 /*
-    $col[] = "Total";
+    $col[] = 'Total';
     FillStatsArray($mysql, $table, $day_count, $col);
     $stats[] = $col;
 */
@@ -442,13 +442,13 @@ function DisplaySqlStats($ids, $all=1, $total=0, $range_start=0, $range_end=0)
 	$now24 = GetQueryValue($mysql->query("select TIMESTAMPADD(DAY, -1, '$now')"));
 	$now1 = GetQueryValue($mysql->query("select TIMESTAMPADD(SECOND, 1, '$now')"));
 	$col = array();
-    $col[] = "24 Hours";
+    $col[] = '24 Hours';
     FillStatsArray($mysql, $table, 1, $col, $now24, $now1, 0, 0);
     $stats[] = $col;
 
 /*
 	$col = array();
-    $col[] = "Week";
+    $col[] = 'Week';
 	$day7 = GetQueryValue($mysql->query("select DATE_SUB('$max_date', INTERVAL 7 DAY)"));
     FillStatsArray($mysql, $table, 7, $col, $day7, $max_date);
     $stats[] = $col;

@@ -140,7 +140,7 @@ function deleteAllCookies() {
 
     for (var idx = 0; idx < cookienames.length; idx++) {
         eraseCookie(cookienames[idx]);
-        //_DebugMsg("deleteAllCookies", "deleting " + cookienames[idx]);
+        //alert("deleteAllCookies - deleting " + cookienames[idx]);
     }
     var cookies = document.cookie;
     var start = 0;

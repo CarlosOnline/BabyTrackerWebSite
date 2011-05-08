@@ -1,17 +1,179 @@
 <?php
+ignore_user_abort(1);
+error_reporting(E_ALL);
+ini_set('error_reporting', E_ALL);
+ini_set("display_errors", 1);
 
-function get_input_option($item)
+setcookie("babytracker_version", "2.1");
+
+function validate_input($value, $type)
 {
-	if (@$_POST["$item"])
-		return $_POST["$item"];
-	if (@$_GET["$item"])
-		return $_GET["$item"];
+	switch($type)
+	{
+		case 'date':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $value))
+				$value = '';
+			return $value;
+			break;
+
+		case 'time':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("/^[0-9]{1,2}:[0-9]{2} (AM|PM)$/", $value))
+				$value = '';
+			return $value;
+			break;
+
+		case 'number':
+		case 'int':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("/^[0-9]+$/", $value))
+				$value = '';
+			return $value;
+			break;
+
+		case 'bool':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if ($value != '1')
+				$value = '';
+			return $value;
+			break;
+
+		case 'decimal':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("/^[0-9.]+$/", $value))
+				$value = '';
+			return $value;
+			break;
+
+		case 'email':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			//if (!preg_match("/^[a-zA-Z_0-9]+@$[a-zA-Z_0-9.]/", $value))
+			//	$value = '';
+			return $value;
+			break;
+
+		case 'pwd':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			//if (!preg_match("/^[a-zA-Z_0-9]+@$[a-zA-Z_0-9.]/", $value))
+			//	$value = '';
+			return $value;
+			break;
+
+		case 'id':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("/^[a-zA-Z_0-9]+$/", $value))
+				$value = '';
+			return $value;
+			break;
+
+		case 'word':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("/^[a-zA-Z_]+$/", $value))
+				$value = '';
+			return $value;
+			break;
+
+		case 'words':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("/^[a-zA-Z_ ]+$/", $value))
+				$value = '';
+			return $value;
+			break;
+
+		case 'text':
+			//$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			return $value;
+			break;
+
+		case 'filename':
+			$value = utf8_decode($value);
+			$value = htmlentities($value, ENT_QUOTES);
+			$value = strip_tags($value);
+			if (!preg_match("/^[a-zA-Z_.]+$/", $value))
+				$value = '';
+			return $value;
+			break;
+	}
+	error("Unknown type $type");
 }
 
-$verbose = get_input_option("verbose");
-$xml_view = get_input_option("xml_view");
-$no_xml = get_input_option("no_xml");
-$no_sql = get_input_option("no_sql");
+function check_injected($str)
+{
+  $injections = array('(\n+)',
+              '(\r+)',
+              '(\t+)',
+              '(%0A+)',
+              '(%0D+)',
+              '(%08+)',
+              '(%09+)'
+              );
+	$inject = join('|', $injections);
+	$inject = "/$inject/i";
+	if(preg_match($inject,$str))
+		return true;
+	else
+		return false;
+}
+
+function get_input_option($item, $type)
+{
+	$value = @$_POST["$item"];
+	if ($value)
+	{
+		$value = validate_input($value, $type);
+		$value = check_injected($value) ? '' : $value;
+		return $value;
+	}
+	$value = @$_GET["$item"];
+	if ($value)
+	{
+		$value = validate_input($value, $type);
+		$value = check_injected($value) ? '' : $value;
+		return $value;
+	}
+}
+
+function get_input_bool($item)   	{ return get_input_option($item, 'bool'); }
+function get_input_date($item)   	{ return get_input_option($item, 'date'); }
+function get_input_time($item)   	{ return get_input_option($item, 'time'); }
+function get_input_int($item)    	{ return get_input_option($item, 'int'); }
+function get_input_number($item) 	{ return get_input_option($item, 'number'); }
+function get_input_decimal($item) 	{ return get_input_option($item, 'decimal'); }
+function get_input_word($item) 		{ return get_input_option($item, 'word'); }
+function get_input_words($item) 	{ return get_input_option($item, 'words'); }
+function get_input_text($item) 		{ return get_input_option($item, 'text'); }
+function get_input_email($item)  	{ return get_input_option($item, 'email'); }
+function get_input_pwd($item)  		{ return get_input_option($item, 'pwd'); }
+function get_input_filename($item) 	{ return get_input_option($item, 'filename'); }
+function get_input_id($item)  		{ return get_input_option($item, 'id'); }
+
+$verbose = get_input_bool('verbose');
+$xml_view = get_input_bool("xml_view");
+$no_xml = get_input_bool("no_xml");
+$no_sql = get_input_bool("no_sql");
 $submission_data = "";
 $last_response = "";
 $last_http_errors = "";
@@ -27,13 +189,13 @@ $flush = 0;
 LogCommandLine("START:");
 
 //phpinfo();
-if (get_input_option("debug") || get_input_option("debugmode")) {
+if (get_input_bool('debug') || get_input_bool('debugmode')) {
 	print("verbose turned on via debug mode<br/>");
 	$verbose = 1;
 }
 
 $browser = $_SERVER['HTTP_USER_AGENT'];
-if (stripos($browser, "Firefox"))
+if (stripos($browser, 'Firefox'))
 {
 	// turn of xml for firefox
 	$xml_view = 0;
@@ -44,16 +206,16 @@ if (@$_GET["output_file"])
 	set_output_filename("output/" . $_GET["output_file"]);
 	delete_output_file(get_output_filename());
 }
-elseif (get_input_option("postaction"))
+elseif (get_input_word('postaction'))
 {
-	set_output_filename("output/" . get_input_option("postaction") . ".htm");
+	set_output_filename("output/" . get_input_word('postaction') . ".htm");
 	delete_output_file(get_output_filename());
 	//if ($verbose)
 	//	array_print($_POST);
 }
-elseif (get_input_option("testaction"))
+elseif (get_input_word('testaction'))
 {
-	set_output_filename("output/" . get_input_option("testaction") . ".htm");
+	set_output_filename("output/" . get_input_word('testaction') . ".htm");
 	delete_output_file(get_output_filename());
 }
 
@@ -66,13 +228,14 @@ else {
 }
 
 $config = parse_ini_file("BabyTracker.config.ini");
+
 function get_config_value($key)
 {
 	global $config;
 	if (@$config[$key])
 		return $config[$key];
 
-	//vprint("<b>warning</b> config $key not found");
+	vprint("<b>warning</b> config $key not found");
 }
 
 function GetCachedSessionToken() {
@@ -165,12 +328,12 @@ function set_output_flag($string, $value)
 
     switch($string)
     {
-        case "sql":
+        case 'sql':
         case "no_sql":
             $no_sql = $value;
             break;
 
-        case "xml":
+        case 'xml':
         case "no_xml":
             $no_xml = $value;
             break;
@@ -226,7 +389,7 @@ function send_to_file($string, $filename)
 
 function send_to_newfile($string, $filename)
 {
-	$fp = fopen("$filename", "w");
+	$fp = fopen("$filename", 'w');
 	fwrite($fp, $string);
 	fflush($fp);
 	fclose($fp);
@@ -234,7 +397,7 @@ function send_to_newfile($string, $filename)
 
 function flush_to_file($filename)
 {
-	$fp = fopen("$filename", "a");
+	$fp = fopen("$filename", 'a');
 	fwrite($fp, ob_get_contents());
 	fflush($fp);
 	fclose($fp);
@@ -317,7 +480,7 @@ function varray_print($obj)
     }
 }
 
-function __print($string, $type = "text", $verbose_string = "true")
+function __print($string, $type = 'text', $verbose_string = 'true')
 {
 	global $no_xml, $xml_view, $verbose;
 
@@ -325,7 +488,7 @@ function __print($string, $type = "text", $verbose_string = "true")
 	{
 		switch($type)
 		{
-			case "xml":
+			case 'xml':
 				if ($no_xml) {
 					// noop
 				}
@@ -339,7 +502,7 @@ function __print($string, $type = "text", $verbose_string = "true")
                 }
 				break;
 
-			case "text":
+			case 'text':
 			default:
 				if ($xml_view != 0)
 					echo "<i>$string</i>";
@@ -352,23 +515,23 @@ function __print($string, $type = "text", $verbose_string = "true")
 
 function xml_print($string)
 {
-	__print($string, "xml");
+	__print($string, 'xml');
 }
 
 function vxml_print($string)
 {
-	__print($string, "xml");
+	__print($string, 'xml');
 }
 
 function vprint($string)
 {
 	$func = get_caller_func();
-	__print("<b>$func()</b> $string", "text", "verbose");
+	__print("<b>$func()</b> $string", 'text', 'verbose');
 }
 
 function iprint($string)
 {
-	__print($string, "text");
+	__print($string, 'text');
 }
 
 function error($string)
@@ -378,16 +541,16 @@ function error($string)
 
 	$func = get_caller_func();
 
-	__print("<h3>BabyTracker Server Error</h3>", "text", "");
-	__print("Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a>", "text", "");
-	__print("********************************************", "text", "");
-	__print("<b>$func()</b> <span style='color: #FF0000; font-size: medium;'>$string</span>", "text", "");
+	__print("<h3>BabyTracker Server Error</h3>", 'text', "");
+	__print("Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a>", 'text', "");
+	__print("********************************************", 'text', "");
+	__print("<b>$func()</b> <span style='color: #FF0000; font-size: medium;'>$string</span>", 'text', "");
 
 	if ($submission_data)
-		__print("Data: $submission_data", "text", "");
+		__print("Data: $submission_data", 'text', "");
 
     if ($last_response)
-        __print($last_response, "xml", "");
+        __print($last_response, 'xml', "");
 
     set_last_error(get_last_response());
 
@@ -455,7 +618,7 @@ function CommandLineToString($data)
 {
 	$string = "";
 	foreach($data as $key => $value) {
-		if ($key != "pwd" && $key != "password")
+		if ($key != 'pwd' && $key != 'password')
 			$string .= "$key=$value; ";
 	}
 	return $string;
@@ -467,9 +630,9 @@ function LogCommandLine($prefix)
 	$data .= "$prefix ";
 	$data .= date('Y-m-d H-i-s', time());
 	$data .= "<b>";
-	$data .= get_input_option("testaction");
+	$data .= get_input_word('testaction');
 	$data .= ".";
-	$data .= get_input_option("postaction");
+	$data .= get_input_word('postaction');
 	$data .= "</b> POST=[";
 	$data .= CommandLineToString($_POST);
 	$data .= "] GET=[";
@@ -484,9 +647,9 @@ function LogCommandLineMessage($prefix, $message)
 	$data .= "$prefix ";
 	$data .= date('Y-m-d H-i-s', time());
 	$data .= "<i>";
-	$data .= get_input_option("testaction");
+	$data .= get_input_word('testaction');
 	$data .= ".";
-	$data .= get_input_option("postaction");
+	$data .= get_input_word('postaction');
 	$data .= "</i>";
 	$data .= " $message</span><br/>";
 	send_to_file($data, "output/BabyTracker.history.htm");
@@ -555,11 +718,11 @@ function DataToTableRow($data, $timestamp)
 
 	$string = "<tr class='dataRow'>";
 	$string .= "<td class='dataCell'>$editTag</td>";
-	$string .= "<td class='dataCell'>" . @$data["date"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["time"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["type"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["amount"] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data["description"] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data['date'] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data['time'] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data['type'] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data['amount'] . "</td>";
+	$string .= "<td class='dataCell'>" . @$data['description'] . "</td>";
 	$string .= "<td class='dataCell'>$deleteTag</td>";
 	$string .= "</tr>";
 
@@ -641,10 +804,10 @@ function transpose($data)
 
 function SetHtmlCookie($key, $value)
 {
-	define("SecondsPerMinute", 60);
-	define("MinutesPerHour", 60);
-	define("HoursPerDay", 24);
-	define("OneDayInSeconds", 60*60*24);
+	define('SecondsPerMinute', 60);
+	define('MinutesPerHour', 60);
+	define('HoursPerDay', 24);
+	define('OneDayInSeconds', 60*60*24);
 
 	$seconds = OneDayInSeconds * 724;
     vprint("setcookie($key)=$value time=$seconds");
@@ -685,9 +848,9 @@ function hex_format($o) {
     return $h;
 }
 
-function read_input_option($key, &$array)
+function read_input_option($key, &$array, $type)
 {
-	$value = get_input_option($key);
+	$value = get_input_option($key, $type);
 	if ($value != "") $array[$key] = $value;
 }
 
@@ -709,7 +872,7 @@ function FormatNumberValue($value)
 
 	switch($value)
 	{
-		case "0":
+		case '0':
 		case "0.0":
 		case "0.00":
 			return "";
@@ -732,12 +895,12 @@ function FormatValue($value)
 			$value = "";
 			break;
 
-		case "Pump":
-		case "Breast":
-		case "Nurse":
-		case "Bottle":
-		case "Daipering":
-		case "Diapering":
+		case 'Pump':
+		case 'Breast':
+		case 'Nurse':
+		case 'Bottle':
+		case 'Daipering':
+		case 'Diapering':
             $value = "<b>$value</b>";
 			break;
 	}

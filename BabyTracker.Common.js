@@ -451,9 +451,6 @@ function RefreshCookieHelper(key) {
 }
 
 function RefreshCookies() {
-    RefreshCookieHelper("key");
-    RefreshCookieHelper("spreadsheetid");
-    RefreshCookieHelper("worksheetid");
     RefreshCookieHelper("sqlid");
     RefreshCookieHelper("token");
     RefreshCookieHelper("tablename");

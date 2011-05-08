@@ -2,7 +2,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Baby Tracker Setup</title>
+    <title>Baby Tracker Login</title>
     <link media="only screen and (max-device-width: 480px)" rel="stylesheet" type="text/css" href="BabyTracker.css"/>
     <link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
     <style type="text/css">
@@ -32,7 +32,7 @@
         </style>
 </head>
 <body onload="OnLoad();">
-    <h2>Setup for Baby Tracker</h2>
+    <h2>Login for Baby Tracker</h2>
     <br />
     <form action="javascript:void(0);" id="EntryForm">
         <table>
@@ -42,22 +42,6 @@
                 </td>
                 <td>
                     <input id="txtBabyName" type="text" value=""/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="txtDOB">Date of Birth</label>
-                </td>
-                <td>
-                    <input id="txtDOB" name="txtDOB" type="text" value=""/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="txtUserName">Your Name</label>
-                </td>
-                <td>
-                    <input id="txtUserName" type="text" value=""/>
                 </td>
             </tr>
             <tr>
@@ -74,22 +58,6 @@
                 </td>
                 <td>
                     <input id="txtPassword" name="txtPassword" type="password" value="" size="19"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="imgCaptcha">Validation Image:</label>
-                </td>
-                <td>
-                    <img src="captcha_code_file.php?rand=<?php echo rand(); ?>" id="imgCaptcha" >
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="txtCaptcha">Enter Code Above Here:</label>
-                </td>
-                <td>
-                    <input id="txtCaptcha" name="txtCaptcha" type="text" value="" size="19"/>
                 </td>
             </tr>
         </table>
@@ -124,14 +92,6 @@
         if (name != "")
             document.getElementById("txtBabyName").value = name;
 
-        var key = readCookie("dob");
-        if (key != "")
-            document.getElementById("txtDOB").value = key;
-
-        var name = readCookie("username");
-        if (name != "")
-            document.getElementById("txtUserName").value = name;
-
         var key = readCookie("userid");
         if (key != "")
             document.getElementById("txtEmail").value = key;
@@ -141,21 +101,12 @@
 
     function Cancel_Click() {
         createCookie("name", document.getElementById("txtBabyName").value, 999);
-        createCookie("dob", document.getElementById("txtDOB").value, 999);
-        createCookie("username", document.getElementById("txtUserName").value, 999);
         createCookie("userid", document.getElementById("txtEmail").value, 999);
         //createCookie("password", document.getElementById("txtPassword").value, 999);
         history.go(-1);
     }
 
     function Done_Click() {
-
-        var txtUserName = document.getElementById("txtUserName");
-        if (txtUserName.value == "") {
-            alert("Missing User Name");
-            txtUserName.focus();
-            return;
-        }
 
         var txtEmail = document.getElementById("txtEmail");
         if (txtEmail.value == "") {
@@ -178,42 +129,18 @@
             return;
         }
 
-        var txtDOB = document.getElementById("txtDOB");
-        if (txtDOB.value == "") {
-            alert("Missing date of birth, or incorrect date");
-            txtDOB.focus();
-            return;
-        }
-        else if (!isDate(txtDOB.value)) {
-            txtDOB.focus();
-            txtDOB.select();
-            return;
-        }
-
-        var txtCaptcha = document.getElementById("txtCaptcha");
-        if (txtCaptcha.value == "") {
-            alert("Missing verification code");
-            txtCaptcha.focus();
-            return;
-        }
-
         var chkSetupDebugMode = document.getElementById("chkSetupDebugMode");
 
         createCookie("name", txtBabyName.value, 999);
-        createCookie("dob", txtDOB.value, 999);
-        createCookie("username", txtUserName.value, 999);
         createCookie("userid", txtEmail.value, 999);
         //createCookie("password", txtPassword.value, 999);
 
         var postData = "";
         postData += "name=" + encodeURI(txtBabyName.value) + "&";
-        postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
-        postData += "username=" + encodeURI(txtUserName.value) + "&";
         postData += "userid=" + encodeURI(txtEmail.value) + "&";
         postData += "pwd=" + encodeURI(txtPassword.value) + "&";
-        postData += "captcha=" + encodeURI(txtCaptcha.value) + "&";
         if (chkSetupDebugMode.checked == true) postData += "debugmode=true&";
-        postData += "postaction=" + "setup_new_user";
+        postData += "postaction=" + "login_user";
 
         var btnDone = document.getElementById("btnDone");
         btnDone.style.display = "none";
@@ -254,7 +181,7 @@
                 var end = response.indexOf("Successfully setup user");
                 if (end == -1) {
                     document.writeln(response);
-                    alert("did not find text Successfully setup user in response");
+                    alert("Login in failed.");
                     return;
                 }
                 var endOfResponse = response.substr(end);
@@ -265,7 +192,7 @@
                     return;
                 }
 
-                alert("Successfully setup account for - [Baby " + readCookie("name") + " Tracker]");
+                //alert("Successfully Logged in for - [Baby " + readCookie("name") + " Tracker]");
                 history.go(-1);
                 return;
             }
