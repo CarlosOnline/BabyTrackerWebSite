@@ -619,7 +619,9 @@ function UpdateChildTableRow($data, $token)
     vprint('Starting');
 
     $row_data = "`timestamp`=NOW(), ";
-	if ($amount)        $row_data .= "amount='$amount', ";
+	if ($amount)   		$row_data .= "amount='$amount', ";
+	// Handle 0 value for amount
+	if ($amount=="" && $amount!=="")   $row_data .= "amount='0', ";
 	if ($description)   $row_data .= "description='$description', ";
 	if ($date && $time) $row_data .= "`datetime`=STR_TO_DATE('$date $time', '%m/%d/%Y %l:%i %p'), ";
 	if ($type) 			$row_data .= "`type`='$type'";

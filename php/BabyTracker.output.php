@@ -642,6 +642,8 @@ function DataToStringEx($data)
 {
 	$string = "";
 	foreach($data as $key => $value) {
+		if ($key == "amount")
+			$value = clean_num($value);
 		$string .= "$key=$value& ";
 	}
 	return $string;
@@ -754,7 +756,7 @@ function DataToTableRow($data, $timestamp)
 	$string .= "<td class='dataCell'>" . @$data['date'] . "</td>";
 	$string .= "<td class='dataCell'>" . @$data['time'] . "</td>";
 	$string .= "<td class='dataCell'>" . @$data['type'] . "</td>";
-	$string .= "<td class='dataCell'>" . @$data['amount'] . "</td>";
+	$string .= "<td class='dataCell'>" . clean_num(@$data['amount']) . "</td>";
 	$string .= "<td class='dataCell'>" . @$data['description'] . "</td>";
 	$string .= "<td class='dataCell'>$deleteTag</td>";
 	$string .= "</tr>";
@@ -965,6 +967,11 @@ function flipDiagonally($arr) {
         }
     }
     return $out;
+}
+
+function clean_num($num)
+{
+	return trim(trim($num, '0'), '.');
 }
 
 //echo 'display_errors = ' . ini_get('display_errors') . "<br\>\n";

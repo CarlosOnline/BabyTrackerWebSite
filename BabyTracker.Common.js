@@ -408,7 +408,7 @@ function OnSubmit_Click() {
         return;
     }
 
-    if (AmountValidForType() && !g_EntryForm.AmountEntry.value) {
+    if (AmountValidForType() && !AmountOptionalForType() && !g_EntryForm.AmountEntry.value) {
         g_EntryForm.AmountEntry.select();
         alert("Enter an Amount");
         return;
@@ -448,6 +448,13 @@ function AmountValidForType() {
     return (true);
 }
 
+function AmountOptionalForType() {
+    var type = TypeName(g_selectedType);
+    if (type == "" || type == "Food")
+        return (true);
+    return (false);
+}
+
 function RefreshCookieHelper(key) {
     var value = readCookie(key);
     if (value)
@@ -458,19 +465,6 @@ function RefreshCookies() {
     RefreshCookieHelper("sqlid");
     RefreshCookieHelper("token");
 }
-function GetSubmitData() {
-
-    //DateEntry=12%2F01&entry.0.single=12%2F01&entry.1.single=2%3A09+pm&TypeGroup=Breast&entry.3.single=40&entry.5.single=Long+breast+feed
-    var data = "";
-    if (g_EntryForm.DateEntry.value) data += "DateEntry=" + encodeDateForUrl(encodeURI(g_EntryForm.DateEntry.value)) + "&";
-    if (g_EntryForm.DateEntry.value) data += "entry.0.single=" + encodeDateForUrl(encodeURI(g_EntryForm.DateEntry.value)) + "&";
-    if (g_EntryForm.TimeEntry.value) data += "entry.1.single=" + encodeURI(GetTimeEntryValue()) + "&";
-    if (AmountValidForType() && g_EntryForm.AmountEntry.value) data += "entry.3.single=" + encodeURI(g_EntryForm.AmountEntry.value) + "&";
-    if (g_EntryForm.DescriptionEntry.value) data += "entry.5.single=" + encodeURI(g_EntryForm.DescriptionEntry.value) + "&";
-    if (TypeName(g_selectedType)) data += "TypeGroup=" + encodeURI(TypeName(g_selectedType)) + "&";
-
-    return data;
-}
 
 function GetLocalSubmitData() {
 
@@ -480,7 +474,7 @@ function GetLocalSubmitData() {
     if (TypeName(g_selectedType)) data += "&type=" + encodeURI(TypeName(g_selectedType));
     if (AmountValidForType() && g_EntryForm.AmountEntry.value) data += "&amount=" + encodeURI(g_EntryForm.AmountEntry.value);
     if (g_EntryForm.DescriptionEntry.value) data += "&description=" + encodeURI(g_EntryForm.DescriptionEntry.value);
-    if (document.getElementById("checkDebugMode").checked) data += "&debugmode=true";
+    if (document.getElementById("checkDebugMode").checked) data += "&verbose=1";
     if (document.getElementById("checkTestMode").checked) data += "&testmode=true";
     if (g_UpdateRowID) data += "&sqlrowid=" + g_UpdateRowID;
 
@@ -755,8 +749,7 @@ function OnEditRow_Click(data)
     g_EntryForm.DescriptionEntry.value = EntryFromString("description", data);
 
 	var type = EntryFromString("type", data);
-	g_selectedType = g_BtnTypeArray[TypeIdxFromName(type)];
-	SelectImageType(g_selectedType);
+	SelectImageType(g_BtnTypeArray[TypeIdxFromName(type)]);
 
     document.getElementById("btnSubmit").value = "Update";
     document.getElementById("btnCancel").style.display = "";
