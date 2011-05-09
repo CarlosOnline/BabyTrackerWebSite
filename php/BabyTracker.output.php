@@ -617,6 +617,12 @@ function success($string)
 	add_response_value('Success', 'true');
 }
 
+function success_quiet($string)
+{
+	__print("<SuccessMessage>$string</SuccessMessage>", 'text', "");
+	add_response_value('Success', 'true');
+}
+
 function add_response_value($tag, $value)
 {
 	//flush_buffers(true);
@@ -740,8 +746,8 @@ function MakeTableFooter()
 function DataToTableRow($data, $timestamp)
 {
 	$dataString = DataToStringEx($data) . "timestamp=" . $timestamp . "& ";
-	$editTag = "<a href='javascript:OnEditRow_Click(\"$dataString\");'><img src='../images/edit.png' /></a>";
-	$deleteTag = "<a href='javascript:OnDeleteRow_Click(\"$dataString\");'><img src='../images/delete.png' /></a>";
+	$editTag = "<a href='javascript:OnEditRow_Click(\"$dataString\");'><img src='images/edit.png' /></a>";
+	$deleteTag = "<a href='javascript:OnDeleteRow_Click(\"$dataString\");'><img src='images/delete.png' /></a>";
 
 	$string = "<tr class='dataRow'>";
 	$string .= "<td class='dataCell'>$editTag</td>";

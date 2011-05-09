@@ -285,8 +285,8 @@ $login_mode = get_input_bool('login_mode');
             if (status == 200) {
 
                 var success = ExtractValue('Success', response);
-                if (success != 'true') {
-
+                if (success != 'true')
+                {
                     if (document.getElementById('chkSetupDebugMode').checked == true)
                         document.writeln(response);
 

@@ -235,10 +235,11 @@
         SelectEntry("");
 
         //RefreshStatsPage();
-        PostAction("runall", 1);
 
         if (document.getElementById("checkTestMode").checked == true)
             document.getElementById("btnTestSubmit").style.display = "none";
+
+		PostAction("last_rows");
     }
 
     function SetAMPM(ampm)

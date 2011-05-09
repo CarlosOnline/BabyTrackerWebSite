@@ -546,7 +546,8 @@ function HtmlPost() {
         //_FrameMsg("_Post " + postdata);
 
         xmlhttp.onreadystatechange = function () { DoPostCallback(self.xmlHttpReq, this, action, cookie, callback); };
-        xmlhttp.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
+        //xmlhttp.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
+        xmlhttp.open("POST", "http://localhost:8888/BabyTracker/php/BabyTracker.php", true);
         xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlhttp.send(postdata);
     }
@@ -560,7 +561,7 @@ function HtmlPost() {
         var status = xmlHttpReq.status;
         var response = xmlHttpReq.responseText;
         if (status != 200 && response == "")
-            response = data;
+            alert('DoPostCallback error ' + status);
 
         callback(xmlHttpReq.status, response, action, cookie);
 

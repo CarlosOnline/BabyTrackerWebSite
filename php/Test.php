@@ -50,7 +50,7 @@ session_start();
         <input type="button" onclick="OnTestClick(this);" value="stats_sql_col&stats_item=total" />
     </span>
     <span style='float:left'>
-        <input type="button" onclick="TestAddClick(this, 1);" value="TestAdd" />
+        <input type="button" onclick="TestAddClick(this, 10);" value="TestAdd" />
         <input type="button" onclick="TestUpdateClick(this, 1);" value="TestUpdate" />
         <input type="button" onclick="TestDeleteClick(this, 1);" value="TestDelete" />
     </span>

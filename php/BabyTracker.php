@@ -75,7 +75,7 @@ function CommonActions()
 	    read_input_option('description', $data, 'text');
 
 	    AddRowToChildTable($data, $token);
-		success(ChildTableResults($token));
+		success_quiet(ChildTableResults($token));
 	    break;
 
 	case 'updaterow':
@@ -91,7 +91,7 @@ function CommonActions()
 	    read_input_option('description', $data, 'text');
 
 	    UpdateChildTableRow($data, $token);
-		success(ChildTableResults($token));
+		success_quiet(ChildTableResults($token));
 	    break;
 
 	case 'deleterow':
@@ -100,8 +100,12 @@ function CommonActions()
 	      'sqlrowid' => get_input_int('sqlrowid'));
 
 	    DeleteChildTableRow($data['sqlrowid'], $token);
-		success(ChildTableResults($token));
+		success_quiet(ChildTableResults($token));
 	    break;
+
+	case "last_rows":
+		success_quiet(ChildTableResults($token));
+		break;
 
 	case "stats_sql":
 		DisplaySqlStats($client);
@@ -176,10 +180,6 @@ function CommonActions()
 		SetHtmlCookie('token', $token);
 
 		success('Successfully logged in baby ' . get_input_text('childname'));
-		break;
-
-	case "last_rows":
-		vprint(ChildTableResults($token));
 		break;
 
 	default:

@@ -672,7 +672,8 @@ function ChildTableResults($token)
 {
 	$mysql = GetMysql();
 	$table = GetChildTableName($token);
-	$results = $mysql->query("select DATE_FORMAT(`datetime`, '%c/%e/%Y') as date, " .
+	$results = $mysql->query("select id as sqlrowid, " .
+							 "DATE_FORMAT(`datetime`, '%c/%e/%Y') as date, " .
 							 "DATE_FORMAT(`datetime`, '%l:%i %p') as time, " .
 							 "type, amount, description, timestamp " .
 							 "from `$table` order by id desc LIMIT 50");

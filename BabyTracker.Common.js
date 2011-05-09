@@ -317,7 +317,7 @@ function RefreshStatsPage() {
     if (g_StatsPageRefreshTimer != 0)
         clearTimeout(g_StatsPageRefreshTimer);
 */
-    PostRefreshStats();
+    //PostRefreshStats();
 }
 
 function SetRefreshStatsPageTimer(delay) {
@@ -412,9 +412,9 @@ function OnSubmit_Click() {
 
     PersistCookieData();
 
-    if (readCookie("key") == "") {
+    if (readCookie("token") == "") {
         alert("Baby Tracker has not been setup yet.  Click OK to be directed to setup, and then please resubmit your entry");
-        window.location = "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTrackerSetup.htm";
+        RunSetup();
     }
 
     PostAddRow();
@@ -453,7 +453,6 @@ function RefreshCookieHelper(key) {
 function RefreshCookies() {
     RefreshCookieHelper("sqlid");
     RefreshCookieHelper("token");
-    RefreshCookieHelper("tablename");
 }
 function GetSubmitData() {
 
@@ -497,148 +496,14 @@ function GetLocalSubmitDataEx() {
     return data;
 }
 
-function ActionCallback(status, response, action, cookie) {
-    //DebugMsg("ActionCallback", action + " status=" + status);
-    switch (action) {
-        case "addrow":
-            return AddRowCallback(status, response);
-            break;
-
-        case "stats_col":
-            return RefreshStatusCallback(status, response);
-            break;
-
-        case "run":
-            //PostAction("runall", 1);
-            break;
-
-        case "runall":
-            //if (g_Entered > g_Submitted)
-                //PostAction("runall", 1);
-            break;
-    }
-}
-
 function PostAddRow()
 {
     var data = GetLocalSubmitData() + ReadCachedPostData();
     var post = new HtmlPost();
     var action = g_UpdateRowID==null ? "addrow" : "updaterow";
-    post.Post(action, data, AddRowCallback, GetLocalSubmitDataEx());
+    post.Post(action, data, PostCallback, GetLocalSubmitDataEx());
     g_Entered++;
     document.getElementById("lblSubmitOutput").innerHTML = "Processing: " + g_Submitted + " of " + g_Entered + " submitted";
-}
-
-function AddRowCallback(status, response, action, cookie) {
-
-    var retVal = -1;
-
-    var btn = document.getElementById("btnSubmit");
-    btn.disabled = false;
-    btn.className = "btnSubmit";
-    btn.value = "Submit";
-    g_UpdateRowID = null;
-
-    var data = "";
-    var idxData = response.indexOf("Data:");
-    if (idxData != -1) {
-        data = response.substr(idxData + 5);
-        DisplayAddedDataRow(data);
-    }
-
-    if (status == 200) {
-        if (document.getElementById("checkDebugMode").checked == true) {
-			var old = document.getElementById("frameDebug").innerHTML;
-            document.getElementById("frameDebug").innerHTML = response + "<hr><hr><hr>" + old;
-            document.getElementById("frameDebug").style.display = "";
-        }
-
-        if (response.indexOf("Successfully added the data.") != -1) {
-
-            g_Submitted++;
-            document.getElementById("lblSubmitOutput").innerHTML = "SUCCESS: " + g_Submitted + " of " + g_Entered + " submitted";
-            if (g_Entered == g_Submitted)
-                document.getElementById("imgBusy").style.display = "none";
-
-            PostAction("run", 3);
-            PostAction("runall", 1);
-
-            retVal = 1;
-        }
-    }
-    else
-    {
-        document.getElementById("lblSubmitOutput").innerHTML = "FAILED to add data to spreadsheet. " + g_Submitted + " of " + g_Entered + " submitted";
-
-        var row = FailedDataToTableRow("failed", cookie);
-        DisplayAddedDataRow(row);
-
-        alert("Failed to submit entry. status=" + status + " Data: " + cookie);
-        document.getElementById("frameDebug").innerHTML += response;
-        document.getElementById("frameDebug").style.display = "";
-
-        if (g_Entered == g_Submitted)
-            document.getElementById("imgBusy").style.display = "none";
-
-        return -1;
-    }
-
-    RefreshCookies();
-}
-
-function DeleteRowCallback(status, response, action, cookie) {
-
-    var retVal = -1;
-
-    var btn = document.getElementById("btnSubmit");
-    btn.disabled = false;
-    btn.className = "btnSubmit";
-
-    var data = "";
-    var idxData = response.indexOf("Data:");
-    if (idxData != -1) {
-        data = response.substr(idxData + 5);
-        DisplayDeletedDataRow(data);
-    }
-
-    if (status == 200) {
-        if (document.getElementById("checkDebugMode").checked == true) {
-			var old = document.getElementById("frameDebug").innerHTML;
-            document.getElementById("frameDebug").innerHTML = response + "<hr><hr><hr>" + old;
-            document.getElementById("frameDebug").style.display = "";
-        }
-
-        if (response.indexOf("Successfully deleted the data.") != -1) {
-
-            g_Submitted++;
-            document.getElementById("lblSubmitOutput").innerHTML = "SUCCESS: " + g_Submitted + " of " + g_Entered + " submitted";
-            if (g_Entered == g_Submitted)
-                document.getElementById("imgBusy").style.display = "none";
-
-            PostAction("run", 3);
-            PostAction("runall", 1);
-
-            retVal = 1;
-        }
-    }
-    else
-    {
-        document.getElementById("lblSubmitOutput").innerHTML = "FAILED to delete data to spreadsheet. " + g_Submitted + " of " + g_Entered + " submitted";
-
-        var row = FailedDataToTableRow("failed", cookie);
-        DisplayAddedDataRow(row);
-
-        alert("Failed to submit entry. status=" + status + " Data: " + cookie);
-        document.getElementById("frameDebug").innerHTML += response;
-        document.getElementById("frameDebug").style.display = "";
-
-        if (g_Entered == g_Submitted)
-            document.getElementById("imgBusy").style.display = "none";
-
-        return -1;
-    }
-
-    RefreshCookies();
 }
 
 function PostDeleteRow(rowid)
@@ -646,60 +511,120 @@ function PostDeleteRow(rowid)
     var data = "sqlrowid=" + rowid + ReadCachedPostData();
     var post = new HtmlPost();
     var action = "deleterow";
-    post.Post(action, data, DeleteRowCallback, GetLocalSubmitDataEx());
+    post.Post(action, data, PostCallback, GetLocalSubmitDataEx());
     g_Entered++;
     document.getElementById("lblSubmitOutput").innerHTML = "Processing: " + g_Submitted + " of " + g_Entered + " submitted";
 }
 
-function PostRefreshStats() {
-    var key = readCookie("key");
-    if (key == "")
-        return;
+function PostCallback(status, response, action, cookie) {
 
-    var data = "col=B&col_end=F";
-    data += ReadCachedPostData();
+    var btn = document.getElementById("btnSubmit");
+    btn.disabled = false;
+    btn.className = "btnSubmit";
 
-    var post = new HtmlPost();
-    post.PostSingleton("stats_sql", data, RefreshStatusCallback);
+    if (status == 200)
+    {
+        if (document.getElementById("checkDebugMode").checked == true) {
+			var old = document.getElementById("frameDebug").innerHTML;
+            document.getElementById("frameDebug").innerHTML = response + "<hr><hr><hr>" + old;
+            document.getElementById("frameDebug").style.display = "";
+        }
+
+        var success = ExtractValue('Success', response);
+        if (success == 'true')
+        {
+            g_Submitted++;
+            document.getElementById("lblSubmitOutput").innerHTML = "SUCCESS: " + g_Submitted + " of " + g_Entered + " submitted";
+            if (g_Entered == g_Submitted)
+                document.getElementById("imgBusy").style.display = "none";
+
+            var message = ExtractValue('SuccessMessage', response);
+            if (message != "")
+                DisplayResponse(message);
+            return 1;
+        }
+        else
+        {
+            var error = ExtractValue('ErrorMessage', response);
+            if (error == "")
+                error = "Unknown Error.  Email babytracker@pacifier.com for support";
+            alert(error);
+        }
+        return -1;
+    }
+    else
+    {
+        document.getElementById("lblSubmitOutput").innerHTML = "FAILED to " + action + " data. " + g_Submitted + " of " + g_Entered + " submitted";
+
+        alert("Failed to submit entry. status=" + status + " Data: " + cookie);
+        document.getElementById("frameDebug").innerHTML += response;
+        document.getElementById("frameDebug").style.display = "";
+
+        if (g_Entered == g_Submitted)
+            document.getElementById("imgBusy").style.display = "none";
+
+        return -1;
+    }
+
+    RefreshCookies();
+    return 0;
 }
 
-function RefreshStatusCallback(status, response, action, cookie) {
-
-    var retVal = -1;
-    var oPage = document.getElementById("StatsPage");
-    if (status == 200) {
-        oPage.innerHTML = response;
-        retVal = 1;
-        SetRefreshStatsPageTimer(10);
-    }
-    else {
-        oPage.innerHTML = "ERROR: status = " + status + " response = " + response;
-        retVal = -1;
-    }
-    return retVal;
+function PostAction(action)
+{
+    var data = ReadCachedPostData();
+    var post = new HtmlPost();
+    post.Post(action, data, PostActionCallback, GetLocalSubmitDataEx());
 }
 
-function PostAction(action, max) {
+function PostActionCallback(status, response, action, cookie) {
 
-    var data = "verbose=1";
-    data += ReadCachedPostData();
+    var btn = document.getElementById("btnSubmit");
+    btn.disabled = false;
+    btn.className = "btnSubmit";
 
-    var post = new HtmlPost();
-    post.PostMultiple(action, data, ActionCallback, max);
+    if (status == 200)
+    {
+        if (document.getElementById("checkDebugMode").checked == true) {
+			var old = document.getElementById("frameDebug").innerHTML;
+            document.getElementById("frameDebug").innerHTML = response + "<hr><hr><hr>" + old;
+            document.getElementById("frameDebug").style.display = "";
+        }
+
+        var success = ExtractValue('Success', response);
+        if (success == 'true')
+        {
+            var message = ExtractValue('SuccessMessage', response);
+            if (message != "")
+                DisplayResponse(message);
+            return 1;
+        }
+        else
+        {
+            var error = ExtractValue('ErrorMessage', response);
+            if (error == "")
+                error = "Unknown Error.  Email babytracker@pacifier.com for support";
+            alert(error);
+        }
+        return -1;
+    }
+    else
+    {
+        document.getElementById("lblSubmitOutput").innerHTML = "FAILED on " + action + ".";
+        alert("Failed to process action. status=" + status + " Data: " + cookie);
+        document.getElementById("frameDebug").innerHTML += response;
+        document.getElementById("frameDebug").style.display = "";
+
+        return -1;
+    }
+
+    RefreshCookies();
+    return 0;
 }
 
 function ReadCachedPostData() {
     var data = "";
-    data += "&name=" + readCookie("name");
-    data += "&key=" + readCookie("key");
-    data += "&spreadsheetid=" + readCookie("spreadsheetid");
-    data += "&worksheetid=" + readCookie("worksheetid");
-    //data += "&uid=" + uniqid();
-    if (readCookie("sqlid")) data += "&sqlid=" + readCookie("sqlid");
     if (readCookie("token")) data += "&token=" + readCookie("token");
-    if (readCookie("tablename")) data += "&tablename=" + readCookie("tablename");
-    if (readCookie("userid")) data += "&userid=" + readCookie("userid");
-
     return data;
 }
 
@@ -743,53 +668,12 @@ function FailedDataToTableRow(state, data) {
     return row;
 }
 
-function DisplayAddedDataRow(dataRow) {
+function DisplayResponse(response) {
 
     var div = document.getElementById("divDataTable");
     var table = document.getElementById("dataTable");
-    var body = div.innerHTML;
-    body = body.replace("<!--NewRow-->", "<!--NewRow-->" + dataRow);
-    //tableHTML = "<table id='dataTable' class='dataTable'>" + body + "</table>";
-    div.innerHTML = body;
+    div.innerHTML = response;
     div.style.display = "";
-}
-
-function DisplayDeletedDataRow(dataRow) {
-
-    var div = document.getElementById("divDataTable");
-    var table = document.getElementById("dataTable");
-    var body = div.innerHTML;
-
-	var sqlrowid = EntryFromString("sqlrowid", dataRow);
-	var timestamp = EntryFromString("timestamp", dataRow);
-
-	var idx = body.indexOf("sqlrowid="+sqlrowid);
-	//alert(idx + " sqlrowid=" + sqlrowid);
-	while (idx != -1)
-	{
-		var idxTRStart = body.lastIndexOf("<tr", idx);
-		var idxTREnd = body.indexOf("</tr>", idx);
-
-		if (idxTRStart != -1 && idxTREnd != -1)
-		{
-			var trEnd = "</tr>";
-			idxTREnd += trEnd.length;
-			var tr = body.substr(idxTRStart, idxTREnd - idxTRStart);
-			//alert("tr=" + tr);
-			body = body.replace(tr, "<tr><td>deleted</td></tr>");
-			//alert("new body = " + body);
-		}
-
-		idx = body.indexOf("sqlrowid="+sqlrowid);
-	}
-    //tableHTML = "<table id='dataTable' class='dataTable'>" + body + "</table>";
-    div.innerHTML = body;
-    div.style.display = "";
-}
-
-function sleep(milliSeconds) {
-    var startTime = new Date().getTime(); // get the current time
-    while (new Date().getTime() < startTime + milliSeconds); // hog cpu
 }
 
 function TestSubmit_Click() {
@@ -833,7 +717,8 @@ function DateEntryChange(Obj) {
 }
 
 function RunSetup() {
-    window.location = "BabyTrackerSetup.htm";
+    //window.location = "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTrackerSetup.htm";
+    window.location = "http://localhost:8888/BabyTracker/php/BabyTracker.Setup.php";
 }
 
 function EraseData_Click() {
