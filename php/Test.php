@@ -72,9 +72,11 @@ session_start();
     </span>
 	<br style='clear:left;'/>
     <span style='float:left'>
-		<img src="BabyTracker.captcha.php?rand=<?php echo rand(); ?>" id='imgCaptcha' >
-		<label for="txtCaptcha">code</label>
-		<input id='txtCaptcha' name='txtCaptcha' type='text' value="" size='19'/>
+	  <?php
+		  require_once('recaptchalib.php');
+		  $public_captcha_key='6LdtMMQSAAAAALUhUlWYy9SbFHBU3_4QGnMCpvYx';
+		  echo recaptcha_get_html($public_captcha_key);
+	  ?>
     </span>
 </span>
 <br style='clear:both'/>
@@ -108,7 +110,7 @@ session_start();
         document.getElementById("frm").src = "";
         document.getElementById("lblUrl").value = "";
 
-        var name = readCookie("name");
+        var name = readCookie("childname");
         if (name != "")
             document.getElementById("txtBabyName").value = name;
 
@@ -173,26 +175,29 @@ session_start();
             return;
         }
 
-        var txtCaptcha = document.getElementById("txtCaptcha");
-        if (txtCaptcha.value == "") {
-            alert("Missing Captcha");
-            txtCaptcha.focus();
+        var txtCaptchaChallenge = document.getElementById('recaptcha_challenge_field');
+        var txtCaptchaResponse = document.getElementById('recaptcha_response_field');
+        if (txtCaptchaChallenge.value == "" || txtCaptchaResponse == "")
+        {
+            alert("The reCAPTCHA wasn't entered correctly. Go back and try it again.");
+            txtCaptchaChallenge.focus();
             return;
         }
 
-        createCookie("name", txtBabyName.value, 999);
+        createCookie("childname", txtBabyName.value, 999);
         createCookie("dob", txtDOB.value, 999);
         createCookie("username", txtUserName.value, 999);
         createCookie("userid", txtEmail.value, 999);
         createCookie("password", txtPassword.value, 999);
 
         var postData = "";
-        postData += "name=" + encodeURI(txtBabyName.value) + "&";
+        postData += "childname=" + encodeURI(txtBabyName.value) + "&";
         postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
         postData += "username=" + encodeURI(txtUserName.value) + "&";
         postData += "userid=" + encodeURI(txtEmail.value) + "&";
         postData += "pwd=" + encodeURI(txtPassword.value) + "&";
-        postData += "captcha=" + encodeURI(txtCaptcha.value) + "&";
+        postData += "recaptcha_challenge_field=" + encodeURI(txtCaptchaChallenge.value) + "&";
+        postData += "recaptcha_response_field=" + encodeURI(txtCaptchaResponse.value) + "&";
         postData += "postaction=setup_new_user";
 
         var url = "BabyTracker.php?testaction=setup_new_user&" + postData;
@@ -228,15 +233,25 @@ session_start();
             return;
         }
 
-        createCookie("name", txtBabyName.value, 999);
+        var txtCaptchaChallenge = document.getElementById('recaptcha_challenge_field');
+        var txtCaptchaResponse = document.getElementById('recaptcha_response_field');
+        if (txtCaptchaChallenge.value == "" || txtCaptchaResponse == "")
+        {
+            alert("The reCAPTCHA wasn't entered correctly. Go back and try it again.");
+            txtCaptchaChallenge.focus();
+            return;
+        }
+
+        createCookie("childname", txtBabyName.value, 999);
         createCookie("userid", txtEmail.value, 999);
         createCookie("password", txtPassword.value, 999);
 
         var postData = "";
-        postData += "name=" + encodeURI(txtBabyName.value) + "&";
+        postData += "childname=" + encodeURI(txtBabyName.value) + "&";
         postData += "userid=" + encodeURI(txtEmail.value) + "&";
         postData += "pwd=" + encodeURI(txtPassword.value) + "&";
-        postData += "captcha=" + encodeURI(txtCaptcha.value) + "&";
+        postData += "recaptcha_challenge_field=" + encodeURI(txtCaptchaChallenge.value) + "&";
+        postData += "recaptcha_response_field=" + encodeURI(txtCaptchaResponse.value) + "&";
         postData += "postaction=login_user";
 
         var url = "BabyTracker.php?testaction=login_user&" + postData;
@@ -418,6 +433,7 @@ session_start();
         deleteAllCookies();
 
         eraseCookie("token");
+        eraseCookie("childname");
         eraseCookie("name");
         eraseCookie("dob");
         eraseCookie("username");

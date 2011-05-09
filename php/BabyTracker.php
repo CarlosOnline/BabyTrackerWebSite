@@ -11,6 +11,7 @@ require_once("BabyTracker.output.php");
 require_once("BabyTracker.mysql.php");
 require_once("BabyTracker.stats.php");
 require_once("BabyTracker.process.php");
+require_once('recaptchalib.php');
 
 function shutdown()
 {
@@ -74,7 +75,7 @@ function CommonActions()
 	    read_input_option('description', $data, 'text');
 
 	    AddRowToChildTable($data, $token);
-		print(ChildTableResults($token));
+		success(ChildTableResults($token));
 	    break;
 
 	case 'updaterow':
@@ -90,7 +91,7 @@ function CommonActions()
 	    read_input_option('description', $data, 'text');
 
 	    UpdateChildTableRow($data, $token);
-		print(ChildTableResults($token));
+		success(ChildTableResults($token));
 	    break;
 
 	case 'deleterow':
@@ -99,7 +100,7 @@ function CommonActions()
 	      'sqlrowid' => get_input_int('sqlrowid'));
 
 	    DeleteChildTableRow($data['sqlrowid'], $token);
-		print(ChildTableResults($token));
+		success(ChildTableResults($token));
 	    break;
 
 	case "stats_sql":
@@ -136,37 +137,45 @@ function CommonActions()
 	case "setup_user":
 	case "setup_new_user":
 		if (get_input_text('username')=="") error('Missing User Name');
-		if (get_input_text('name')=="") error('Missing Child Name');
+		if (get_input_text('childname')=="") error('Missing Child Name');
 		if (get_input_date('dob')=="") error('Missing date of Birth');
 		if (get_input_email('userid')=="") error('Missing email');
 		if (get_input_pwd('pwd')=="") error('Missing password');
-		if (get_input_id('captcha')=="") error('Missing validation');
-		if (get_input_id('captcha') != validate_input($_SESSION['captcha'], 'id')) error('Incorrect validation');
 
+		$private_captcha_key = get_config_value('private_captcha_key');
+		$resp = recaptcha_check_answer($private_captcha_key,
+									  $_SERVER["REMOTE_ADDR"],
+									  get_input_text('recaptcha_challenge_field'),
+									  get_input_text('recaptcha_response_field'));
+/*
+		if (!$resp->is_valid)
+		  error("The reCAPTCHA wasn't entered correctly. Go back and try it again." .
+			   "(reCAPTCHA said: " . $resp->error . ")");
+*/
 		$user = RegisterUser(get_input_text('username'), get_input_email('userid'), get_input_pwd('pwd'));
-		$child = RegisterChild(get_input_text('name'), get_input_date('dob'), $user);
+		$child = RegisterChild(get_input_text('childname'), get_input_date('dob'), $user);
 		$session = RegisterSession($user, $child);
 		$token = $session['token'];
 
 		SetHtmlCookie('token', $token);
 
-		print("Successfully setup user.<br/>token=$token;<br/>");
+		success('Successfully registered baby ' . get_input_text('childname'));
 		break;
 
 	case 'login':
 	case "login_user":
-		if (get_input_text('name')=="") error('Missing Child Name');
+		if (get_input_text('childname')=="") error('Missing Child Name');
 		if (get_input_email('userid')=="") error('Missing email');
 		if (get_input_pwd('pwd')=="") error('Missing password');
 
 		$user = LoginUser(get_input_email('userid'), get_input_pwd('pwd'));
-		$child = RegisterChild(get_input_text('name'), null, $user);
+		$child = RegisterChild(get_input_text('childname'), null, $user);
 		$session = RegisterSession($user, $child);
 		$token = $session['token'];
 
 		SetHtmlCookie('token', $token);
 
-		print("Successfully setup user.<br/>token=$token;<br/>");
+		success('Successfully logged in baby ' . get_input_text('childname'));
 		break;
 
 	case "last_rows":
@@ -182,17 +191,7 @@ function CommonActions()
 
 function PostProcessing()
 {
-	$name = get_input_text('name');
-	$userid = get_input_email('userid');
-	$token = $_COOKIE('token');
-	read_input_pwd('pwd', $client);
-
-	@$table = $client['tablename'];
-	$title = $client['title'];
-
-    if (CommonActions(get_input_words('postaction'),
-					  get_input_int('sqlrowid'),
-					  $client))
+    if (CommonActions())
 	{
 		return;
 	}

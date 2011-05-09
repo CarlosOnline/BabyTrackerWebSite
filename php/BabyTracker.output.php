@@ -545,6 +545,9 @@ function error($string)
 	__print("Send the following text to <a href='mailto:babytracker@pacifier.com' title='Email Baby Tracker Support'>babytracker@pacifier.com</a>", 'text', "");
 	__print("********************************************", 'text', "");
 	__print("<b>$func()</b> <span style='color: #FF0000; font-size: medium;'>$string</span>", 'text', "");
+	__print("<ErrorMessage>$string</ErrorMessage>", 'text', "");
+	add_response_value('Success', 'false');
+	add_response_value('Error', 'true');
 
 	if ($submission_data)
 		__print("Data: $submission_data", 'text', "");
@@ -585,6 +588,11 @@ function sql_error($string)
         __print("sql sql_error=" . mysql_error());
     else
         __print("$string, sql sql_error=" . mysql_error());
+
+	__print("<ErrorMessage>$string</ErrorMessage>", 'text', "");
+	add_response_value('Success', 'false');
+	add_response_value('Error', 'true');
+
 	if ($submission_data)
 		__print("Data: $submission_data");
 	__print("********************************************");
@@ -594,6 +602,25 @@ function sql_error($string)
 	flush_to_file("output/errors.htm");
 	flush_buffers(true);
 	die("</responses>");
+}
+
+function success($string)
+{
+	flush_buffers(true);
+
+	$func = get_caller_func();
+
+	__print("<h3>BabyTracker Success</h3>", 'text', "");
+	__print("********************************************", 'text', "");
+	__print("<b>$func()</b> <span style='font-size: medium;'>$string</span>", 'text', "");
+	__print("<SuccessMessage>$string</SuccessMessage>", 'text', "");
+	add_response_value('Success', 'true');
+}
+
+function add_response_value($tag, $value)
+{
+	//flush_buffers(true);
+	__print("<$tag>$value</$tag>", 'text', "");
 }
 
 function DataToString($data)

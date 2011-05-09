@@ -1,4 +1,28 @@
-﻿function _DebugMsg(func, msg) {
+﻿function ExtractValue(Tag, Message)
+{
+    var openTag = '<' + Tag + '>';
+    var closeTag = '</' + Tag + '>';
+    var start = Message.indexOf(openTag);
+    var end = Message.indexOf(closeTag);
+    if (start == -1 || end == -1)
+        return "";
+    return Message.substring(start + openTag.length, end);
+}
+
+function ExtractAndSave(tag, data)
+{
+    var value = ExtractValue(tag, data);
+    if (value == "") {
+        //document.writeln(data);
+        alert("Program Error: Did not find value for tag " + tag);
+        return "";
+    }
+
+    createCookie(tag, value);
+    return value;
+}
+
+function _DebugMsg(func, msg) {
     var txt = document.getElementById("txtDebug");
     txt.value = txt.value + "\n" + func + "() " + msg;
     txt.parentNode.style.display = "";
@@ -214,7 +238,7 @@ function DoXmlHttpPost(data, OnReadyStateChangeFunction) {
     g_request.onreadystatechange = OnReadyStateChangeFunction;
     //g_request.open("POST", "http://www.JoyOfPlaying.com/BabyTracker/BabyTracker.php", true);
     //g_request.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
-    g_request.open("POST", "http://localhost:8888/BabyTracker/BabyTracker.php", true);
+    g_request.open("POST", "http://localhost:8888/BabyTracker/php/BabyTracker.php", true);
     g_request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     g_request.send(data + "&" + ProductVersionEx());
     return g_request;

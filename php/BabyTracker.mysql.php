@@ -378,6 +378,7 @@ function LoginUser($userid, $pwd)
     $user = $mysql->query_results($results);
 	if (!$user || ($user['password'] != $pwd))
 	{
+		vprint("$userid --- $pwd");
 		error("LoginUser failed for $userid.  Invalid userid or password.");
 	}
 
@@ -702,104 +703,4 @@ function MakeNewUserTableName($userid, $name)
 	return "user_table_" . str_replace($specials, "_", $userid) . "_$name";
 }
 
-function GetRegisteredTableName($token="", $userid="", $name="")
-{
-    $mysql = GetMysql();
-    $table = get_config_value("registered_users_table_name");
-	$where_clause = "";
-	if ($token) $where_clause .= "`token`='$token' OR ";
-	if ($userid && $name) $where_clause .= "(`userid`='$userid' AND `name`='$name') OR ";
-
-	$results = $mysql->query("select `tablename` from $table where $where_clause 0=1");
-    $ret = $mysql->query_results($results);
-
-    return @$ret['tablename'];
-}
-
-function ExecSqlFile($filename, $tablename)
-{
-	$mysql = GetMysql();
-    $engine = GetEngineName();
-	$search = array(
-		"\$table",
-		"\$engine",
-	);
-	$replace = array(
-		"$tablename",
-		"$engine",
-	);
-	$results = $mysql->exec_file($filename, $search, $replace);
-}
-
-function GetUserRegValue($item, $client)
-{
-    @$token = $client['token'];
-    $userid = $client['userid'];
-    $name = $client['name'];
-
-    $mysql = GetMysql();
-    $table = get_config_value("registered_users_table_name");
-	$where_clause = "";
-	if ($token) $where_clause .= "`token`='$token' OR ";
-	if ($userid && $name) $where_clause .= "(`userid`='$userid' AND `name`='$name') OR ";
-
-	$results = $mysql->query("select `$item` from $table where $where_clause 0=1");
-    $ret = $mysql->query_results_num($results);
-    if ($ret)
-        return $ret[0];
-}
-
-function DeleteUserRegRow($client)
-{
-    @$token = $client['token'];
-    $userid = $client['userid'];
-    $name = $client['name'];
-
-    $mysql = GetMysql();
-    $table = get_config_value("registered_users_table_name");
-	$where_clause = "";
-	if ($token) $where_clause .= "`token`='$token' OR ";
-	if ($userid && $name) $where_clause .= "(`userid`='$userid' AND `name`='$name') OR ";
-
-	$results = $mysql->query("delete from `$table` where $where_clause 0=1");
-	return $results;
-}
-
-function GetUserRegValueEx($item, $key)
-{
-    $mysql = GetMysql();
-    $table = get_config_value("registered_users_table_name");
-	$results = $mysql->query("select `$item` from $table where `key`='$key'");
-    $ret = $mysql->query_results_num($results);
-    if ($ret)
-        return $ret[0];
-}
-
-function GetClientEx($token, $address)
-{
-    $mysql = GetMysql();
-    $table = get_config_value("registered_users_table_name");
-	$results = $mysql->query("select * from $table where `token`='$token' AND `registered_address`='$address'");
-    return $mysql->query_results($results);
-}
-
-function GetClient($token)
-{
-	$address = $_SERVER['REMOTE_ADDR'];
-	$client = GetClientEx($token, $address);
-	if ($client)
-	{
-		$client['address'] = $address;
-	}
-	return $client;
-}
-
-function SetActionState($state, $id)
-{
-    $mysql = GetMysql();
-    $table = get_config_value("uploads_table_name");
-
-	$results = $mysql->query("update $table set `action_state`='$state' where `id`='$id'");
-    return $mysql->query_results($results);
-}
 ?>

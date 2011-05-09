@@ -1,12 +1,18 @@
 <?php
 require_once("BabyTracker.output.php");
-session_start();
+$login_mode = get_input_bool('login_mode');
 ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Baby Tracker Setup</title>
+<?php
+    if ($login_mode)
+        echo '<title>Login to Baby Tracker</title>';
+    else
+        echo '<title>Baby Tracker Setup</title>';
+?>
     <link media="only screen and (max-device-width: 480px)" rel='stylesheet' type="text/css" href="../BabyTracker.css"/>
     <link href='../BabyTracker.css' type='text/css' rel='stylesheet'/>
     <style type="text/css">
@@ -33,10 +39,22 @@ session_start();
         {
             font-size: large;
         }
+        <?php
+            if ($login_mode)
+                echo '.SetupTableRow { display: none; }';
+            else
+                echo '.SetupTableRow { display:; }';
+        ?>
+
         </style>
 </head>
 <body onload="OnLoad();">
-    <h2>Setup for Baby Tracker</h2>
+<?php
+    if ($login_mode)
+        echo '<h2>Login to Baby Tracker</h2>';
+    else
+        echo '<h2>Baby Tracker Setup</h2>';
+?>
     <br />
     <form action="javascript:void(0);" id='EntryForm'>
         <table>
@@ -48,7 +66,7 @@ session_start();
                     <input id='txtBabyName' type='text' value=""/>
                 </td>
             </tr>
-            <tr>
+            <tr class='SetupTableRow'>
                 <td>
                     <label for='txtDOB'>Date of Birth</label>
                 </td>
@@ -56,7 +74,7 @@ session_start();
                     <input id='txtDOB' name='txtDOB' type='text' value=""/>
                 </td>
             </tr>
-            <tr>
+            <tr class='SetupTableRow'>
                 <td>
                     <label for='txtUserName'>Your Name</label>
                 </td>
@@ -82,36 +100,37 @@ session_start();
             </tr>
             <tr>
                 <td>
-                    <label for='imgCaptcha'>Code:</label>
                 </td>
                 <td>
-                    <img src="BabyTracker.captcha.php?rand=<?php echo rand(); ?>" id='imgCaptcha' ><br/>
-                    <small>Can't read the image? click <a href='javascript: refreshCaptcha();'>here</a> to refresh</small>
+                    <?php
+                        require_once('recaptchalib.php');
+                        $public_captcha_key='6LdtMMQSAAAAALUhUlWYy9SbFHBU3_4QGnMCpvYx';
+                        echo recaptcha_get_html($public_captcha_key);
+                    ?>
                 </td>
             </tr>
             <tr>
                 <td>
-                    <label for='txtCaptcha'>Enter Code Above Here:</label>
-                </td>
-                <td>
-                    <input id='txtCaptcha' name='txtCaptcha' type='text' value="" size='19'/>
-                </td>
-            </tr>
-        </table>
-        <br />
-        <table>
-            <tr>
-                <td colspan='2'>
                     <input id='chkSetupDebugMode' name='chkSetupDebugMode' type='checkbox' value="" />
                     <label for='chkSetupDebugMode'>Debug</label>
                 </td>
+                <td>
+                    <div style="float:right; padding-right:0px">
+                        <?php
+                            if ($login_mode)
+                                echo "<a href='javascript:Register_Click()' title='Register' name='Register'>Register</a><br/>";
+                            else
+                                echo "<a href='javascript:SignIn_Click()' title='Sign In' name='SignIn'>Sign In</a><br/>";
+                        ?>
+                        <a href="javascript:ForgotPassword_Click()" title='Forgot Username or Password' >Forgot password</a><br/>
+                        <a href="javascript:EraseData_Click()" title='Clear Data' >Clear Data</a><br/>
+                    </div>
+                </td>
             </tr>
         </table>
-        <br />
         <input class='default' id='btnDone' name='submit' type='submit' value='Done' onclick="Done_Click();" />
         <input class='default' id='btnCancel' name='cancel' type='button' value='Cancel' onclick="Cancel_Click();" />
-        <img title='Wait' id='imgBusy' src="images/wait30trans.gif" alt='Wait' style="display:none;"/>
-        <a href="javascript:EraseData_Click()" title='Erase Data' style="float:right">Erase Data</a>
+        <img title='Wait' id='imgBusy' src="../images/wait30trans.gif" alt='Wait' style="display:none;"/>
     </form>
     <br />
     <small>
@@ -121,13 +140,22 @@ session_start();
     <div id='output' style="width:500px;"/>
 
 <script language='javascript' type="text/javascript">
+<?php
+    if ($login_mode)
+        echo 'var fLoginMode=true';
+    else
+        echo 'var fLoginMode=false';
+?>
+</script>
+
+<script language='javascript' type="text/javascript">
 
     var xmlhttp = null;
 
     function OnLoad() {
-        var name = readCookie('name');
-        if (name != "")
-            document.getElementById('txtBabyName').value = name;
+        var childname = readCookie('childname');
+        if (childname != "")
+            document.getElementById('txtBabyName').value = childname;
 
         var key = readCookie('dob');
         if (key != "")
@@ -145,7 +173,7 @@ session_start();
     }
 
     function Cancel_Click() {
-        createCookie('name', document.getElementById('txtBabyName').value, 999);
+        createCookie('childname', document.getElementById('txtBabyName').value, 999);
         createCookie('dob', document.getElementById('txtDOB').value, 999);
         createCookie('username', document.getElementById('txtUserName').value, 999);
         createCookie('userid', document.getElementById('txtEmail').value, 999);
@@ -156,9 +184,35 @@ session_start();
     function Done_Click() {
 
         var txtUserName = document.getElementById('txtUserName');
-        if (txtUserName.value == "") {
-            alert('Missing User Name');
-            txtUserName.focus();
+        if (!fLoginMode)
+        {
+            if (txtUserName.value == "") {
+                alert('Missing User Name');
+                txtUserName.focus();
+                return;
+            }
+        }
+
+        var txtDOB = document.getElementById('txtDOB');
+        if (!fLoginMode)
+        {
+            if (txtDOB.value == "") {
+                alert("Missing date of birth, or incorrect date");
+                txtDOB.focus();
+                return;
+            }
+            else if (!isDate(txtDOB.value))
+            {
+                txtDOB.focus();
+                txtDOB.select();
+                return;
+            }
+        }
+
+        var txtBabyName = document.getElementById('txtBabyName');
+        if (txtBabyName.value == "") {
+            alert('Missing Baby Name');
+            txtBabyName.focus();
             return;
         }
 
@@ -176,49 +230,39 @@ session_start();
             return;
         }
 
-        var txtBabyName = document.getElementById('txtBabyName');
-        if (txtBabyName.value == "") {
-            alert('Missing Baby Name');
-            txtBabyName.focus();
-            return;
-        }
-
-        var txtDOB = document.getElementById('txtDOB');
-        if (txtDOB.value == "") {
-            alert("Missing date of birth, or incorrect date");
-            txtDOB.focus();
-            return;
-        }
-        else if (!isDate(txtDOB.value)) {
-            txtDOB.focus();
-            txtDOB.select();
-            return;
-        }
-
-        var txtCaptcha = document.getElementById('txtCaptcha');
-        if (txtCaptcha.value == "") {
-            alert('Missing verification code');
-            txtCaptcha.focus();
+        var txtCaptchaChallenge = document.getElementById('recaptcha_challenge_field');
+        var txtCaptchaResponse = document.getElementById('recaptcha_response_field');
+        if (txtCaptchaChallenge.value == "" || txtCaptchaResponse == "")
+        {
+            alert("The reCAPTCHA wasn't entered correctly. Go back and try it again.");
+            txtCaptchaChallenge.focus();
             return;
         }
 
         var chkSetupDebugMode = document.getElementById('chkSetupDebugMode');
 
-        createCookie('name', txtBabyName.value, 999);
+        createCookie('childname', txtBabyName.value, 999);
         createCookie('dob', txtDOB.value, 999);
         createCookie('username', txtUserName.value, 999);
         createCookie('userid', txtEmail.value, 999);
         //createCookie('password', txtPassword.value, 999);
 
         var postData = "";
-        postData += "name=" + encodeURI(txtBabyName.value) + "&";
-        postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
-        postData += "username=" + encodeURI(txtUserName.value) + "&";
+        if (!fLoginMode)
+        {
+            postData += "dob=" + encodeDateForUrl(encodeURI(txtDOB.value)) + "&";
+            postData += "username=" + encodeURI(txtUserName.value) + "&";
+        }
+        postData += "childname=" + encodeURI(txtBabyName.value) + "&";
         postData += "userid=" + encodeURI(txtEmail.value) + "&";
         postData += "pwd=" + encodeURI(txtPassword.value) + "&";
-        postData += "captcha=" + encodeURI(txtCaptcha.value) + "&";
-        if (chkSetupDebugMode.checked == true) postData += "debugmode=true&";
-        postData += "postaction=" + "setup_new_user";
+        postData += "recaptcha_challenge_field=" + encodeURI(txtCaptchaChallenge.value) + "&";
+        postData += "recaptcha_response_field=" + encodeURI(txtCaptchaResponse.value) + "&";
+        if (chkSetupDebugMode.checked == true) postData += "verbose=1&";
+        if (!fLoginMode)
+            postData += "postaction=" + "setup_new_user";
+        else
+            postData += "postaction=" + "login_user";
 
         var btnDone = document.getElementById('btnDone');
         btnDone.style.display = 'none';
@@ -233,44 +277,34 @@ session_start();
         xmlhttp = DoXmlHttpPost(postData, OnPostResponse);
     }
 
-    function ReadSetting(data, field) {
-
-        var pattern = field + "=";
-        var idxStart = data.indexOf(pattern);
-        if (idxStart == -1) {
-            document.writeln(data);
-            alert("Program Error: Did not find key " + field);
-            return;
-        }
-
-        idxStart += pattern.length;
-        var idxEnd = data.indexOf(";", idxStart);
-        var value = data.substr(idxStart, idxEnd - idxStart);
-        createCookie(field, value);
-        return value;
-    }
-
     function OnPostResponse() {
+
         if (xmlhttp.readyState == 4 /* complete */) {
             var response = xmlhttp.responseText;
             var status = xmlhttp.status;
             if (status == 200) {
 
-                var end = response.indexOf('Successfully setup user');
-                if (end == -1) {
-                    document.writeln(response);
-                    alert('did not find text Successfully setup user in response');
+                var success = ExtractValue('Success', response);
+                if (success != 'true') {
+
+                    if (document.getElementById('chkSetupDebugMode').checked == true)
+                        document.writeln(response);
+
+                    var error = ExtractValue('ErrorMessage', response);
+                    if (error == "")
+                        error = "Unknown Error.  Email babytracker@pacifier.com for support";
+                    alert(error);
+
+                    window.location.reload(true);
                     return;
                 }
-                var endOfResponse = response.substr(end);
-                ReadSetting(endOfResponse, 'token');
 
                 if (document.getElementById('chkSetupDebugMode').checked == true) {
                     document.writeln(response);
                     return;
                 }
 
-                alert("Successfully setup account for - [Baby " + readCookie('name') + " Tracker]");
+                alert(ExtractValue('SuccessMessage', response));
                 history.go(-1);
                 return;
             }
@@ -278,7 +312,7 @@ session_start();
                 document.writeln('Failed to Setup User ' + status);
                 //document.writeln("HTTP Status Code = " + status);
                 document.writeln(response);
-                alert("Failed to submit entry status code = " + status + " response = " + response);
+                alert("Failed to register/login.  Error Code = " + status + " response = " + response);
             }
         }
     }
@@ -287,7 +321,7 @@ session_start();
 
         deleteAllCookies();
 
-        eraseCookie('name');
+        eraseCookie('childname');
         document.getElementById('txtBabyName').value = "";
 
         eraseCookie('dob');
@@ -307,7 +341,24 @@ session_start();
         alert('Done');
     }
 
+    function Register_Click()
+    {
+        //window.location = "https://secure.iinet.com/joyofplaying.com/BabyTracker/php/BabyTracker.Setup.php";
+        window.location.replace("http://localhost:8888/BabyTracker/php/BabyTracker.Setup.php");
+    }
+
+    function SignIn_Click()
+    {
+        //window.location = "https://secure.iinet.com/joyofplaying.com/BabyTracker/php/BabyTracker.Setup.php?login_mode=1";
+        window.location.replace("http://localhost:8888/BabyTracker/php/BabyTracker.Setup.php?login_mode=1");
+    }
+
+    function ForgotPassword_Click()
+    {
+        alert('Not yet implemented');
+    }
+
 </script>
-<script language='javascript' src="BabyTracker.Utility.js" type="text/javascript"></script>
+<script language='javascript' src="../BabyTracker.Utility.js" type="text/javascript"></script>
 </body>
 </html>
