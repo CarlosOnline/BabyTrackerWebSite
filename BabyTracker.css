@@ -4,7 +4,7 @@
     padding:0;
     border:0;
 }
-body 
+body
 {
     background-color:#fed;
     border: 0px solid;
@@ -16,7 +16,7 @@ body
     padding-top: 1px;
     width:26em;
 }
-body a 
+body a
 {
     font-size: small;
 }
@@ -34,10 +34,10 @@ label {
         text-align: center;
         font-size: x-large;
 }
-.divEntry 
+.divEntry
 {
 }
-.divEntryActive 
+.divEntryActive
 {
     background-color:#FFC800;
     border: 1px solid;
@@ -330,7 +330,6 @@ label {
 {
     width: 50px;
     height: 50px;
-    background-color:#FFC800;
 }
 .TypeImageActive
 {
@@ -338,7 +337,6 @@ label {
     height: 50px;
     border: 3px inset;
     border-color: #696 #363 #363 #696;
-    background-color:#FFC800;
 }
 .divOptionsPage {
     width: 100%;
@@ -371,7 +369,7 @@ label {
     font-size: small;
     float: right;
 }
-.Footer 
+.Footer
 {
     font-size: small;
 }
@@ -385,7 +383,7 @@ label {
     vertical-align: middle;
     font-size: small;
 }
-.googleForm 
+.googleForm
 {
     border: 1px solid;
 }
@@ -496,16 +494,16 @@ label {
     padding-left: 2px;
     padding-right: 1px;
     font-weight: bold;
-    color: #FF0000; 
+    color: #FF0000;
 }
 
 .dataCellFailed
-{ 
+{
     border-style: none none dotted dotted;
     padding-left: 2px;
     padding-right: 1px;
-    font-weight: bold; 
-    color: #FF0000; 
+    font-weight: bold;
+    color: #FF0000;
 }
 .toggleONleft {
     font-family: ‘DroidSans-Bold’;

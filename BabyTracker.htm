@@ -49,6 +49,7 @@
         <img title="Breast"  class="TypeImage" id="imgNursing" src="images/Nursing.old.png" alt="Breast" onclick="BtnClick(this);" />
         <img title="Bottle" class="TypeImage" id="imgBottle" src="images/Bottle2.free.png" alt="Bottle" onclick="BtnClick(this);" />
         <img title="Pump"   class="TypeImage" id="imgPump" src="images/Pump.free.png" alt="Pump" onclick="BtnClick(this);" />
+        <img title="Food"   class="TypeImage" id="imgFood" src="images/BabyFood3.png" alt="Food" onclick="BtnClick(this);" />
         <img title="Wet Diaper" class="TypeImage" id="imgWetDiaper" src="images/Wet2.Diaper.free.png" alt="Wet" onclick="BtnClick(this);" />
         <img title="Poopy Diaper" class="TypeImage" id="imgPoopDiaper" src="images/Poop2.Diaper.free.png" alt="Poop" onclick="BtnClick(this);" />
         <img title="Wait" id="imgBusy" src="images/wait30trans.gif" alt="Wait" style="display:none;"/>
@@ -89,6 +90,7 @@
                         <label id="lblBreast" class="radioLabel"><input title="Breast" type="radio" name="TypeGroup" value="Breast"       class="radioType" id="typeBreast" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Breast</label>
                         <label id="lblBottle" class="radioLabel"><input title="Bottle" type="radio" name="TypeGroup" value="Bottle"       class="radioType" id="typeBottle" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Bottle</label>
                         <label id="lblPump" class="radioLabel"><input title="Pump" type="radio" name="TypeGroup" value="Pump"         class="radioType" id="typePump" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Pump</label>
+                        <label id="lblFood" class="radioLabel"><input title="Food" type="radio" name="TypeGroup" value="Food"         class="radioType" id="typeFood" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Food</label>
                         <label id="lblWet" class="radioLabel"><input title="Wet Diaper" type="radio" name="TypeGroup" value="Wet Diaper"   class="radioType" id="typeWetDiaper" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Wet</label>
                         <label id="lblPoopy" class="radioLabel"><input title="Poopy Diaper" type="radio" name="TypeGroup" value="Poopy Diaper" class="radioType" id="typePoopyDiaper" onclick="BtnClick(this);" onfocus="OnFocus(this);" />Poopy</label>
                     </ul>
@@ -210,14 +212,16 @@
         g_RadioTypeArray[0] = document.getElementById('typeBreast');
         g_RadioTypeArray[1] = document.getElementById('typeBottle');
         g_RadioTypeArray[2] = document.getElementById('typePump');
-        g_RadioTypeArray[3] = document.getElementById('typeWetDiaper');
-        g_RadioTypeArray[4] = document.getElementById('typePoopyDiaper');
+        g_RadioTypeArray[3] = document.getElementById('typeFood');
+        g_RadioTypeArray[4] = document.getElementById('typeWetDiaper');
+        g_RadioTypeArray[5] = document.getElementById('typePoopyDiaper');
 
         g_BtnTypeArray[0] = document.getElementById('imgNursing');
         g_BtnTypeArray[1] = document.getElementById('imgBottle');
         g_BtnTypeArray[2] = document.getElementById('imgPump');
-        g_BtnTypeArray[3] = document.getElementById('imgWetDiaper');
-        g_BtnTypeArray[4] = document.getElementById('imgPoopDiaper');
+        g_BtnTypeArray[3] = document.getElementById('imgFood');
+        g_BtnTypeArray[4] = document.getElementById('imgWetDiaper');
+        g_BtnTypeArray[5] = document.getElementById('imgPoopDiaper');
 
         g_selectedType = g_BtnTypeArray[0];
         g_selected = g_EntryArray[0];
@@ -228,6 +232,7 @@
             document.getElementById("NameHeader").innerHTML = name + " Tracker";
         }
         LoadFromCookies();
+
 
         SelectImageType(g_selectedType);
         g_selected.focus();
@@ -250,27 +255,29 @@
         if (g_EntryForm.btnPM.value == ampm) g_EntryForm.btnPM.checked = true;
     }
 
-function BtnClick(Button) {
+	function BtnClick(Button) {
 
-    var handled = BtnClick_Common(Button);
+		var handled = BtnClick_Common(Button);
 
-    if (!g_selected) {
-        alert("No selected object");
-        return;
-    }
+		if (!g_selected) {
+			alert("No selected object");
+			return;
+		}
 
-    if (!handled) {
-        switch (Button.value) {
+		if (!handled) {
+			switch (Button.value) {
 
-            default:
-                alert("Unknown button " + Button.value + " " + Button.id);
-                break;
-        }
-    }
-}
+				default:
+					alert("Unknown button " + Button.value + " " + Button.id);
+					break;
+			}
+		}
+	}
 
     var g_PreviousFocus = null;
-    function OnFocusLabel(Obj) {
+
+    function OnFocusLabel(Obj)
+	{
         if (g_PreviousFocus != null && g_PreviousFocus != Obj)
             g_PreviousFocus.className = "radioLabel";
 
@@ -301,12 +308,22 @@ function BtnClick(Button) {
 
             case "typeBreast":
             case "typeBottle":
+            case "typeFood":
             case "typePump":
+            case "typeFood":
             case "typeWetDiaper":
             case "typePoopyDiaper":
                 document.getElementById("divAMPM").className = "divEntry";
                 document.getElementById("divTypeEntry").className = "divRadioEntryActive";
                 break;
+
+			case "DateEntry":
+			case "TimeEntry":
+			case "TypeEntry":
+			case "AmountEntry":
+			case "DescriptionEntry":
+				SelectEntry(Obj.id);
+				break;
 
             default:
                 document.getElementById("divAMPM").className = "divEntry";
@@ -402,7 +419,9 @@ function BtnClick(Button) {
                 previous = g_EntryArray[g_selectedIndex];
                 var desired = document.getElementById(Direction);
                 if (desired)
+				{
                     g_selectedIndex = EntryIdx(desired);
+				}
                 else
                     g_selectedIndex = EntryIdx(g_selected);
                 if (EntryTypeFromIdx(g_selectedIndex) == "Amount" && !AmountValidForType())
@@ -414,7 +433,7 @@ function BtnClick(Button) {
 
         if (g_selected != previous) {
             g_DivEntryArray[EntryIdx(previous)].className = "divEntry";
-            g_DivEntryArray[EntryIdx(previous)].style.display = "none";
+            g_DivEntryArray[EntryIdx(previous)].style.display = "";
         }
 
         g_DivEntryArray[g_selectedIndex].className = "divEntryActive";

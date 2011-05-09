@@ -3,6 +3,7 @@
 //session_destroy();
 session_start();
 //require_once("BabyTracker.output.php");
+// Some icons from http://www.iconfinder.com/icondetails/49741/128/food_knife_icon
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -18,6 +18,7 @@ function BtnClick_Common(Button) {
         case "imgNursing":
         case "imgBottle":
         case "imgPump":
+        case "imgFood":
         case "imgWetDiaper":
         case "imgPoopDiaper":
             SelectImageType(Button);
@@ -27,6 +28,7 @@ function BtnClick_Common(Button) {
         case "typeBreast":
         case "typeBottle":
         case "typePump":
+        case "typeFood":
         case "typeWetDiaper":
         case "typePoopyDiaper":
             SelectImageType(Button);
@@ -66,11 +68,13 @@ function BtnClick_Common(Button) {
             case "Breast":
             case "Bottle":
             case "Pump":
+            case "Food":
             case "Wet":
             case "Poop":
                 SetTypeButtonStyle(Button.value, btnBreast);
                 SetTypeButtonStyle(Button.value, btnBottle);
                 SetTypeButtonStyle(Button.value, btnPump);
+                SetTypeButtonStyle(Button.value, btnFood);
                 SetTypeButtonStyle(Button.value, btnWetDiaper);
                 SetTypeButtonStyle(Button.value, btnPoopyDiaper);
                 handled = true;
