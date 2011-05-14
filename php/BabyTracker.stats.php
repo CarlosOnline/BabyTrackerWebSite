@@ -253,7 +253,7 @@ function DisplayStatsArray($stats)
     $html = MakeTableHeader_trans($stats);
     $html .= MakeTableRow_trans($stats);
     $html .= MakeTableFooter();
-    print($html);
+    success($html);
 }
 
 function DisplayStatsCounts($stats)
@@ -261,7 +261,7 @@ function DisplayStatsCounts($stats)
     $html = MakeTableHeader($stats[0]);
     $html .= MakeTableRow($stats[1]);
     $html .= MakeTableFooter();
-    print($html);
+    success($html);
 }
 
 function DisplaySqlStats_Col($ids, $item='total', $day_max_delta=0, $day_min_delta=0)
@@ -393,15 +393,17 @@ function DisplaySqlStats_Counts($ids)
     DisplayStatsCounts($stats);
 }
 
-function DisplaySqlStats($ids, $all=1, $total=0, $range_start=0, $range_end=0)
+function DisplaySqlStatsMaxDate($token)
 {
     //set_output_flag("no_sql", 1);
     global $html_space;
 
 	$mysql = GetMysql();
-    @$table = $ids['tablename'];
+	$child = GetChildData($token);
+	varray_print($child);
+	$table = $child['tablename'];
 	$max_date = GetQueryValue($mysql->query("select CAST(MAX(`datetime`) as DATE) from $table"));
-    $dob = GetUserRegValue('dob', $ids);
+    $dob = $child['dob'];
 	$day_count = GetQueryValue($mysql->query("select TIMESTAMPDIFF(DAY, '$dob', '$max_date')"));
 
 // Number of Nurse Today
@@ -485,6 +487,64 @@ function DisplaySqlStats($ids, $all=1, $total=0, $range_start=0, $range_end=0)
 
     DisplayStatsArray($stats);
     //array_print($stats);
+}
+
+function DisplaySqlStats($token, $date, $dateEnd)
+{
+    //set_output_flag("no_sql", 1);
+    global $html_space;
+
+	$mysql = GetMysql();
+	$child = GetChildData($token);
+	varray_print($child);
+	$table = $child['tablename'];
+	$sql_date = '';
+	$sql_date_end = '';
+
+	if ($date != '')
+	{
+		list($month, $day, $year) = split('[/.-]', $date);
+		$sql_date = "$year-$month-$day";
+	}
+	else
+	{
+		$sql_date = GetQueryValue($mysql->query("select CAST(MAX(`datetime`) as DATE) from $table"));
+		list($year, $month, $day) = split('[/.-]', $sql_date);
+		$date = "$month/$day/$year";
+	}
+
+	if ($dateEnd != '')
+	{
+		list($month, $day, $year) = split('[/.-]', $dateEnd);
+		$sql_date_end = "$year-$month-$day";
+	}
+	else
+	{
+		$sql_date_end = GetQueryValue($mysql->query("select TIMESTAMPADD(DAY, 1, '$sql_date')"));
+		list($year, $month, $day) = split('[/.-]', $sql_date_end);
+		$dateEnd = "$month/$day/$year";
+	}
+
+    $dob = $child['dob'];
+	vprint("$token $date $sql_date $dob");
+	$day_count = GetQueryValue($mysql->query("select TIMESTAMPDIFF(DAY, '$dob', 'date')"));
+
+    $stats = array();
+
+	$col = array();
+    FillRowHeaderArray($col);
+    $stats[] = $col;
+
+	$col = array();
+	vprint("start date=$sql_date end date=$sql_date_end");
+    FillStatsArray($mysql, $table, 1, $col, $sql_date, $sql_date_end, 0, 0);
+    $stats[] = $col;
+
+
+    DisplayStatsArray($stats);
+    //array_print($stats);
+	add_response_value('Date', $date);
+	add_response_value('EndDate', $dateEnd);
 }
 
 ?>

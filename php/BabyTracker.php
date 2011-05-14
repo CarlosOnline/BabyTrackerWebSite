@@ -108,7 +108,7 @@ function CommonActions()
 		break;
 
 	case "stats_sql":
-		DisplaySqlStats($client);
+		DisplaySqlStats($token, get_input_date('date'), get_input_date('dateEnd'));
 		break;
 
 	case "stats_sql_col":

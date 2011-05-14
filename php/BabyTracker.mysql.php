@@ -250,22 +250,6 @@ function GetEngineName()
 	return $engine;
 }
 
-function SetupUploadTable()
-{
-	$mysql = GetMysql();
-    $table = get_config_value("uploads_table_name");
-    $engine = GetEngineName();
-	$search = array(
-		"\$table",
-		"\$engine",
-	);
-	$replace = array(
-		"$table",
-		"$engine",
-	);
-	$results = $mysql->exec_file("sql/create_upload_table.sql", $search, $replace);
-}
-
 function CreateChildTable($table, $current_version)
 {
 	$mysql = GetMysql();

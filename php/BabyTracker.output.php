@@ -14,7 +14,8 @@ function validate_input($value, $type)
 			$value = utf8_decode($value);
 			$value = htmlentities($value, ENT_QUOTES);
 			$value = strip_tags($value);
-			if (!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}$#", $value))
+			if (!preg_match("#^[0-9]{1,2}[/-][0-9]{1,2}[/-][0-9]{4}$#", $value) &&
+				!preg_match("#^[0-9]{4}[/-][0-9]{1,2}[/-][0-9]{1,2}$#", $value))
 				$value = '';
 			return $value;
 			break;
@@ -171,6 +172,7 @@ function get_input_filename($item) 	{ return get_input_option($item, 'filename')
 function get_input_id($item)  		{ return get_input_option($item, 'id'); }
 
 $verbose = get_input_bool('verbose');
+$verbose=1;
 $xml_view = get_input_bool("xml_view");
 $no_xml = get_input_bool("no_xml");
 $no_sql = get_input_bool("no_sql");
@@ -701,7 +703,6 @@ function GetTableRowStyle() {
 
 function MakeTableRow($data)
 {
-    $style = GetTableRowStyle();
 	$string = "<tr>";
     foreach ($data as $key => $value) {
         $string .= "<td>" . FormatValue($value) . "</td>";
@@ -766,7 +767,7 @@ function DataToTableRow($data, $timestamp)
 
 function MakeTableHeader_trans($data)
 {
-    //$table_id = "rounded-corner";
+    $table_id = "rounded-corner";
     //$table_id = "hor-minimalist-a";
     //$table_id = "hor-minimalist-b";
     //$table_id = "ver-minimalist";
@@ -782,14 +783,15 @@ function MakeTableHeader_trans($data)
     //$table_id = "newspaper-c";
     //$table_id = "rounded-corner";
 
-  $table_id = "gradient-style";
-    //$table_id = "pattern-style-a";
+	//$table_id = "gradient-style";
+	//$table_id = "pattern-style-a";
     //$table_id = "pattern-style-b";
+
 
     if (sizeof($data) == 0)
         return "<table id='$table_id'><tr>";
 
-    print("<head><link href='../table.css' type='text/css' rel='stylesheet'/><link href='table.css' type='text/css' rel='stylesheet'/></head>");
+    print("<head><link href='../table.css' type='text/css' rel='stylesheet'/></head>");
 
 	$string = ""; //"<span style='font-size: 11;'>";
     $string .= "<table id='$table_id'><tr>";
@@ -847,6 +849,7 @@ function SetHtmlCookie($key, $value)
 	$seconds = OneDayInSeconds * 724;
     vprint("setcookie($key)=$value time=$seconds");
 	setcookie($key, $value, time() + $seconds);
+	add_response_value($key, $value);
 }
 
 function hex_chars($data) {

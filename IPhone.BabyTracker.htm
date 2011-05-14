@@ -4,7 +4,7 @@
 <link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
 <link href='table.css' type='text/css' rel='stylesheet'/>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-<meta name = "viewport" content = "width = device-width"/>
+<meta name="viewport" content="width=device-width,user-scalable=no" />
 <title>Baby Tracker</title>
 </head>
 <body onload="LoadBody()" dir="ltr">
@@ -16,7 +16,7 @@
     <div class="divOptions" id="divOptions">
         <span style="float:right; border:2px outset;">
         <input type="button" class="OptionsButton" id="RunSetup" onclick="RunSetup()" value="Run Setup" style="margin-bottom: 5px; "/><br style="clear:right;" />
-        <input type="button" class="OptionsButton" id="Show Cookies" onclick="alert(document.cookie);" value="Show Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        <input type="button" class="OptionsButton" id="Show Cookies" onclick="ShowCookies();" value="Show Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
         <input type="button" class="OptionsButton" id="EraseData" onclick="EraseData_Click()" value="Clear Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
         </span>
         <label class="lblCheckbox" for="checkResetSavedData" ><input type="checkbox" id="checkResetSavedData" value="Reset Saved Data"/>Clear Saved Data</label>
@@ -125,8 +125,6 @@
             <div id="divLinks" style="float: right;">
                 <a target="Baby Tracker Stats" id="aShowStatsPageTop" href="BabyTrackerStats.htm" title="Show/Hide Stats View">Stats</a>
                 <a id="aRefreshStatsPageTop" class="StatsPage" style="display:none;" href="javascript:RefreshStatsPage();" title="Refresh Stats">Refresh Stats</a>
-                <br />
-                <a id="aSpreadsheet" href="BabyTrackerSetup.htm" title="Stats" target="_blank">Spreadsheet</a>
                 <br />
                 <a id="aOptions" href="javascript:ShowOptions();" title="Options">Options</a>
             </div>

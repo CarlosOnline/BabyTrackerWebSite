@@ -1,5 +1,5 @@
 /* ------------------
- styling for the tables 
+ styling for the tables
    ------------------   */
 
 html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,table,caption,tbody,tfoot,thead,tr,th,td,form,fieldset,embed,object,applet
@@ -46,7 +46,7 @@ body
 {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 12px;
-	background: #fff;
+	background: #fed;
 	margin: 45px;
 	width: 480px;
 	border-collapse: collapse;
@@ -122,7 +122,7 @@ body
 #box-table-a td
 {
 	padding: 8px;
-	background: #e8edff; 
+	background: #e8edff;
 	border-bottom: 1px solid #fff;
 	color: #669;
 	border-top: 1px solid transparent;
@@ -158,7 +158,7 @@ body
 #box-table-b td
 {
 	padding: 8px;
-	background: #e8edff; 
+	background: #e8edff;
 	border-right: 1px solid #aabcfe;
 	border-left: 1px solid #aabcfe;
 	color: #669;
@@ -188,7 +188,7 @@ body
 }
 #hor-zebra .odd
 {
-	background: #e8edff; 
+	background: #e8edff;
 }
 
 
@@ -370,44 +370,75 @@ body
 {
 	font-family: "12pt Helvetica","Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
 	font-size: 10px;
-	margin: 10px;
-	width: 480px;
-	text-align: left;
+	/* margin: 2px; */
+    margin-left: 8px;
+    margin-right: 2px;
+	/* width: 480px; */
+	text-align: right;
 	border-collapse: collapse;
 }
 #rounded-corner thead th.rounded-company
 {
+	text-align: left;
 	background: #fed url('table-images/left.png') left -1px no-repeat;
 }
 #rounded-corner thead th.rounded-q4
 {
+	text-align: left;
 	background: #fed url('table-images/right.png') right -1px no-repeat;
+}
+#rounded-corner th:first-child
+{
+	text-align: left;
+	padding: 2px;
+	padding-bottom: 1em;
+	font-weight: bolder;
+	font-size: 10px;
+	color: #850;
+	background: #fed;
+	word-break: break-all;
+	width: 3.5em;
 }
 #rounded-corner th
 {
-	padding: 8px;
-	font-weight: normal;
-	font-size: 12px;
+	text-align: right;
+	padding: 2px;
+	padding-bottom: 1em;
+	font-weight: 500;
+	font-size: 10px;
 	color: #850;
 	background: #fed;
+	word-break: break-all;
+	width: 3.5em;
 }
 #rounded-corner td
 {
-	padding: 8px;
+	/*padding: 2px;*/
 	background: #fed;
-	border-top: 1px solid #fff;
+	border-top: 1px solid #fed;
+	color: #850;
+}
+#rounded-corner td:first-child {
+	/*padding: 2px;*/
+	text-align: left;
+	padding-right: 4px;
+	background: #fed;
+	border-top: 1px solid #fed;
 	color: #850;
 }
 #rounded-corner tfoot td.rounded-foot-left
 {
+	text-align: left;
 	background: #e8edff url('table-images/botleft.png') left bottom no-repeat;
 }
 #rounded-corner tfoot td.rounded-foot-right
 {
+	text-align: left;
 	background: #e8edff url('table-images/botright.png') right bottom no-repeat;
 }
 #rounded-corner tbody tr:hover td
 {
+	text-align: left;
 	background: #d0dafd;
 }
 
@@ -445,16 +476,16 @@ body
 }
 * html #background-image tbody td
 {
-	/* 
+	/*
 	   ----------------------------
-		PUT THIS ON IE6 ONLY STYLE 
+		PUT THIS ON IE6 ONLY STYLE
 		AS THE RULE INVALIDATES
 		YOUR STYLESHEET
 	   ----------------------------
 	*/
 	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='table-images/back.png',sizingMethod='crop');
 	background: none;
-}	
+}
 #background-image tbody tr:hover td
 {
 	color: #339;
@@ -481,7 +512,7 @@ body
 }
 #gradient-style td
 {
-	padding: 8px; 
+	padding: 8px;
 	border-bottom: 1px solid #fff;
 	color: #669;
 	border-top: 1px solid #fff;
@@ -525,7 +556,7 @@ body
 }
 #pattern-style-a td
 {
-	padding: 8px; 
+	padding: 8px;
 	border-bottom: 1px solid #fff;
 	color: #669;
 	border-top: 1px solid transparent;
@@ -561,7 +592,7 @@ body
 }
 #pattern-style-b td
 {
-	padding: 8px; 
+	padding: 8px;
 	border-bottom: 1px solid #fff;
 	color: #669;
 	border-top: 1px solid transparent;

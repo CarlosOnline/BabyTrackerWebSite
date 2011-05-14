@@ -304,6 +304,8 @@ $login_mode = get_input_bool('login_mode');
                     return;
                 }
 
+                ExtractAndSave("token", response);
+                
                 alert(ExtractValue('SuccessMessage', response));
                 history.go(-1);
                 return;

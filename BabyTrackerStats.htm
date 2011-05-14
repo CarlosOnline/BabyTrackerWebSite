@@ -3,8 +3,10 @@
 <head>
 <link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
 <link href='table.css' type='text/css' rel='stylesheet'/>
+<link rel="stylesheet" type="text/css" media="all" href="date_picker/jsDatePick_ltr.min.css" />
+<script type="text/javascript" src="date_picker/jsDatePick.min.1.3.js"></script>
 <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-<meta name = "viewport" content = "width = device-width"/>
+<meta name="viewport" content="width=device-width,user-scalable=no" />
 <style type='text/css'>
         body
         {
@@ -38,26 +40,37 @@
         <br style="clear:both"/>
     </div>
 </div>
-<div id="divPage">
-<div id="StatsPageContainer" class="StatsPage" >
-    <iframe src="" id="StatsPage">
-        <br /><br /><br /><br /><br /><br /><br />
+<div id="divPage" >
+    <iframe src="" id="StatsPage" border='0' style="border:none; width:auto; height:300px; float:left;" >
         Please Wait ...<br />
-        <br /><br /><br /><br /><br /><br /><br />
     </iframe>
+    <div style="float:right;">
+        <div >
+            <table class="linksTable" width="100%">
+                <tr>
+                    <td id="tblSheet2">
+                        <a id="aRefreshStatsPageTop" class="StatsPage" href="javascript:RefreshStatsPage();" title="Refresh Stats">Refresh Stats</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td align=right>
+                        <a id="aOptions" href="javascript:ShowOptions();" title="Options">Options</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="float:right;">
+           <label class="lblCheckbox">Choose Date:</label>
+           <div class="StatsPage" id="date_picker" style="margin:10px 0 30px 0; border:dashed 1px red; width:205px; height:230px;">
+        </div>
+        <br style="clear:both;"/>
+    </div>
 </div>
-<div>
-    <table class="linksTable" width="100%">
-        <tr>
-            <td id="tblSheet2">
-                <a id="aRefreshStatsPageTop" class="StatsPage" href="javascript:RefreshStatsPage();" title="Refresh Stats">Refresh Stats</a>
-            </td>
-            <td align=right>
-                <a style="float:right;" id="aOptions" href="javascript:ShowOptions();" title="Options">Options</a>
-            </td>
-        </tr>
-    </table>
+<div id="StatsPageContainer" class="StatsPage" style="width:300px;" >
 </div>
+<br style="clear:both;"/>
+<br style="clear:both;"/>
+
 <div id="divFooter" class="Footer">
 <small>
     <a href="www.JoyOfPlaying.com" style="float:right">Joy of Playing Productions</a>
@@ -68,9 +81,34 @@
 <script type="text/javascript" language="javascript" src="BabyTracker.Utility.js""></script>
 <script type="text/javascript">
     var g_verbose = false;
+    var g_postdate = "";
 
     function LoadBody() {
         RefreshStatsPage();
+
+		g_globalObject = new JsDatePick({
+			useMode:1,
+			isStripped:true,
+			target:"date_picker",
+			cellColorScheme:"orange",
+			imgPath:"date_picker/img/",
+			dateFormat:"%d/%m/%Y",
+			/*selectedDate:{				This is an example of what the full configuration offers.
+				day:5,						For full documentation about these settings please see the full version of the code.
+				month:9,
+				year:2006
+			},
+			yearsRange:[1978,2020],
+			limitToToday:false,
+			weekStartDay:1*/
+		});
+
+		g_globalObject.setOnSelectedDelegate(function(){
+			var obj = g_globalObject.getSelectedDay();
+            var selectedDate = obj.year + "-" + obj.month + "-" + obj.day;
+            g_postdate = "&date=" + selectedDate;
+            RefreshStatsPage();
+		});
     }
 
     function PersistCheckboxCookie(checkbox) {
@@ -110,8 +148,10 @@
             g_StatsPageRefreshTimer = 0;
         }
 
-        var data = ReadCachedPostData();
-        document.getElementById("StatsPage").src = "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php?testaction=stats_sql" + data;
+        var data = "token=" + readCookie("token");
+        data += g_postdate;
+        //document.getElementById("StatsPage").src = "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php?testaction=stats_sql" + data;
+        document.getElementById("StatsPage").src = "http://localhost:8888/BabyTracker/php/BabyTracker.php?postaction=stats_sql&" + data;
 
         SetRefreshStatsPageTimer(10 * 1000);
     }
@@ -148,8 +188,7 @@
         if (key == "")
             return;
 
-        var data = "col=B&col_end=F";
-        data += ReadCachedPostData();
+        var data = "token=" + readCookie("token");
 
         var post = new HtmlPost();
         //DebugMsg("Post", "stats_sql?" + data);
@@ -172,21 +211,6 @@
             retVal = -1;
         }
         return retVal;
-    }
-
-    function ReadCachedPostData() {
-        var data = "";
-        data += "&name=" + readCookie("name");
-        data += "&key=" + readCookie("key");
-        data += "&spreadsheetid=" + readCookie("spreadsheetid");
-        data += "&worksheetid=" + readCookie("worksheetid");
-        //data += "&uid=" + uniqid();
-        if (readCookie("sqlid")) data += "&sqlid=" + readCookie("sqlid");
-        if (readCookie("token")) data += "&token=" + readCookie("token");
-        if (readCookie("tablename")) data += "&tablename=" + readCookie("tablename");
-        if (readCookie("userid")) data += "&userid=" + readCookie("userid");
-
-        return data;
     }
 
     function EntryFromString(key, source) {

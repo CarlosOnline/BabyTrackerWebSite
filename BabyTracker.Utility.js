@@ -1,4 +1,10 @@
-﻿function ExtractValue(Tag, Message)
+function ShowCookies()
+{
+    var cookies = document.cookie;
+    alert("Cookies=" + cookies.replace(/;/g, ";\n"));
+}
+
+function ExtractValue(Tag, Message)
 {
     var openTag = '<' + Tag + '>';
     var closeTag = '</' + Tag + '>';
@@ -70,7 +76,6 @@ function GetDayOfWeek(date) {
     weekday[6] = "Saturday";
     return (weekday[d.getDay()]);
 }
-
 
 function encodeDateForUrl(date) {
     var str = date;
@@ -534,7 +539,7 @@ function HtmlPost() {
         return this.Post(action, data, callback, "");
     }
 
-    this.Post = function _Post(action, data, callback, cookie) {
+    this.Post = function _Post(action, data, callback, cookie, privateCallback) {
         this.InitPostAction("Post", action);
 
         var postdata = "postaction=" + action + "&" + data + "&" + ProductVersionEx();
@@ -545,14 +550,14 @@ function HtmlPost() {
         //_DebugMsg("Post", action + " " + g_PendingPosts[action]);
         //_FrameMsg("_Post " + postdata);
 
-        xmlhttp.onreadystatechange = function () { DoPostCallback(self.xmlHttpReq, this, action, cookie, callback); };
+        xmlhttp.onreadystatechange = function () { DoPostCallback(self.xmlHttpReq, this, action, cookie, callback, privateCallback); };
         //xmlhttp.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
         xmlhttp.open("POST", "http://localhost:8888/BabyTracker/php/BabyTracker.php", true);
         xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlhttp.send(postdata);
     }
 
-    function DoPostCallback(xmlHttpReq, self, action, cookie, callback) {
+    function DoPostCallback(xmlHttpReq, self, action, cookie, callback, privateCallback) {
         if (xmlHttpReq.readyState != 4 /* complete */)
             return 0;
 
@@ -563,7 +568,7 @@ function HtmlPost() {
         if (status != 200 && response == "")
             alert('DoPostCallback error ' + status);
 
-        callback(xmlHttpReq.status, response, action, cookie);
+        callback(xmlHttpReq.status, response, action, cookie, privateCallback);
 
         g_PendingPosts[action]--;
         if (g_PendingPosts[action] < 0)

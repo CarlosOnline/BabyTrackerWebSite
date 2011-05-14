@@ -1,3 +1,5 @@
+var g_SilentError = false;
+
 function BtnClick_Common(Button) {
 
     var handled = false;
@@ -385,8 +387,8 @@ function GetValidDate(quiet) {
     return date;
 }
 
-function OnSubmit_Click() {
-
+function OnSubmit_Click()
+{
     if (g_Entered == g_Submitted)
         document.getElementById("imgBusy").style.display = "none";
 
@@ -419,6 +421,7 @@ function OnSubmit_Click() {
     if (readCookie("token") == "") {
         alert("Baby Tracker has not been setup yet.  Click OK to be directed to setup, and then please resubmit your entry");
         RunSetup();
+        return;
     }
 
     PostAddRow();
@@ -474,8 +477,6 @@ function GetLocalSubmitData() {
     if (TypeName(g_selectedType)) data += "&type=" + encodeURI(TypeName(g_selectedType));
     if (AmountValidForType() && g_EntryForm.AmountEntry.value) data += "&amount=" + encodeURI(g_EntryForm.AmountEntry.value);
     if (g_EntryForm.DescriptionEntry.value) data += "&description=" + encodeURI(g_EntryForm.DescriptionEntry.value);
-    if (document.getElementById("checkDebugMode").checked) data += "&verbose=1";
-    if (document.getElementById("checkTestMode").checked) data += "&testmode=true";
     if (g_UpdateRowID) data += "&sqlrowid=" + g_UpdateRowID;
 
     return data;
@@ -544,7 +545,7 @@ function PostCallback(status, response, action, cookie) {
         else
         {
             var error = ExtractValue('ErrorMessage', response);
-            if (error == "")
+            if (error == "" && g_SilentError != false)
                 error = "Unknown Error.  Email babytracker@pacifier.com for support";
             alert(error);
         }
@@ -602,7 +603,7 @@ function PostActionCallback(status, response, action, cookie) {
             var error = ExtractValue('ErrorMessage', response);
             if (error == "")
                 error = "Unknown Error.  Email babytracker@pacifier.com for support";
-            alert(error);
+            alert("PostActionCallback " + error);
         }
         return -1;
     }
@@ -620,9 +621,59 @@ function PostActionCallback(status, response, action, cookie) {
     return 0;
 }
 
+function PostRequest(action, postdata, cookie, privateCallback)
+{
+    var data = ReadCachedPostData();
+    var post = new HtmlPost();
+    post.Post(action, postdata, PostCallBack, cookie, privateCallback);
+}
+
+function PostCallBack(status, response, action, cookie, privateCallback) {
+
+    if (status == 200)
+    {
+        if (document.getElementById("checkDebugMode").checked == true) {
+			var old = document.getElementById("frameDebug").innerHTML;
+            document.getElementById("frameDebug").innerHTML = response + "<hr><hr><hr>" + old;
+            document.getElementById("frameDebug").style.display = "";
+        }
+        var success = ExtractValue('Success', response);
+        if (success == 'true')
+        {
+            var message = ExtractValue('SuccessMessage', response);
+            if (message != "")
+                DisplayResponse(message);
+
+            if (privateCallback)
+                privateCallback(response);
+            return 1;
+        }
+        else if (g_SilentError != false)
+        {
+            var error = ExtractValue('ErrorMessage', response);
+            if (error == "")
+                error = "Unknown Error.  Email babytracker@pacifier.com for support";
+            alert(error);
+        }
+        return -1;
+    }
+    else
+    {
+        alert("Failed to submit entry. status=" + status + " Data: " + cookie);
+        document.getElementById("frameDebug").innerHTML += response;
+        document.getElementById("frameDebug").style.display = "";
+        return -1;
+    }
+
+    RefreshCookies();
+    return 0;
+}
+
 function ReadCachedPostData() {
     var data = "";
     if (readCookie("token")) data += "&token=" + readCookie("token");
+    if (document.getElementById("checkDebugMode").checked) data += "&verbose=1";
+    if (document.getElementById("checkTestMode").checked) data += "&testmode=true";
     return data;
 }
 
@@ -672,6 +723,15 @@ function DisplayResponse(response) {
     var table = document.getElementById("dataTable");
     div.innerHTML = response;
     div.style.display = "";
+
+    //DebugAlert(response);
+}
+
+function DebugAlert(msg)
+{
+    var callerFunc = arguments.callee.caller.toString();
+    var callerFuncName = (callerFunc.substring(callerFunc.indexOf("function") + 8, callerFunc.indexOf("(")) || "anoynmous");
+    alert(callerFuncName + ': ' + msg);
 }
 
 function TestSubmit_Click() {

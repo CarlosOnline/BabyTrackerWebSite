@@ -4,7 +4,7 @@
     padding:0;
     border:0;
 }
-body 
+body
 {
     background-color:#fed;
     border: 0px solid;
@@ -16,11 +16,23 @@ body
     padding-top: 1px;
     padding-right: 1px;
 }
+/* rounded corners in safari on a div */
+div {
+    -webkit-border-radius: 10px;
+}
+/* for firefox */
+div {
+    -moz-border-radius: 10px;
+}
+h1 {
+    text-shadow: 2px 2px 6px black;
+}
 .divPage {
     width: 100%;
     font-size: large;
     margin-left: 0;
     margin-right: 0;
+    -webkit-border-radius: 10px;
 }
 label {
     width: 1em;
@@ -32,18 +44,21 @@ label {
         text-align: center;
         font-size: x-large;
 }
-.divEntry 
+.divEntry
 {
     background-color:#fed;
     display: none;
+    -webkit-border-radius: 10px;
 }
-.divEntryActive 
+.divEntryActive
 {
+    -webkit-border-radius: 10px;
 }
 .divEntryHidden
 {
     background-color:#fed;
     display: none;
+    -webkit-border-radius: 10px;
 }
 .PageTitle {
     color:#850;
@@ -55,53 +70,61 @@ label {
 {
     font: 'trebuchet ms',helvetica,sans-serif;
     font-size: x-small;
+    -webkit-border-radius: 10px;
 }
-.btn {
-        color: #050;
-        font: 'trebuchet ms',helvetica,sans-serif;
-        background-color:#fed;
-        border: 1px solid;
-        border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
-        width: 3em;
-        height: 2em;
-        font-size: x-large;
+.btn
+{
+    color: #050;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    background-color:#fed;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 3em;
+    height: 2em;
+    font-size: x-large;
+    -webkit-border-radius: 10px;
 }
-.btnText {
-        color:#050;
-        font: bold 84% 'trebuchet ms',helvetica,sans-serif;
-        background-color:#fed;
-        border: 1px solid;
-        border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
-        width: 5em;
-        height: 2em;
-        font-size: large;
+.btnText
+{
+    color:#050;
+    font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+    background-color:#fed;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 5em;
+    height: 2em;
+    font-size: large;
 }
-.btnType {
-        color:#050;
-        font: 'trebuchet ms',helvetica,sans-serif;
-        background-color:#fed;
-        border: 1px solid;
-        border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
-        width: 5em;
-        height: 100%;
-        font-size: x-large;
-        text-align: center;
+.btnType
+{
+    color:#050;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    background-color:#fed;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    width: 5em;
+    height: 100%;
+    font-size: x-large;
+    text-align: center;
+    -webkit-border-radius: 10px;
 }
-.btnTypeDepressed {
-        color:#050;
-        font: 'trebuchet ms',helvetica,sans-serif;
-        background-color:#FFC800;
-        border: 1px solid;
-        border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
-        width: 4em;
-        height: 100%;
-        font-size: x-large;
-        text-align: center;
-    }
+.btnTypeDepressed
+{
+    color:#050;
+    font: 'trebuchet ms',helvetica,sans-serif;
+    background-color:#FFC800;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#FFC800',EndColorStr='#ffeeddaa');
+    width: 4em;
+    height: 100%;
+    font-size: x-large;
+    text-align: center;
+    -webkit-border-radius: 10px;
+}
 .Title {
         color:#850;
         font: bold 84% 'trebuchet ms',helvetica,sans-serif;
@@ -225,7 +248,7 @@ label {
     font-size: small;
     float: right;
 }
-.Footer 
+.Footer
 {
     font-size: xx-small;
 }

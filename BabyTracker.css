@@ -1,4 +1,4 @@
-﻿html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,table,caption,tbody,tfoot,thead,tr,th,td,form,fieldset,embed,object,applet
+html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,table,caption,tbody,tfoot,thead,tr,th,td,form,fieldset,embed,object,applet
 {
     margin:0;
     padding:0;
@@ -9,7 +9,7 @@ body
     background-color:#fed;
     border: 0px solid;
     border-color: #696 #363 #363 #696;
-    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
     font: 12pt Helvetica, sans-serif;
     padding-left: 1em;
     padding-right: 1em;
@@ -79,7 +79,7 @@ label {
     background-color:#fed;
     border: 1px solid;
     border-color: #696 #363 #363 #696;
-    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
     width: 3em;
     height: 2em;
     font-size: x-large;
@@ -90,7 +90,7 @@ label {
     font: 'trebuchet ms',helvetica,sans-serif;
     border: 1px solid;
     border-color: #696 #363 #363 #696;
-    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
     width: 3em;
     height: 2em;
     font-size: x-large;
@@ -101,7 +101,7 @@ label {
         background-color:#fed;
         border: 1px solid;
         border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
         width: 5em;
         height: 2em;
         font-size: large;
@@ -112,7 +112,7 @@ label {
         background-color:#FFC800;
         border: 1px solid;
         border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
         width: 5em;
         height: 2em;
         font-size: large;
@@ -123,7 +123,7 @@ label {
     background-color:#FFC800;
     border: 1px solid;
     border-color: #696 #363 #363 #696;
-    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
     width: 5em;
     height: 2em;
     font-size: large;
@@ -134,7 +134,7 @@ label {
         background-color:#fed;
         border: 1px solid;
         border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
         width: 5em;
         height: 2em;
         font-size: large;
@@ -145,7 +145,7 @@ label {
         background-color:#FFC800;
         border: 1px solid;
         border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
         width: 5em;
         height: 2em;
         font-size: large;
@@ -156,7 +156,7 @@ label {
     background-color:#FFC800;
     border: 1px solid;
     border-color: #696 #363 #363 #696;
-    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
     width: 5em;
     height: 2em;
     font-size: large;
@@ -167,7 +167,7 @@ label {
         background-color:#fed;
         border: 1px solid;
         border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
         width: 5em;
         height: 100%;
         font-size: x-large;
@@ -308,7 +308,7 @@ label {
         background-color:#fed;
         border: 1px solid;
         border-color: #696 #363 #363 #696;
-        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+        filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
         width: 1.5em;
         height: 1em;
         font-size: large;
@@ -351,7 +351,7 @@ label {
     border: 1px;
     border-style: groove;
     border-color: #696 #363 #363 #696;
-    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa');
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
     font-size: medium;
     text-align: center;
     float: right;
@@ -544,4 +544,11 @@ label {
     -moz-border-bottom-colors:#aaa #dedede #efefef #fafafa;
     background-color: #fff;
     display: inline;
+}
+
+#date_picker {
+    margin:0;
+    border:dashed 0px red;
+    width:205px;
+    height:230px;
 }

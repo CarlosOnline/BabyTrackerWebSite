@@ -46,7 +46,7 @@ session_start();
         <input type="button" onclick="OnTestClick(this);" value="last_rows" />
         <input type="button" onclick="OnTestClick(this);" value="dump_user_table" />
         <input type="button" onclick="OnTestClick(this);" value="dump_reg_table" />
-        <input type="button" onclick="OnTestClick(this);" value="stats_sql" />
+        <input type="button" onclick="OnStatsClick(this);" value="stats_sql" />
         <input type="button" onclick="OnTestClick(this);" value="stats_counts" />
         <input type="button" onclick="OnTestClick(this);" value="stats_sql_col&stats_item=total" />
     </span>
@@ -132,6 +132,38 @@ session_start();
             document.getElementById("txtEmail").value = key;
 
         document.getElementById("txtBabyName").focus();
+    }
+
+    function ShowCookies_Click() {
+        cookie = document.cookie;
+        cookie = cookie.replace(/;/g, ";\n");
+        alert(cookie);
+    }
+
+    function EraseCookies_Click() {
+
+        deleteAllCookies();
+
+        eraseCookie("token");
+        eraseCookie("childname");
+        eraseCookie("name");
+        eraseCookie("dob");
+        eraseCookie("username");
+        eraseCookie("userid");
+        eraseCookie("password");
+        alert("Done.  Cookies=[" + document.cookie + "]");
+    }
+
+    function LaunchPhp_Click(Obj) {
+
+		var url = "http://localhost:8888/BabyTracker/php/Test.php";
+		//url += GetCheckboxOptions();
+		//url += OutputFileOption(Obj);
+		//url += "&ignore=" + randomNumber(200000);
+
+		document.title = Obj.value;
+		document.getElementById("lblUrl").value = url;
+		document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
     }
 
     function SetupUser(Obj) {
@@ -423,37 +455,20 @@ session_start();
         }
     }
 
-    function ShowCookies_Click() {
-        cookie = document.cookie;
-        cookie = cookie.replace(/;/g, ";\n");
-        alert(cookie);
-    }
+    function OnStatsClick(Obj)
+	{
+		var url = "BabyTracker.php?testaction=stats_sql";
+		url += GetCheckboxOptions();
+		url += OutputFileOption(Obj);
+		url += "&ignore=" + randomNumber(200000);
 
-    function EraseCookies_Click() {
-
-        deleteAllCookies();
-
-        eraseCookie("token");
-        eraseCookie("childname");
-        eraseCookie("name");
-        eraseCookie("dob");
-        eraseCookie("username");
-        eraseCookie("userid");
-        eraseCookie("password");
-        alert("Done.  Cookies=[" + document.cookie + "]");
-    }
-
-    function LaunchPhp_Click(Obj) {
-
-		var url = "http://localhost:8888/BabyTracker/php/Test.php";
-		//url += GetCheckboxOptions();
-		//url += OutputFileOption(Obj);
-		//url += "&ignore=" + randomNumber(200000);
+		url += "&date=" + document.getElementById("txtExtraValue").value;
 
 		document.title = Obj.value;
 		document.getElementById("lblUrl").value = url;
 		document.getElementById("divFrame").innerHTML = "<iframe src='" + url + "' id='frm' width='80%' height='500px'></iframe>";
     }
+
 
 </script>
 <script language="javascript" src="../BabyTracker.Utility.js" type="text/javascript"></script>
