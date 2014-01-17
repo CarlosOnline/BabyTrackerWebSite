@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
+<html>
+<head>
+<link rel="stylesheet" type="text/css" media="all" href="date_picker/jsDatePick_ltr.min.css" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width,user-scalable=no" />
+<script type="text/javascript" src="date_picker/jsDatePick.min.1.3.js"></script>
+<title>Baby Tracker Stats</title>
+</head>
+<body onload="LoadBody()" dir="ltr">
+	<div class="StatsPage" id="date_picker" class='date_picker'></div>
+
+<script type="text/javascript">
+    function LoadBody() {
+		g_globalObject = new JsDatePick({
+			useMode:1,
+			isStripped:true,
+			target:"date_picker",
+			cellColorScheme:"orange",
+			imgPath:"date_picker/img/",
+			dateFormat:"%d/%m/%Y",
+			/*selectedDate:{				This is an example of what the full configuration offers.
+				day:5,						For full documentation about these settings please see the full version of the code.
+				month:9,
+				year:2006
+			},
+			yearsRange:[1978,2020],
+			limitToToday:false,
+			weekStartDay:1*/
+		});
+	}
+</script>
+</body>
+</html>

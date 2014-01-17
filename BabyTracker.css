@@ -4,12 +4,23 @@ html,body,div,h1,h2,h3,h4,h5,h6,p,img,dl,dt,dd,ol,ul,li,table,caption,tbody,tfoo
     padding:0;
     border:0;
 }
+#ColorSamples
+{
+    color: #fed;
+    color: #fff;
+    color: #ffeeddaa;
+    color:#850;
+    border-color: #696 #363 #363 #696;
+    color: #050;
+}
 body
 {
     background-color:#fed;
     border: 0px solid;
     border-color: #696 #363 #363 #696;
-    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fed',EndColorStr='#fff');
+	background: -webkit-gradient(linear, left top, left bottom, from(#fed), to(#fff));
+	background: -moz-linear-gradient(top, #fed, #fff);
     font: 12pt Helvetica, sans-serif;
     padding-left: 1em;
     padding-right: 1em;
@@ -552,3 +563,4 @@ label {
     width:205px;
     height:230px;
 }
+

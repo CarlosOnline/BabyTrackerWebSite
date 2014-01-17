@@ -578,3 +578,87 @@ function HtmlPost() {
     }
 
 } // HtmlPost function class
+
+function Request()
+{
+    //this.Url = 'https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php';
+    this.Url = 'http://localhost:8888/BabyTracker/php/BabyTracker.php';
+    this.Action = 'none';
+    this.PostData = '';
+    this.CallBack = null;
+    this.SilentError = false;
+    this.Response = 'N/A';
+    this.ResponseCode = 0;
+
+    // Return Values
+    this.Response = '';
+    this.Success = '';
+    this.Message = '';
+    this.Error = '';
+
+    this.xmlHttpReq = null;
+}
+
+Request.prototype.ToString = function()
+{
+    return 'Action=' + this.Action + ' Success=' + this.Success + ' Message=' + this.Message;
+}
+
+Request.prototype.Post = function __Post()
+{
+    this.xmlHttpReq = getXmlHttp();
+
+    var postdata = "postaction=" + this.Action + "&" + this.PostData + "&" + ProductVersionEx();
+    var self = this;
+    xmlhttp.onreadystatechange = function () { self._PostCallback(this); };
+    //xmlhttp.open("POST", "https://secure.iinet.com/joyofplaying.com/BabyTracker/BabyTracker.php", true);
+    xmlhttp.open("POST", this.Url, true);
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlhttp.send(postdata);
+}
+
+Request.prototype._PostCallback = function __PostCallback() {
+    //{ xmlHttpReq, self, action, cookie, callback, privateCallback) {
+
+    if (this.xmlHttpReq.readyState != 4 /* complete */)
+        return 0;
+
+    //_DebugMsg("DoPostCallback", action + " " + g_PendingPosts[action]);
+
+    var status = this.xmlHttpReq.status;
+    var response = this.xmlHttpReq.responseText;
+    if (status != 200 && response == "")
+        alert('Request::_PostCallback error ' + status);
+
+    this.Response = response;
+    return this._HandleResponse();
+}
+
+Request.prototype._HandleResponse = function __HandleResponse()
+{
+    var retVal = 0;
+    if (this.xmlHttpReq.status == 200)
+    {
+        this.Success = ExtractValue('Success', this.Response);
+        if (this.Success == 'true')
+        {
+            this.Message = ExtractValue('SuccessMessage', this.Response);
+            retVal = 1;
+        }
+        else
+        {
+            this.Error = ExtractValue('ErrorMessage', this.Response);
+            retVal = -1;
+        }
+    }
+    else
+    {
+        this.HttpError = this.xmlHttpReq.status;
+        retVal = 0;
+    }
+
+    if (this.CallBack != null)
+        this.CallBack(this);
+
+    return retVal;
+}

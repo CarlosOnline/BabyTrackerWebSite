@@ -1,0 +1,344 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/tr/html4/strict.dtd">
+<html>
+<head>
+<link href='BabyTracker.css' type='text/css' rel='stylesheet'/>
+<link href='table.css' type='text/css' rel='stylesheet'/>
+<link rel="stylesheet" type="text/css" media="all" href="date_picker/jsDatePick_ltr.min.css" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width,user-scalable=no" />
+<script type="text/javascript" src="date_picker/jsDatePick.min.1.3.js"></script>
+<style type='text/css'>
+body
+{
+    width: 95%;
+    font-size: small;
+}
+iframe
+{
+    width: 95%;
+    height: 500px;
+    font-size: small;
+}
+</style>
+<title>Baby Tracker Stats</title>
+</head>
+<body onload="LoadBody()" dir="ltr">
+
+<div id="divWholePage" class="divPage">
+<h2 class="Header" id="NameHeader">Baby Tracker Stats</h2>
+
+<div id="divOptionsPage" class="divOptionsPage" style="display:none;">
+    <div class="divOptions" id="divOptions">
+        <span style="float:right; border:2px outset;">
+        <input type="button" class="OptionsButton" id="RunSetup" onclick="RunSetup()" value="Run Setup" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        <input type="button" class="OptionsButton" id="Show Cookies" onclick="ShowCookies();" value="Show Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        <input type="button" class="OptionsButton" id="EraseData" onclick="EraseData_Click()" value="Clear Cookies" style="margin-bottom: 5px; "/><br style="clear:right;" />
+        </span>
+        <label class="lblCheckbox" for="checkResetSavedData" ><input type="checkbox" id="checkResetSavedData" value="Reset Saved Data"/>Clear Saved Data</label>
+        <br />
+        <label class="lblCheckbox" for="checkSavePreviousData" ><input type="checkbox" id="checkSavePreviousData" checked="checked" value="SavePreviousData" onclick="SavePreviousData_Click(this)"/>Save Previous Data</label>
+        <br />
+        <label class="lblCheckbox" for="checkTestMode" ><input type="checkbox" id="checkTestMode" value="testmode"/>Test Mode</label>
+        <br />
+        <label class="lblCheckbox" for="checkDebugMode" ><input type="checkbox" id="checkDebugMode" value="debugmode"/>Debug</label>
+        <br />
+        <br />
+        <br />
+        <br style="clear:both;"/>
+        <input type="button" class="OptionsButton" onclick="OptionsDone_Click();" value="Done"/>
+        <br style="clear:both;"/>
+        <br />
+        <br />
+    </div>
+</div>
+
+<div id="divPage" >
+        <label class='StatsPage' for='start_date'>Start Date:</label>
+        <label class='StatsPage' for='start_date'>End Date:</label><br/>
+        <input id='btnStartDate' type='button' value='Date' class='StatsPage' onclick="OnDate_Click(this);"/>
+        <input id='btnEndDate'   type='button' value='Date' class='StatsPage' onclick="OnDate_Click(this);"/><br/>
+
+    <div id='divStatsData' style='float:left; padding-right:20px;'>
+        <table id='StatsTable'>
+                <tr>
+                        <td>
+                        </td>
+                </tr>
+        </table>
+        Please Wait...
+    </div>
+    <div style="float:left;">
+        <div >
+            <table class="linksTable" width="100%">
+                <tr>
+                    <td id="tblSheet2">
+                        <a id="aRefreshStatsPageTop" class="StatsPage" href="javascript:RefreshStatsPage();" title="Refresh Stats">Refresh</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a id="aOptions" href="javascript:ShowOptions();" title="Options">Options</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <select style='display:none;' id='selectDate'
+                onclick="OnSelect_Click(this);"
+                onchange="OnSelect_Click(this);"
+                onkeypress="OnSelect_Click(this);">
+                <option id='LastDate' value='LastDate' selected >Last Date</option>
+                <option value='ChooseDate' onclick="OnSelect_Click(this);" >Choose Date</option>
+        </select>
+        <div class="StatsPage" id="date_picker" class='date_picker' style='display:none;'>
+        <br style="clear:both;"/>
+    </div>
+</div>
+<div id="StatsPageContainer" class="StatsPage" style="width:300px;" >
+</div>
+<br style="clear:both;"/>
+<br style="clear:both;"/>
+
+<div id="divFooter" class="Footer">
+<small>
+    <a href="www.JoyOfPlaying.com" style="float:right">Joy of Playing Productions</a>
+</small>
+</div>
+<br style="clear:both;" />
+<span id="frameDebug" style="font-size:small; display:none;"><textarea id="txtDebug" rows="20" cols="100" style="width:100%;" ></textarea></span>
+<script type="text/javascript" language="javascript" src="BabyTracker.Utility.js""></script>
+<script type="text/javascript" language="javascript" src="BabyTracker.Common.js""></script>
+<script type="text/javascript">
+    var g_verbose = false;
+    var g_postdate = "";
+    var g_DateBtn = null;
+
+    function LoadBody() {
+        RefreshStatsPage();
+
+		g_globalObject = new JsDatePick({
+			useMode:1,
+			isStripped:true,
+			target:"date_picker",
+			cellColorScheme:"orange",
+			imgPath:"date_picker/img/",
+			dateFormat:"%d/%m/%Y",
+			/*selectedDate:{				This is an example of what the full configuration offers.
+				day:5,						For full documentation about these settings please see the full version of the code.
+				month:9,
+				year:2006
+			},
+			yearsRange:[1978,2020],
+			limitToToday:false,
+			weekStartDay:1*/
+		});
+
+		g_globalObject.setOnSelectedDelegate(function(){
+			var obj = g_globalObject.getSelectedDay();
+            var selectedDate =  obj.month + "/" + obj.day + '/' + obj.year;
+
+            var picker = document.getElementById('date_picker');
+            picker.style.display = "none";
+
+            g_DateBtn.value = selectedDate;
+            if (g_DateBtn.id == 'btnStartDate')
+                document.getElementById('btnEndDate').value = '';
+            RefreshStatsPage();
+
+		});
+
+        var currentDate = g_globalObject.currentMonth + "/" + g_globalObject.currentDay + "/" + g_globalObject.currentYear;
+
+        var select = document.getElementById('selectDate');
+        var len = 0; //select.options.length;
+        //select.options.length++;
+        select.options[len].value = len;
+        select.options[len].text = currentDate;
+    }
+
+    function PersistCheckboxCookie(checkbox) {
+        if (document.getElementById(checkbox).checked)
+            createCookie(checkbox, "checked");
+        else
+            createCookie(checkbox, "unchecked");
+    }
+
+    function ResetSavedData() {
+        eraseCookie("checkDebugMode");
+        eraseCookie("checkTestMode");
+    }
+
+    function PersistCookieData() {
+        PersistCheckboxCookie("checkDebugMode");
+        PersistCheckboxCookie("checkTestMode");
+    }
+
+    function LoadFromCookies() {
+
+        LoadCheckboxFromCookie("checkDebugMode", false);
+        LoadCheckboxFromCookie("checkTestMode", false);
+
+    }
+
+    var g_StatsPageRefreshIntervalId = 0;
+    var g_StatsPageRefreshTimer = 0;
+    var g_UseTimer = false;
+
+    g_RefreshStatusPending = false;
+
+    function RefreshStatsPage() {
+
+        if (g_StatsPageRefreshTimer != 0) {
+            clearTimeout(g_StatsPageRefreshTimer);
+            g_StatsPageRefreshTimer = 0;
+        }
+
+        var startDate = document.getElementById('btnStartDate').value;
+        var endDate = document.getElementById('btnEndDate').value;
+
+        //var data = "token=" + readCookie("token");
+        var data = "&date=" + startDate + "&dateEnd=" + endDate;
+        data += '&rows_only=1';
+
+        var request = new Request();
+        request.Action = 'stats_sql';
+        request.PostData = data;
+        request.CallBack = StatsResponseCallback;
+        request.Post();
+
+        //PostRequest('stats_sql', data, '', StatsResponseCallback);
+
+        SetRefreshStatsPageTimer(10 * 1000);
+    }
+
+    function StatsResponseCallback(Response)
+    {
+        var tableRows = Response.Message;
+        document.getElementById('divTableData');
+
+        var date = ExtractValue('Date', Response.Response);
+        document.getElementById('btnStartDate').value = date;
+
+        var endDate = ExtractValue('EndDate', Response.Response);
+        document.getElementById('btnEndDate').value = endDate;
+    }
+
+    function SetRefreshStatsPageTimer(delay) {
+        if (g_UseTimer) {
+            if (g_StatsPageRefreshTimer == 0)
+                g_StatsPageRefreshTimer = setTimeout(RefreshStatsPage, delay);
+            //DebugMsg("SetRefreshStatsPageTimer", "delay = " + delay + " timer=" + g_StatsPageRefreshTimer);
+        }
+    }
+
+    function ShowOptions() {
+        var divOptionsPage = document.getElementById('divOptionsPage');
+        var divPage = document.getElementById('divPage');
+
+        if (divOptionsPage.style.display == "none") {
+            divOptionsPage.style.display = "";
+            divPage.style.display = "none";
+        }
+        else {
+            divOptionsPage.style.display = "none";
+            divPage.style.display = "";
+        }
+    }
+
+    function OptionsDone_Click() {
+        document.getElementById('divOptionsPage').style.display = "none";
+        document.getElementById('divPage').style.display = "";
+    }
+
+    function PostRefreshStats() {
+        var key = readCookie("key");
+        if (key == "")
+            return;
+
+        var data = "token=" + readCookie("token");
+
+        var post = new HtmlPost();
+        //DebugMsg("Post", "stats_sql?" + data);
+        post.PostSingleton("stats_sql", data, RefreshStatusCallback);
+    }
+
+    function RefreshStatusCallback(status, response, action, cookie) {
+
+        g_RefreshStatusPending = false;
+
+        var retVal = -1;
+        var oPage = document.getElementById("StatsPage");
+        if (status == 200) {
+            oPage.innerHTML = response;
+            retVal = 1;
+            SetRefreshStatsPageTimer(10 * 1000);
+        }
+        else {
+            oPage.innerHTML = "ERROR: status = " + status + " response = " + response;
+            retVal = -1;
+        }
+        return retVal;
+    }
+
+    function EntryFromString(key, source) {
+        var idx = source.indexOf(key);
+        if (idx == -1)
+            return "";
+
+        idx += key.length + 1;
+
+        var idxEnd = source.indexOf("&", idx);
+        if (idxEnd == -1)
+            idxEnd = source.length;
+
+        var value = source.substr(idx, idxEnd - idx);
+
+        return value;
+    }
+
+    function DebugMsg(func, msg) {
+        var txt = document.getElementById("txtDebug");
+        txt.value = txt.value + "\n" + func + "() " + msg;
+        txt.parentNode.style.display = "";
+    }
+
+    function OnDate_Click(Obj)
+    {
+        g_DateBtn = Obj;
+        var picker = document.getElementById('date_picker');
+        picker.style.display = "";
+    }
+
+    function OnSelect_Click(Obj)
+    {
+        var picker = document.getElementById('date_picker');
+        picker.style.display = "";
+        return;
+
+        var select = document.getElementById('selectDate');
+        var len = select.options.length;
+        var options = select.options;
+        var len = select.options.length;
+        var idx=0;
+        for (idx = 0; idx < len; idx++)
+        {
+           if (options[idx].selected)
+           {
+                if (options[idx].value == "ChooseDate")
+                {
+                        var picker = document.getElementById('date_picker');
+                        picker.style.display = "";
+                }
+                else
+                {
+                        g_postdate = options[idx].Text;
+                        RefreshStatsPage();
+                }
+           }
+        }
+    }
+
+</script>
+
+</div> <!--divWholePage-->
+</body>
+</html>

@@ -825,3 +825,24 @@ function OnDeleteRow_Click(data)
 
 	PostDeleteRow(rowid);
 }
+
+function ReplaceContents(Original, Replacement)
+{
+    var startString = '<!--Start-->';
+    var endString = '<!--End-->';
+
+    var idxStart = Original.indexOf(startString);
+    if (idxStart == -1)
+        return Replacement;
+    idxStart += startString.length;
+
+    var idxEnd = Original.indexOf(endString);
+    if (idxEnd == -1)
+        return Replacement;
+
+    var retString = Original.substr(0, idxStart);
+    retString += Replacement;
+    retString += Original.substr(idxEnd);
+
+    return retString;
+}

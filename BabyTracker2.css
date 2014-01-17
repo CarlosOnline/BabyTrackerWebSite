@@ -1,0 +1,100 @@
+
+hidden {display:none;}
+visible {display:block;}
+
+.center {
+	margin: 0 auto;
+	/* top, bottombottom - and left, rightright values, respectively.*/
+}
+
+.highlight
+{
+    background-color:#FFC800;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    margin: 0 0 0 2px;
+}
+
+.title {
+    color:#850;
+    font: bold 80% 'trebuchet ms',helvetica,sans-serif;
+    font-size: xx-large;
+    text-align: center;
+}
+
+label button input a div table .defaults
+{
+	background: inherit;
+	font: inherit;
+	border: inherit;
+	color:#850;
+	font-size: large;
+}
+
+.box {
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
+	background: -webkit-gradient(linear, left top, left bottom, from(#fedff), to(#ffeeddaa));
+	background: -moz-linear-gradient(top, #fedff, #ffeeddaa);
+}
+
+.SectionLabel {
+	color:#850;
+	font: bold 84% 'trebuchet ms',helvetica,sans-serif;
+		vertical-align: middle;
+}
+
+.StatsContent {
+	padding:1em;
+	float:left;
+}
+
+#StatsTableHeader label {
+	background: inherit;
+	font: inherit;
+	border: inherit;
+	color:#850;
+}
+
+#StatsTableHeader input {
+	background: inherit;
+    border: 1px solid;
+    border-color: #696 #363 #363 #696;
+    filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=0,StartColorStr='#fedff',EndColorStr='#ffeeddaa');
+}
+
+#StatsTableHeader
+{
+	background: inherit;
+	font: inherit;
+	border: inherit;
+	color:#850;
+	padding-bottom: 1em;
+
+	font-weight: lighter;
+}
+
+#stats-table
+{
+	background: inherit;
+	font: inherit;
+	border: inherit;
+	color:#850;
+
+	text-align: right;
+	border-collapse: collapse;
+}
+#stats-table th:first-child
+{
+	text-align: left;
+	word-break: break-all;
+}
+#stats-table th
+{
+	text-align: right;
+}
+#stats-table td:first-child {
+	text-align: left;
+	padding-right: 2em;
+}

@@ -248,19 +248,21 @@ function FillStatsArrayWithCount($mysql, $table, $day_count, &$col, $daystart = 
     }
 }
 
-function DisplayStatsArray($stats)
+function DisplayStatsArray($stats, $rows_only)
 {
-    $html = MakeTableHeader_trans($stats);
+	if (!$rows_only)
+	    $html = MakeTableHeader_trans($stats);
     $html .= MakeTableRow_trans($stats);
-    $html .= MakeTableFooter();
+	if (!$rows_only)
+	    $html .= MakeTableFooter();
     success($html);
 }
 
 function DisplayStatsCounts($stats)
 {
-    $html = MakeTableHeader($stats[0]);
+	$html = MakeTableHeader($stats[0]);
     $html .= MakeTableRow($stats[1]);
-    $html .= MakeTableFooter();
+	$html .= MakeTableFooter();
     success($html);
 }
 
@@ -489,7 +491,7 @@ function DisplaySqlStatsMaxDate($token)
     //array_print($stats);
 }
 
-function DisplaySqlStats($token, $date, $dateEnd)
+function DisplaySqlStats($token, $date, $dateEnd, $rows_only)
 {
     //set_output_flag("no_sql", 1);
     global $html_space;
@@ -541,7 +543,7 @@ function DisplaySqlStats($token, $date, $dateEnd)
     $stats[] = $col;
 
 
-    DisplayStatsArray($stats);
+    DisplayStatsArray($stats, $rows_only);
     //array_print($stats);
 	add_response_value('Date', $date);
 	add_response_value('EndDate', $dateEnd);

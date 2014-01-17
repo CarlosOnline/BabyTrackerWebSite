@@ -172,7 +172,6 @@ function get_input_filename($item) 	{ return get_input_option($item, 'filename')
 function get_input_id($item)  		{ return get_input_option($item, 'id'); }
 
 $verbose = get_input_bool('verbose');
-$verbose=1;
 $xml_view = get_input_bool("xml_view");
 $no_xml = get_input_bool("no_xml");
 $no_sql = get_input_bool("no_sql");
@@ -767,26 +766,7 @@ function DataToTableRow($data, $timestamp)
 
 function MakeTableHeader_trans($data)
 {
-    $table_id = "rounded-corner";
-    //$table_id = "hor-minimalist-a";
-    //$table_id = "hor-minimalist-b";
-    //$table_id = "ver-minimalist";
-    //$table_id = "box-table-a";
-    //$table_id = "box-table-b";
-    //$table_id = "hor-zebra";
-    //$table_id = "ver-zebra";
-    //$table_id = "vzebra-odd";
-    //$table_id = "vzebra-even";
-    //$table_id = "one-column-emphasis";
-    //$table_id = "newspaper-a";
-    //$table_id = "newspaper-b";
-    //$table_id = "newspaper-c";
-    //$table_id = "rounded-corner";
-
-	//$table_id = "gradient-style";
-	//$table_id = "pattern-style-a";
-    //$table_id = "pattern-style-b";
-
+    $table_id = "stats-table";
 
     if (sizeof($data) == 0)
         return "<table id='$table_id'><tr>";
